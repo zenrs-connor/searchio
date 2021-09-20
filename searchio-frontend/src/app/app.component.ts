@@ -11,7 +11,7 @@ export class AppComponent {
 
   constructor() {
 
-    const socket = IO('http://localhost:5000', { transports: ["websocket"]});
+    /*const socket = IO('http://localhost:5000', { transports: ["websocket"]});
 
     socket.on("connect", () => {
       console.log("Connected!");
@@ -23,7 +23,7 @@ export class AppComponent {
 
     socket.on("connect_error", (err) => {
       console.log("Error", console.log(err));
-    })
+    })*/
 
   }
 

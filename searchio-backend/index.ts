@@ -41,6 +41,7 @@ const IO = new Server(HTTP_SERVER, {});
 
 
 IO.on("connection", (socket) => {
+    console.log("New WebSocket Connection", socket.id);
 });
 
 HTTP_SERVER.listen(PORT, () => {
