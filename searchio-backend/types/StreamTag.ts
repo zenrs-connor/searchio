@@ -1,1 +1,1 @@
-export type StreamTag = "phone-number" | "email-address" | "google";
+export type StreamTag = "phone-number" | "email-address" | "google" | "hunter";
