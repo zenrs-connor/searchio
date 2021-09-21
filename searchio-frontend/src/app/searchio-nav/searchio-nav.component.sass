@@ -1,0 +1,89 @@
+@import "../../utilities/variables"
+
+$top-padding: $margin-m
+$button-height: $nav-height - $margin-m
+
+.scroll-button
+    height: $button-height
+    width: $button-height
+    background: $light-grey
+    color: white
+    position: absolute
+    user-select: none
+    line-height: $button-height
+    text-align: center
+    border: $margin-s solid white
+    border-bottom: none
+    border-top: none
+
+    &.hidden
+        pointer-events: none
+        opacity: 0
+
+    &.left
+        border-top-left-radius: $margin-s
+        border-left: none
+
+    &.right
+        right: $margin-m + 15px
+        border-top-right-radius: $margin-s
+        border-right: none
+    
+
+nav
+    padding-top: $margin-m
+    height: $button-height
+    width: calc(100% - #{3 * $margin-m} - #{$margin-s})
+    margin-left: $margin-m
+    color: $light-grey
+
+    .tab-container
+        box-sizing: border-box
+        height: $button-height
+        white-space: nowrap
+        overflow-x: scroll
+        overflow-y: hidden
+        border-radius: $margin-s $margin-s 0 0
+
+        &::-webkit-scrollbar
+            display: none
+
+
+        .item
+            display: inline-block
+            font-size: $button-height / 3
+            background: $mid-grey
+            margin-left: $margin-s
+            height: $button-height
+            line-height: $button-height
+            border-radius: $margin-s $margin-s 0 0
+            cursor: pointer
+            user-select: none
+
+            &:first-child
+                margin-left: 0
+
+            *
+                display: inline-block
+                font-size: $button-height / 2
+
+
+            .name
+                margin: 0 $margin-m 0 $margin-m
+
+            .close
+                margin-right: $margin-m
+
+
+        .item.selected
+            background: $light-grey
+            color: white
+
+
+        .item:hover
+            
+            .name
+                color: white
+
+            .close:hover
+                color: white

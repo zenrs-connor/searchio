@@ -1,0 +1,51 @@
+@import "../../utilities/variables"
+
+
+.header-container
+    height: $header-height
+    box-sizing: border-box
+    width: 100vw
+    display: flex
+    flex-direction: row
+    font-size: $header-height / 2
+    color: white
+
+
+.header-logo
+    height: $header-height
+    width: $filters-width
+    text-align: center
+    line-height: $header-height
+    color: $mid-grey
+
+.header-search-bar
+    display: block
+    flex: 1
+    border: none
+    background: $light-grey
+    border-right: none
+    outline: none
+    font-size: $header-height / 2.5
+    padding-left: $margin-l
+    padding-right: $margin-l
+    margin-top: $margin-m
+    margin-left: $margin-m
+    border-radius: $margin-s 0 0 $margin-s
+    color: $dark-grey
+
+    &::placeholder
+        color: white
+
+.header-search-button
+    width: $header-height - (2 * $margin-s)
+    text-align: center
+    line-height: $header-height - (2 * $margin-s)
+    cursor: pointer
+    background: $light-grey
+    border-left: none
+    margin-top: $margin-m
+    margin-right: $margin-m
+    border-radius: 0 $margin-s $margin-s 0
+
+    &:hover
+        color: $dark-grey

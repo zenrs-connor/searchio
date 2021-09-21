@@ -5,7 +5,7 @@ export class CredentialsService {
     
     constructor() {};
 
-    public get(platform: CredentialsPlatform): CredentialsResult | undefined {
+    public async get(platform: CredentialsPlatform): Promise<CredentialsResult | undefined> {
         return;
     }
 

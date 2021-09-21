@@ -1,0 +1,52 @@
+@import "../../utilities/variables"
+    
+$filter-height: 50px
+
+.result-filter
+    border-radius: $margin-s
+    height: $filter-height
+    width: 100%
+    background: $light-grey
+    padding: $margin-s
+    box-sizing: border-box
+    cursor: pointer
+
+    *
+        display: inline-block
+
+    .icon
+        height: $filter-height - (2 * $margin-s)
+        width: $filter-height - (2 * $margin-s)
+        border-radius: $margin-s
+        background: white
+
+    .count
+        height: $filter-height - (2 * $margin-s)
+        width: $filter-height - (2 * $margin-s)
+        border-radius: 100%
+        background: white
+        float: right
+
+    .hover-card
+        display: none
+        pointer-events: none
+        height: $filter-height
+        line-height: $filter-height
+        background: red
+        z-index:100
+        position: absolute
+        margin-left: $filters-width - $margin-m
+        margin-top: - $margin-s
+        padding: 0 $margin-m 0 $margin-m
+        background: $dark-grey
+        color: white
+        border-radius: $margin-s
+        box-shadow: 0 0 5px 1px $dark-grey
+
+    &:hover
+        .hover-card
+            display: block
+
+
+
+

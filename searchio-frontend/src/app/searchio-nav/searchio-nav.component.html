@@ -1,0 +1,20 @@
+<nav class="searchio-nav">
+
+    <div class="scroll-button left" (click)="scroll(-500)" [ngClass]="{hidden: !scrolledRight()}">⯇</div>
+    <div class="scroll-button right" (click)="scroll(500)" [ngClass]="{hidden: !scrolledLeft()}">⯈</div>
+
+    <div class="tab-container" #scroller>
+        <div class="item" 
+        *ngFor="let query of _manager.getQueryTabs()" 
+        [ngClass]="{ selected: _manager.getActiveQuery() === query}"
+        (click)="onButtonClick($event, query)">
+            <div class="name">{{ query }}</div>
+            <div class="close">🗙</div>
+        </div>
+    </div>
+
+    
+
+
+
+</nav>

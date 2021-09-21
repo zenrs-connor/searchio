@@ -2,6 +2,7 @@ import { Stream } from "./streams/Stream";
 import { QueryStatus } from "../models/QueryStatus";
 import { QueryData } from "../models/QueryData";
 
+
 export class Query {
     private UID: string;
     private name: string;

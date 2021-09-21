@@ -1,0 +1,44 @@
+@import "../../utilities/variables"
+
+$filter-height: 50px
+
+
+
+.filter-bar
+    width: $filters-width
+    height: $filters-height
+    box-sizing: border-box
+    padding-left: $margin-m
+    padding-top: $margin-m
+
+
+.filter
+    height: $filter-height
+    width: 100%
+    border-bottom: 1px solid $light-grey
+    display: flex
+    box-sizing: border-box
+    flex-direction: row
+    padding: $margin-m
+
+    &:last-child
+        border: none
+
+    .icon
+        height: $filter-height - (2 * $margin-m)
+        width: $filter-height - (2 * $margin-m)
+        background: $light-grey
+        border-radius: $margin-s
+
+    .name
+        flex: 1
+
+    .count
+        height: $filter-height - (2 * $margin-m)
+        width: $filter-height - (2 * $margin-m)
+        background: $light-grey
+        border-radius: 100%
+
+
+result-filter
+    margin-bottom: $margin-s
