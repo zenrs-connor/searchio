@@ -1,21 +1,22 @@
-import { EmailAddressStream } from "./EmailAddressStream";
+import { DomainStream } from "./DomainStream";
 
 const request = require('request');
-const HUNTER_API_KEY = '2b3a66d5cde5e4501930c2b989c84f6ce162e1b0';
+const IPAPI_API_KEY = 'f40bb00b0f85d2e92481db53e622eb05';
 
-export class HunterStream extends EmailAddressStream {
+export class IPAPIStream extends DomainStream {
     constructor(query: string) {
         super(query);
-        this.tags.push("hunter");
+        this.tags.push("ipapi");
         console.log(this.tags);
     }
 
-    public async emailFinder(firstName: string, lastName: string, domain: string) {
+    public async ipLookup(IP: string) {
         let response;
 
         await new Promise((resolve) => {
 
-            let url = `https://api.hunter.io/v2/email-finder?domain=${domain}&first_name=${firstName}&last_name=${lastName}&api_key=${HUNTER_API_KEY}`;
+            let url = `http://api.ipstack.com/${IP}?access_key=${IPAPI_API_KEY}&format=1`;
+            console.log(url);
             request(url, async (err, res, body) => {
 
                 console.log(body);

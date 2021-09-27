@@ -10,6 +10,20 @@ import { Server } from "socket.io";
 import { router as API } from './controllers/api';
 import { PhoneNumberStream } from "./modules/streams/phone-numbers/PhoneNumberStream";
 import { PhoneInfogaStream } from "./modules/streams/phone-numbers/PhoneInfogaStream";
+import { EmailAddressStream } from "./modules/streams/email-addresses/EmailAddressStream";
+import { HIBPEmailStream } from "./modules/streams/email-addresses/HIBPEmailStream";
+import { HunterStream } from "./modules/streams/email-addresses/HunterStream";
+import { HIBPPhoneStream } from "./modules/streams/phone-numbers/HIBPPhoneStream";
+import { DomainStream } from "./modules/streams/domains/DomainStream";
+import { HunterDomainStream } from "./modules/streams/domains/HunterDomainStream";
+import { NumverifyStream } from "./modules/streams/phone-numbers/NumverifyStream";
+import { MailBoxLayerStream } from "./modules/streams/email-addresses/MailBoxLayerStream";
+import { IPStackStream } from "./modules/streams/domains/IPStackStream";
+import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
+import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
+import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
+import { BusinessStream } from "./modules/streams/businesses/BusinessesStream";
+
 
 
 const PORT = 5000;
@@ -46,9 +60,8 @@ IO.on("connection", (socket) => {
 
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
-    console.log("FOO");
-
-    
 })
 
-new PhoneInfogaStream();
+
+const x = new OpenCorporatesStream("Trojan Vapes");
+x.companyNumberSearch("gb", "12870867");

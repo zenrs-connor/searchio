@@ -1,21 +1,22 @@
-import { EmailAddressStream } from "./EmailAddressStream";
+import { EmailAddressStream } from "./EmailAddressStream"
 
 const request = require('request');
-const HUNTER_API_KEY = '2b3a66d5cde5e4501930c2b989c84f6ce162e1b0';
+const MAILBOXLAYER_API_KEY = 'a04c099a43d25b33ddbee8409c0244bd';
 
-export class HunterStream extends EmailAddressStream {
+export class MailBoxLayerStream extends EmailAddressStream {
     constructor(query: string) {
         super(query);
-        this.tags.push("hunter");
+        this.tags.push("mail-box-layer");
         console.log(this.tags);
     }
 
-    public async emailFinder(firstName: string, lastName: string, domain: string) {
+    public async validateEmail(email: string) {
         let response;
 
         await new Promise((resolve) => {
 
-            let url = `https://api.hunter.io/v2/email-finder?domain=${domain}&first_name=${firstName}&last_name=${lastName}&api_key=${HUNTER_API_KEY}`;
+            let url = `http://apilayer.net/api/check?access_key=${MAILBOXLAYER_API_KEY}&email=${email}&smtp=1&format=1`;
+            console.log(url);
             request(url, async (err, res, body) => {
 
                 console.log(body);
