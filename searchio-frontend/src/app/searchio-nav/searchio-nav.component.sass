@@ -51,7 +51,6 @@ nav
 
         .item
             display: inline-block
-            font-size: $button-height / 3
             background: $mid-grey
             margin-left: $margin-s
             height: $button-height
@@ -65,19 +64,29 @@ nav
 
             *
                 display: inline-block
-                font-size: $button-height / 2
+                font-size: $button-height / 2.5
 
 
             .name
                 margin: 0 $margin-m 0 $margin-m
+                max-width: 200px
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
 
             .close
                 margin-right: $margin-m
+                float: right
 
 
         .item.selected
             background: $light-grey
             color: white
+
+            .name
+                max-width: 10000px
+                text-overflow: inherit
+                overflow: auto
 
 
         .item:hover

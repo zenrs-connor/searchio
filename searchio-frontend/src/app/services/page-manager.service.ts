@@ -6,15 +6,7 @@ import { Injectable } from '@angular/core';
 export class PageManagerService {
 
   private queryTabs: string[] = [
-    "query a", "query b", "query c",
-    "query d", "query e", "query f",
-    "query g", "query h", "query i",
-    "query j", "query k", "query l",
-    "query m", "query n", "query o",
-    "query p", "query q", "query r",
-    "query s", "query t", "query u",
-    "query v", "query w", "query x",
-    "query y", "query z"
+    "abcdefghijklmnopqrstuvwxyz", "abcdefg hijk lmnop qrs tuv wxyz", "query c"
   ];
   private activeTab: string = "query a";
 

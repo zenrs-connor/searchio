@@ -1,11 +1,11 @@
-import { CredentialsResult } from "../models/CredentialsResult";
-import { CredentialsPlatform } from "../types/CredentialsPlatform";
+import { Credentials } from "../models/Credentials";
+import { DataSourceName } from "../types/DataSourceName";
 
 export class CredentialsService {
     
     constructor() {};
 
-    public async get(platform: CredentialsPlatform): Promise<CredentialsResult | undefined> {
+    public async get(source: DataSourceName): Promise<Credentials | undefined> {
         return;
     }
 

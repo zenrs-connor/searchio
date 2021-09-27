@@ -8,8 +8,7 @@ import { Server } from "socket.io";
 
 /* MODULES */
 import { router as API } from './controllers/api';
-import { PhoneNumberStream } from "./modules/streams/phone-numbers/PhoneNumberStream";
-import { PhoneInfogaStream } from "./modules/streams/phone-numbers/PhoneInfogaStream";
+import { Stream } from "./modules/streams/Stream";
 
 
 const PORT = 5000;
@@ -51,4 +50,5 @@ HTTP_SERVER.listen(PORT, () => {
     
 })
 
-new PhoneInfogaStream();
+
+let stream = new Stream('abcA');

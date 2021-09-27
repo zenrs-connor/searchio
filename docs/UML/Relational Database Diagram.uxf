@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>522</x>
+      <y>540</y>
+      <w>126</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>/Stream/
+--
+-id: DataSourceName
+-patterns: string[]
+-tags: string[]
+-status: StreamStatus
+-credentials: Credentials
+--
++getId(): DataSourceName
++getTags(): string[]
++getStatus(): StreamStatus</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1170</x>
+      <y>558</y>
+      <w>126</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>results
+--
+_hash: string_
+type: string*
+source: string*
+data: object (compressed)
+updated: timestamp
+bg=#88ff88
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1170</x>
+      <y>348</y>
+      <w>126</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>result_types
+--
+_id: ResultTypeName_
+keys: string[]
+description: string
+bg=#8888ff
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>348</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>*id*
+A unique identifier that summarises 
+the data returned e.g.
+"WebPage", "Location", "IPAddress"
+bg=#ccccFF
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>408</y>
+      <w>150</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>*Keys*
+A list of expected keys for this result 
+type.
+
+For example, a for a "WebPage" this 
+would look something like:
+["url", "title"]
+
+For a location this would look like:
+["latitude", "longitude", "name"]
+ 
+bg=#ccccFF
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1224</x>
+      <y>390</y>
+      <w>18</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>
+group=1</panel_attributes>
+    <additional_attributes>10.0;280.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>738</y>
+      <w>150</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>*query*
+The original query that has yielded this 
+result
+bg=#FFFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>654</y>
+      <w>150</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>*source*
+The UID of the stream that has yielded
+this result
+bg=#ccFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>696</y>
+      <w>150</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>*data*
+Raw JSON data object, stored in a 
+compressed format
+bg=#ccFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>516</y>
+      <w>150</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>*description*
+A breif description of this data type
+to be used in hovercards
+bg=#ccccFF
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1170</x>
+      <y>738</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>queries_results
+--
+_query: string_
+_hash: string*_
+bg=#FFFF88
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>558</y>
+      <w>150</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>*hash*
+A unique hash of the data
+result used to identify and query the 
+cache DB
+result
+bg=#ccFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1224</x>
+      <y>618</y>
+      <w>24</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1
+group=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>1008</x>
+      <y>330</y>
+      <w>450</w>
+      <h>486</h>
+    </coordinates>
+    <panel_attributes>Database
+--
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>780</y>
+      <w>150</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>*hash*
+Hash of the result tied to this query
+bg=#FFFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1302</x>
+      <y>606</y>
+      <w>150</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>*data_hash*
+a hash of the data portion of 
+bg=#ccFFcc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1014</x>
+      <y>408</y>
+      <w>126</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>data_sources
+--
+_id: DataSourceName_
+description: string
+bg=#FF8888
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1062</x>
+      <y>450</y>
+      <w>162</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>
+group=1</panel_attributes>
+    <additional_attributes>250.0;180.0;250.0;140.0;10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1014</x>
+      <y>348</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Table containing information about 
+the data sources that are used in 
+queries
+bg=#FFcccc
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>522</x>
+      <y>360</y>
+      <w>126</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+Credentials
+--
+platform: number
+keys: object</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>576</x>
+      <y>402</y>
+      <w>54</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=-
+returns ^</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>522</x>
+      <y>432</y>
+      <w>126</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>CredentialService
+--
+get(platform:number)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>102</x>
+      <y>324</y>
+      <w>798</w>
+      <h>486</h>
+    </coordinates>
+    <panel_attributes>Backend
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>576</x>
+      <y>456</y>
+      <w>18</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>270</x>
+      <y>426</y>
+      <w>168</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>Query
+--
+-UID: string
+
+-streams: Stream[]
+-socket: Socket
+-status: QueryStatus
+--
+
++getName():string
++getUID():string
+
+-getValidStreams(query: string): Stream[]
+-getData(): QueryData
++cache()
++build(data: QueryData)
+
++updateStatus()
++getStatus(): QueryStatus
+
++getStreams(): Stream[]
+
++start()
++stop()
++refresh()
++kill()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>738</x>
+      <y>540</y>
+      <w>156</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>CacheService
+--
+-cache(query: string, result: ResultData)
+-get(query: string) ResultData[]</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>642</x>
+      <y>546</y>
+      <w>108</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..
+sends results &gt;</panel_attributes>
+    <additional_attributes>160.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+</diagram>
