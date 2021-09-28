@@ -1,4 +1,5 @@
 import { io as IO, Socket } from 'socket.io-client';
+import { DataSourceName } from '../types/DataSourceName';
 
 export class SocketService {
 
@@ -17,6 +18,10 @@ export class SocketService {
             console.log("Module socket connection error", err);
         });
 
+    }
+
+    public update(source: DataSourceName, update: any) {
+        console.log(source, update);
     }
 
     public getID(): string {

@@ -5,6 +5,7 @@ import { DataSourceName } from "../../types/DataSourceName";
 import { StreamTag } from "../../types/StreamTag";
 import { CredentialsService } from "../CredentialsService";
 import { NumberFormats } from "../../models/NumberFormats";
+import { SocketService } from "../SocketService";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
@@ -14,8 +15,8 @@ export class Stream {
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
-    
-
+    protected statuses: any = {};                   //  An object to hold the progress status of different queries
+    protected socket: SocketService;
 
     /*
 
@@ -34,20 +35,21 @@ export class Stream {
     protected patterns: PatternQueryPair[] = [];    
     
 
-    protected status: StreamStatus;                 //  An object holding the current state of this Stream object
-
     //  SERVICES
     protected _credentials: CredentialsService = new CredentialsService();
 
-    constructor(query: string) {
+    constructor(query: string, socket: SocketService) {
         this.query = query;
+        this.socket = socket;
     }
 
     /* GETTERS */
     public getId(): string { return this.id; }
     public getQuery(): string { return this.query; } 
     public getTags(): StreamTag[] { return this.tags; }
-    public getStatus(): StreamStatus { return this.status; }
+    public getStatuses(): StreamStatus { return this.statuses; }
+
+    public getPatterns(): PatternQueryPair[] { return this.patterns }
 
     //  Function to check if a given query string matches one of the patterns of this type of Stream
     //  Parameters:
@@ -60,6 +62,8 @@ export class Stream {
         //  Loop through each pattern of this Stream
         for(let pair of this.patterns) {
 
+            console.log(pair);
+
             //  Check that the query matches the pattern
             match = query.match(pair.pattern);  
 
@@ -70,6 +74,21 @@ export class Stream {
 
         //  Return the list of valid functions
         return valid;
+    }
+
+    public sendUpdate() {
+        this.socket.update(this.id, this.statuses);
+    }
+
+    public start() {
+
+        let queries = this.validQueries();
+
+        console.log("STARTING TO COLLECT");
+
+        for(let q of queries) {
+            q()
+        }
     }
 
     //  Function to fetch a set of credentials to be used while making a query

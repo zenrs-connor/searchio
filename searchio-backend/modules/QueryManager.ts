@@ -12,6 +12,8 @@ export class QueryManager {
         try {
             if(!this.queries[query]) {
                 this.queries[query] = new Query(query);
+
+                this.queries[query].start();
                 return success(`(QueryManager) Added query "${query}".`)
             } else {
                 return error(`(QuerManager) Query "${query}" already exists.`)
