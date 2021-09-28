@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 /* MODULES */
 import { router as API } from './controllers/api';
 import { Stream } from "./modules/streams/Stream";
+import { ScraperStream } from "./modules/streams/ScraperStream";
 
 
 const PORT = 5000;
@@ -44,11 +45,9 @@ IO.on("connection", (socket) => {
 });
 
 HTTP_SERVER.listen(PORT, () => {
-    console.log(`SEARCHIO server is running on port ${PORT}`);
-    console.log("FOO");
-
-    
+    console.log(`SEARCHIO server is running on port ${PORT}`);   
 })
 
 
-let stream = new Stream('abcA');
+let x = new ScraperStream('123');
+x.main('https://old.reddit.com/');
