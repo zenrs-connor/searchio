@@ -5,5 +5,4 @@ export interface Credentials {
     data: any;
     last_used: Date;
     resting: Date;
-    sta
 }

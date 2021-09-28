@@ -1,16 +1,20 @@
 import { Router, Request, Response } from 'express';
+import { QueryManager } from '../modules/QueryManager';
 export const router = Router();
-import { SocketService } from '../modules/SocketService';
+
+const QM = new QueryManager();
 
 //  Simple test endpoint to see if the RESTful API is currently queriable
 router.get('/test/', async (req: Request, res: Response) => { return res.status(200).json({ success: true, message: 'Successful API test!'}) });
 
 
+router.get('/query/add/:query', async (req: Request, res: Response) => {
+    return res.status(200).json(await QM.add(req.params.query));
+})
 
 
-const socket = new SocketService();
+async function start() {
 
+}
 
-setTimeout(() => {
-    console.log(socket.getID(), socket.isConnected());
-}, 1000);
+start();

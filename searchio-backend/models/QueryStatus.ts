@@ -1,4 +1,6 @@
+import { QueryStatusCode } from "../types/QueryStatusCode";
+
 export interface QueryStatus {
-    code: number;
+    code: QueryStatusCode;
     message: string;
 }

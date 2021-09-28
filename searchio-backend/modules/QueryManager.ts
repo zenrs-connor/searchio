@@ -1,25 +1,47 @@
+import { SearchioResponse } from "../models/SearchioResponse";
 import { Query } from "./Query";
+import { error, success } from "./ResponseHandler";
 
-export class QueryController {
-    // THIS FUNCTION WOULD BE CALLED TO MANAGE THE QUERY QUEUE
+export class QueryManager {
     
-    private queries: Query[];
+    private queries: any = {}
 
-    constructor() {
-        this.queries = [] // THIS IS AN ARRAY OF OBJECTS (THE OBJECT BEING THE QUERY)
-    }
+    constructor() {}
     
-    public add(query) {
-        this.queries.push(query);
-        // QUERY OBJECT WOULD LOOK LIKE 
-        //     const query = {UID: "", platforms: [], results:[]}
+    public async add(query: string): Promise<SearchioResponse> {
+        try {
+            if(!this.queries[query]) {
+                this.queries[query] = new Query(query);
+                return success(`(QueryManager) Added query "${query}".`)
+            } else {
+                return error(`(QuerManager) Query "${query}" already exists.`)
+            }
+        } catch(err) {
+            return error(`(QueryManager) Could not add query "${query}".`, err);
+        }
     }
 
-    protected kill(uid) {
-        // SORT THROUGH CURRENT QUERIES BEING ACTIONED AND FIND ONE THAT MATCHES THE UID, THEN CANCEL AND REMOVE IT
+    protected async kill(query: string): Promise<SearchioResponse> {
+        try {
+            delete this.queries[query];
+            return success(`(QueryManager) Killed query "${query}".`);
+        } catch(err) {
+            return error(`(QueryManager) Could not kill query "${query}"`, err);
+        }
     }
 
-    public get(uid) {
-        // SORT THROUGH CURRENT QUERIES BEING ACTIONED AND FIND ONE THAT MATCHES THE UID, THEN RETURN THE CURRENT STATE OF THE QUERY OBJECT
+
+    public async get(query: string): Promise<SearchioResponse> {
+        try {
+
+            if(this.queries[query]) {
+                return success(`(QueryManager) Got query "${query}".`)
+            } else {
+                return error(`(QueryManager) Query "${query}" does not exist.`)
+            }
+
+        } catch(err) {
+            return error(`(QueryManager) Could not get query "${query}".`, err);
+        }
     }
 }

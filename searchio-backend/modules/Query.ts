@@ -1,31 +1,25 @@
 import { Stream } from "./streams/Stream";
 import { QueryStatus } from "../models/QueryStatus";
 import { QueryData } from "../models/QueryData";
-
+import { SocketService } from "./SocketService";
+import { QueryStatusCodeEnum } from "../types/QueryStatusCode";
 
 export class Query {
-    private UID: string;
-    private name: string;
+
+    private query: string;
     private streams: Stream[];
-    private socket: any;
-    private status: QueryStatus;
+    private socket: SocketService = new SocketService();
+    private status: QueryStatus = {
+        code: 1,
+        message: "Query is inititated, awaiting start."
+    };
 
 
-    constructor(UID: string, name: string, streams: Stream[], socket: any, status: QueryStatus){
-        this.UID = UID;
-        this.name = name;
-        this.streams = streams;
-        this.socket = socket;
-        this.status = status;
+    constructor(query: string){
+        console.log("CONSTRUCTING NEW QUERY", query);
+        this.query = query;
     }
 
-    public getName() {
-        return this.name;
-    }
-
-    public getUID() {
-        return this.UID;
-    }
 
     private getValidStreams(query: string) {
         // GET STREAMS THAT ARE VALID?
@@ -56,11 +50,21 @@ export class Query {
     }
 
     public start() {
-        // START THE QUERY
+
+        this.status = {
+            code: QueryStatusCodeEnum.ACTIVE,
+            message: "Query is active."
+        }
+
     }
 
     public stop(){
-        // STOP THE QUERY
+
+        this.status = {
+            code: QueryStatusCodeEnum.STOPPED,
+            message: "Query is stopped."
+        }
+        
     }
 
     public refresh() {
