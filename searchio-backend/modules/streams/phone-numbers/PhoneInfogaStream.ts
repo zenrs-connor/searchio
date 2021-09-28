@@ -1,7 +1,7 @@
 import { NumberFormats } from "../../../models/NumberFormats";
-import { PhoneNumberStream } from "./PhoneNumberStream";
+import { Stream } from "../Stream";
 
-export class PhoneInfogaStream extends PhoneNumberStream {
+export class PhoneInfogaStream extends Stream {
     
     constructor(query: string) { 
         super(query); 
@@ -19,7 +19,7 @@ export class PhoneInfogaStream extends PhoneNumberStream {
 
 
 
-    public async query(number: string) {
+    /*public async query(number: string) {
         await new Promise((resolve) => {
             this.reformatNumber(number).then(formattedNumber => {
                 console.log(formattedNumber);
@@ -35,7 +35,7 @@ export class PhoneInfogaStream extends PhoneNumberStream {
                 });
             });
         });
-    }
+    }*/
 
     public async generateSocialMediaDorks(numbers: NumberFormats) {
         await new Promise((resolve) => {

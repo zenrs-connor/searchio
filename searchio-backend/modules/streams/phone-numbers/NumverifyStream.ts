@@ -1,10 +1,9 @@
-import { PhoneNumberStream } from "./PhoneNumberStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const NUMVERIFY_API_KEY = 'c69d685d3534f116078b3386efae3eee';
 
-
-export class NumverifyStream extends PhoneNumberStream {
+export class NumverifyStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("numverify");

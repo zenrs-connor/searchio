@@ -1,4 +1,4 @@
-import { PhoneNumberStream } from "./PhoneNumberStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
@@ -6,7 +6,7 @@ const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
 
 // COMPROMISED PHONE NUMBER FOR TESTING -> +491637496985
 
-export class HIBPPhoneStream extends PhoneNumberStream {
+export class HIBPPhoneStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("HaveIBeenPwned");
@@ -30,7 +30,7 @@ export class HIBPPhoneStream extends PhoneNumberStream {
         return response;
     }
 
-    public async query(account: string) {
+    /*public async query(account: string) {
         let response;
 
         await new Promise((resolve) => {
@@ -57,5 +57,5 @@ export class HIBPPhoneStream extends PhoneNumberStream {
         });
 
         return response;
-    }
+    }*/
 }
