@@ -1,9 +1,10 @@
-import { BusinessStream } from "./BusinessesStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const COMPANIESHOUSE_API_KEY = '585a186b-ba2c-4978-be95-17e5ffbb773f';
 
-export class CompaniesHouseStream extends BusinessStream {
+export class CompaniesHouseStream extends Stream {
+
     constructor(query: string) {
         super(query);
         this.tags.push("companies-house");
