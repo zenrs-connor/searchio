@@ -1,9 +1,9 @@
-import { DomainStream } from "./DomainStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const IPAPI_API_KEY = 'f40bb00b0f85d2e92481db53e622eb05';
 
-export class IPAPIStream extends DomainStream {
+export class IPAPIStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("ipapi");

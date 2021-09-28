@@ -1,9 +1,9 @@
-import { DomainStream } from "./DomainStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const HUNTER_API_KEY = '2b3a66d5cde5e4501930c2b989c84f6ce162e1b0';
 
-export class HunterDomainStream extends DomainStream {
+export class HunterDomainStream extends Stream {
 
     constructor(query: string) { 
         super(query); 

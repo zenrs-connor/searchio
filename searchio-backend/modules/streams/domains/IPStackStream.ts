@@ -1,9 +1,10 @@
-import { DomainStream } from "./DomainStream";
+import { Stream } from "../Stream";
+
 
 const request = require('request');
 const IPSTACK_API_KEY = '5d0ca3e80d57375e563aabc72096a716';
 
-export class IPStackStream extends DomainStream {
+export class IPStackStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("ipstack");

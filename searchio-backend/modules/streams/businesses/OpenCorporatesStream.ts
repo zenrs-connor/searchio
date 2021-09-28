@@ -1,9 +1,10 @@
-import { BusinessStream } from "./BusinessesStream";
+import { Stream } from "../Stream";
+
 
 const request = require('request');
 const OPENCORPORATES_API_KEY = '';
 
-export class OpenCorporatesStream extends BusinessStream {
+export class OpenCorporatesStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("open-corporates");

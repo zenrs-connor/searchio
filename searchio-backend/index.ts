@@ -8,17 +8,11 @@ import { Server } from "socket.io";
 
 /* MODULES */
 import { router as API } from './controllers/api';
-<<<<<<< HEAD
 import { Stream } from "./modules/streams/Stream";
-<<<<<<< HEAD
-=======
-import { PhoneNumberStream } from "./modules/streams/phone-numbers/PhoneNumberStream";
 import { PhoneInfogaStream } from "./modules/streams/phone-numbers/PhoneInfogaStream";
-import { EmailAddressStream } from "./modules/streams/email-addresses/EmailAddressStream";
 import { HIBPEmailStream } from "./modules/streams/email-addresses/HIBPEmailStream";
 import { HunterStream } from "./modules/streams/email-addresses/HunterStream";
 import { HIBPPhoneStream } from "./modules/streams/phone-numbers/HIBPPhoneStream";
-import { DomainStream } from "./modules/streams/domains/DomainStream";
 import { HunterDomainStream } from "./modules/streams/domains/HunterDomainStream";
 import { NumverifyStream } from "./modules/streams/phone-numbers/NumverifyStream";
 import { MailBoxLayerStream } from "./modules/streams/email-addresses/MailBoxLayerStream";
@@ -26,12 +20,7 @@ import { IPStackStream } from "./modules/streams/domains/IPStackStream";
 import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
-import { BusinessStream } from "./modules/streams/businesses/BusinessesStream";
-
->>>>>>> origin/name-stream
-=======
 import { ScraperStream } from "./modules/streams/ScraperStream";
->>>>>>> origin/scraper-stream
 
 
 const PORT = 5000;
@@ -67,22 +56,5 @@ IO.on("connection", (socket) => {
 });
 
 HTTP_SERVER.listen(PORT, () => {
-<<<<<<< HEAD
     console.log(`SEARCHIO server is running on port ${PORT}`);
 })
-
-
-<<<<<<< HEAD
-let stream = new Stream('abcA');
-=======
-const x = new OpenCorporatesStream("Trojan Vapes");
-x.companyNumberSearch("gb", "12870867");
->>>>>>> origin/name-stream
-=======
-    console.log(`SEARCHIO server is running on port ${PORT}`);   
-})
-
-
-let x = new ScraperStream('123');
-x.main('https://old.reddit.com/');
->>>>>>> origin/scraper-stream

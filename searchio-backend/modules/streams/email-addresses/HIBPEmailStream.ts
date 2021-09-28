@@ -1,9 +1,9 @@
-import { EmailAddressStream } from "./EmailAddressStream";
+import { Stream } from "../Stream";
 
 const request = require('request');
 const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
 
-export class HIBPEmailStream extends EmailAddressStream {
+export class HIBPEmailStream extends Stream {
     constructor(query: string) {
         super(query);
         this.tags.push("HaveIBeenPwned");
@@ -27,7 +27,7 @@ export class HIBPEmailStream extends EmailAddressStream {
         return response;
     }
 
-    public async query(account: string) {
+    /*public async query(account: string) {
         let response;
 
         await new Promise((resolve) => {
@@ -54,7 +54,7 @@ export class HIBPEmailStream extends EmailAddressStream {
         });
 
         return response;
-    }
+    }*/
 
     public async pastesForAccount(account: string) {
         let response;
