@@ -52,8 +52,29 @@ const IO = new Server(HTTP_SERVER, {});
 
 
 IO.on("connection", (socket) => {
-    console.log("New WebSocket Connection", socket.id);
+
+    console.log("(IO) New WebSocket Connection", socket.id);
+
+    socket.on("join", (room: string) => {
+        console.log(`(IO) Socket ${socket.id} joining room ${room}`);
+        socket.join(room);
+    });
+
+
+    socket.on("send", (message) => {
+        IO.to(socket.id).emit(message);
+    })
+
+    socket.on("status-update", (update) => {
+        console.log(`(IO) Got update from ${socket.id}`);
+        IO.to(socket.id).emit("status-update", update);
+    })
+
 });
+
+/*IO.of("/").adapter.on("create-room", (room) => {
+    console.log(`(IO) Created a new room: ${room}`);
+});*/
 
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);

@@ -1,7 +1,7 @@
 import { PHONE_NUMBER } from "../../../assets/RegexPatterns";
-import { PatternQueryPair } from "../../../models/PatternQueryPair";
+import { PatternProcessPair } from "../../../models/PatternProcessPair";
 import { DataSourceName } from "../../../types/DataSourceName";
-import { StreamStatusCodeEnum } from "../../../types/StreamStatusCode";
+import { StreamStatusCode, StreamStatusCodeEnum } from "../../../types/StreamStatusCode";
 import { SocketService } from "../../SocketService";
 import { Stream } from "../Stream";
 
@@ -16,8 +16,8 @@ export class NumverifyStream extends Stream {
         validate: { code: StreamStatusCodeEnum.DORMANT, message: `Awaiting command...`}
     }
 
-    protected patterns: PatternQueryPair[] = [
-        { pattern: PHONE_NUMBER, query: this.validate.bind(this) }
+    protected patterns: PatternProcessPair[] = [
+        { pattern: PHONE_NUMBER, process: this.validate.bind(this) }
     ]
 
 
@@ -31,12 +31,8 @@ export class NumverifyStream extends Stream {
 
     public async validate(phoneNumber: string = this.query) {
 
-        this.statuses.validate = {
-            code: StreamStatusCodeEnum.ACTIVE,
-            message: `(Numverify) Validating number...`
-        }
-
-        this.sendUpdate();
+        //  Set status to ACTIVE
+        this.setStatus('validate', StreamStatusCodeEnum.ACTIVE as StreamStatusCode, `Validating number ${phoneNumber}...`);
 
         let response;
 
@@ -53,12 +49,7 @@ export class NumverifyStream extends Stream {
         });
 
 
-        this.statuses.validate = {
-            code: StreamStatusCodeEnum.DORMANT,
-            message: `(Numverify) Awaiting command...`
-        }
-
-        this.sendUpdate();
+        this.setStatus('validate', StreamStatusCodeEnum.COMPLETED as StreamStatusCode, `Process Complete!`);
 
         return response;
     }

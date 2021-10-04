@@ -1,11 +1,14 @@
 import { Credentials } from "../../models/Credentials";
-import { PatternQueryPair } from "../../models/PatternQueryPair";
+import { PatternProcessPair } from "../../models/PatternProcessPair";
 import { StreamStatus } from "../../models/StreamStatus";
 import { DataSourceName } from "../../types/DataSourceName";
 import { StreamTag } from "../../types/StreamTag";
 import { CredentialsService } from "../CredentialsService";
 import { NumberFormats } from "../../models/NumberFormats";
 import { SocketService } from "../SocketService";
+import { StreamStatusCode, StreamStatusCodeEnum } from "../../types/StreamStatusCode";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
@@ -20,10 +23,10 @@ export class Stream {
 
     /*
 
-    A list of pattern/query function pairs to allow for multiple functionalitites from one stream.
+    A list of pattern/process function pairs to allow for multiple functionalitites from one stream.
     The following example shows how this should be used.
 
-    protected patterns: PatternQueryPair[] = [
+    protected patterns: PatternProcessPair[] = [
         { pattern: /^[a-z]+$/, query: this.lowercaseQuery },
         { pattern: /^[A-Z]+$/, query: this.uppercaseQuery },
         { pattern: /^[a-zA-Z]+$/, query: this.mixedcaseQuery },
@@ -32,7 +35,7 @@ export class Stream {
     ];
 
     */
-    protected patterns: PatternQueryPair[] = [];    
+    protected patterns: PatternProcessPair[] = [];    
     
 
     //  SERVICES
@@ -49,7 +52,7 @@ export class Stream {
     public getTags(): StreamTag[] { return this.tags; }
     public getStatuses(): StreamStatus { return this.statuses; }
 
-    public getPatterns(): PatternQueryPair[] { return this.patterns }
+    public getPatterns(): PatternProcessPair[] { return this.patterns }
 
     //  Function to check if a given query string matches one of the patterns of this type of Stream
     //  Parameters:
@@ -68,7 +71,7 @@ export class Stream {
             match = query.match(pair.pattern);  
 
             //  If so, add the query function into the arr, binding this Stream object to ensure data is carried over
-            if(match !== null) valid.push(pair.query.bind(this));
+            if(match !== null) valid.push(pair.process.bind(this));
 
         }
 
@@ -76,15 +79,22 @@ export class Stream {
         return valid;
     }
 
-    public sendUpdate() {
-        this.socket.update(this.id, this.statuses);
+    public async setStatus(process: string, code: StreamStatusCode, message: string): Promise<SearchioResponse> {
+        if(this.statuses[process]) {
+            this.statuses[process] = {
+                code: code,
+                message: message
+            }
+            this.socket.statusUpdate(this.query, this.id, this.statuses);
+            return success(`(${this.id}) Set status to ${code} (${StreamStatusCodeEnum[code]})`)
+        } else {
+            return error(`(${this.id}) Unrecognised process '${process}''`)
+        }
     }
 
     public start() {
 
         let queries = this.validQueries();
-
-        console.log("STARTING TO COLLECT");
 
         for(let q of queries) {
             q()
@@ -104,7 +114,6 @@ export class Stream {
            business = business.replace(/\s/g, "+");
            resolve(undefined)
         });
-        console.log(business);
         return(business);
     }
 
@@ -116,7 +125,6 @@ export class Stream {
 
         await new Promise((resolve) => {
             domain = url.match(domainPattern)[1];
-            console.log("DOMAIN EXTRACTED: " + domain);
             resolve(undefined);
         });
         return domain;

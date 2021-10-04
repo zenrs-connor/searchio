@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
+import { SearchioService } from './searchio.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageManagerService {
 
-  private queryTabs: string[] = [
-    "abcdefghijklmnopqrstuvwxyz", "abcdefg hijk lmnop qrs tuv wxyz", "query c"
-  ];
-  private activeTab: string = "query a";
+  private queryTabs: string[] = [];
+  private activeTab: string = "";
 
-  constructor() { }
+  constructor(private searchio: SearchioService) { }
 
   public getQueryTabs(): string[] {
     return this.queryTabs;
@@ -34,7 +33,7 @@ export class PageManagerService {
 
   }
 
-  public addTab(query: string) {
+  public async addTab(query: string) {
 
     const index = this.queryTabs.indexOf(query);
 
@@ -47,6 +46,8 @@ export class PageManagerService {
 
     this.selectTab(query);
 
+    let res = await this.searchio.addQuery(query);
+
   }
 
   public closeTab(query: string) {
@@ -56,6 +57,37 @@ export class PageManagerService {
     if(index < 0) return;
 
     this.queryTabs.splice(index, 1);
+
+  }
+
+  public getProgress(query: string = this.activeTab) {
+
+    let connection = this.searchio.getConnection(query);
+
+    if(!connection) return undefined;
+
+    const progress: any = {
+      1: [],      //  DORMANT
+      2: [],      //  ACTIVE
+      3: [],      //  COMPLETED
+      4: []       //  ERROR
+    }
+
+    let source, process;
+
+    for(let s in connection.statuses) {
+      source = connection.statuses[s];
+      for(let p in source) {
+
+        process = source[p];
+
+        progress[process.code].push({ source: s, process: p, message: process.message });
+
+      }
+    }
+
+
+    return progress;
 
   }
 

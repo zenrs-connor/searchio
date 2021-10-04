@@ -5,22 +5,47 @@ import { SocketService } from "./SocketService";
 import { QueryStatusCodeEnum } from "../types/QueryStatusCode";
 import { Streams } from "../assets/Streams";
 import { error, success } from "./ResponseHandler";
+import { SearchioResponse } from "../models/SearchioResponse";
 
 export class Query {
 
     private query: string;
     private streams: Stream[] = [];
-    private socket: SocketService = new SocketService();
+    private socket: SocketService;
     private status: QueryStatus = {
         code: 1,
         message: "Query is inititated, awaiting start."
     };
 
+    private results: any = {};
 
     constructor(query: string){
         this.query = query;
-        let res = this.getValidStreams();
-        if(res.success) this.streams = res.data as Stream[];
+    }
+
+    public async build(): Promise<SearchioResponse> {
+
+        try {
+            
+            this.socket = new SocketService();
+            let res = await this.socket.init();
+
+            if(!res.success) return res;
+
+            res = this.getValidStreams();
+            if(!res.success) return res;
+
+            this.streams = res.data as Stream[];
+            return success(`(Query) Successfully built query "${this.query}"`)
+        
+
+        } catch(err) {
+            return error(`(Query) Could not build query`, err);
+        }
+    }
+
+    public getSocketID(): string {
+        return this.socket.getID();
     }
 
 
@@ -53,10 +78,6 @@ export class Query {
         // CACHE
     }
 
-    public build(data: QueryData) {
-        // TAKE DATA AND PUT INTO QueryData INTERFACE
-    }
-
     public updateStatus(){
         this.status
     }
@@ -77,7 +98,6 @@ export class Query {
         }
 
         for(let stream of this.streams) {
-            console.log(stream)
             stream.start();
         }
 

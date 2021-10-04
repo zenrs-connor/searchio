@@ -1,27 +1,34 @@
 import { io as IO, Socket } from 'socket.io-client';
+import { SearchioResponse } from '../models/SearchioResponse';
 import { DataSourceName } from '../types/DataSourceName';
+import { error, success } from './ResponseHandler';
 
 export class SocketService {
 
     private socket: Socket;
 
+    constructor() {}
 
-    constructor() {
+    public async init(): Promise<SearchioResponse> {
 
         this.socket = IO('http://localhost:5000',{ transports: ["websocket"]});
 
-        this.socket.on('connect', () => {
-            console.log("Module WebSocket Connection", this.socket.id);
-        });
-    
-        this.socket.on('connect_error', (err) => {
-            console.log("Module socket connection error", err);
-        });
+        return new Promise((r, e) => {
+
+            this.socket.on('connect', () => {
+                r(success(`(SocketService) Websocket connected.`, { socketID: this.socket.id }));
+            });
+        
+            this.socket.on('connect_error', (err) => {
+                e(error(`(SocketService) Websocket could not connect.`, err));
+            });
+        })
 
     }
 
-    public update(source: DataSourceName, update: any) {
-        console.log(source, update);
+    public statusUpdate(query: string, source: DataSourceName, update: any) {
+        console.log("(SocketService) Emitting update!");
+        this.socket.emit("status-update", { query: query, source: source, statuses: update });
     }
 
     public getID(): string {

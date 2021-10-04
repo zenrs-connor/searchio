@@ -1,14 +1,21 @@
 export type StreamStatusCode = 
-  0   //  Dormant
-| 1   //  Active;
+| 1   //  DORMANT
+| 2   //  ACTIVE
+| 3   //  COMPLETED
+| 4   //  ERROR
+
 
 
 export const StreamStatusCodeEnum = {
   
-  0: "DORMANT",
-  1: "ACTIVE",
+  1: "DORMANT",
+  2: "ACTIVE",
+  3: "COMPLETED",
+  4: "ERROR",
 
-  "DORMANT": 0,
-  "ACTIVE": 1
+  "DORMANT": 1,
+  "ACTIVE": 2,
+  "COMPLETED": 3,
+  "ERROR": 4,
 
 }

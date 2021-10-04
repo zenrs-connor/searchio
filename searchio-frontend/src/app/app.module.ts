@@ -12,6 +12,8 @@ import { SearchioResultsComponent } from './searchio-results/searchio-results.co
 import { QueryResultComponent } from './query-result/query-result.component';
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { CapitalifyPipe } from './pipes/capitalify.pipe';
+import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,11 +26,13 @@ import { CapitalifyPipe } from './pipes/capitalify.pipe';
     SearchioResultsComponent,
     QueryResultComponent,
     ResultFilterComponent,
-    CapitalifyPipe
+    CapitalifyPipe,
+    ProgressTrackerComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
