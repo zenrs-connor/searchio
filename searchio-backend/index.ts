@@ -57,4 +57,10 @@ IO.on("connection", (socket) => {
 
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
-})
+});
+
+let y = new CompaniesHouseStream("");
+y.stripCompanyInformation('04398417');
+
+// let x = new CompaniesHouseStream("ABC");
+// x.stripCompanyCharges();

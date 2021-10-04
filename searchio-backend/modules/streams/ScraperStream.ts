@@ -1,20 +1,23 @@
-import { Console } from "console";
+//import { Console } from "console";
 import { Stream } from "./Stream";
 
 
 require('chromedriver');
-var webdriver = require('selenium-webdriver');
+
+
 import { WebElement } from 'selenium-webdriver';
 import { error, success } from "../ResponseHandler";
 import { SearchioResponse } from "../../models/SearchioResponse";
-let capabilities = webdriver.Capabilities.chrome()
+
 var options = {'args':['--disable-notifications','--no-sandbox']}
-capabilities.set('goog:chromeOptions',options)
-let driver = new webdriver.Builder().withCapabilities(capabilities).build();
 
 
 
 export class ScraperStream extends Stream {
+
+    protected webdriver = require('selenium-webdriver');
+    protected capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions',options);;
+    protected driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
 
     constructor(query: string) {
         super(query);
@@ -26,7 +29,7 @@ export class ScraperStream extends Stream {
         try {
             return new Promise((resolve) => {
           
-                console.log(`Pausing for ${ms} ms`);
+                //console.log(`Pausing for ${ms} ms`);
                 setTimeout(() => {
                     resolve(undefined);
                 }, ms)
@@ -43,9 +46,9 @@ export class ScraperStream extends Stream {
         
         try {
 
-            await driver.get('https://www.google.com/');
+            await this.driver.get('https://www.google.com/');
             await this.pause(1000);
-            await driver.findElement(webdriver.By.xpath('//div[@class="J2ipb HOq4He"]/div[3]/button[2]')).click();
+            await this.driver.findElement(this.webdriver.By.xpath('//div[@class="J2ipb HOq4He"]/div[3]/button[2]')).click();
 
             return success(`(ScraperStream) Search engine loaded`); 
             
@@ -57,7 +60,7 @@ export class ScraperStream extends Stream {
     // Function to navigate to a given URL
     public async naviagteTo(url: string): Promise<SearchioResponse> {
         try {
-            await driver.get(url);
+            await this.driver.get(url);
             await this.pause(1500);
 
             return success(`(ScraperStream) Navigated successfully`); 
@@ -79,11 +82,11 @@ export class ScraperStream extends Stream {
 
             return new Promise(resolve => {
                 const interval = setInterval( async () => {
-                    let prevH =  await driver.executeScript('return document.documentElement.scrollTop;');
+                    let prevH =  await this.driver.executeScript('return document.documentElement.scrollTop;');
                     console.log('\n\nCURRENT SCROLL HEIGHT:', prevH);
-                    driver.executeScript('window.scrollTo(0, document.body.scrollHeight)');
+                    this.driver.executeScript('window.scrollTo(0, document.body.scrollHeight)');
                     iterations +=1; 
-                    let newH = await driver.executeScript('return document.documentElement.scrollTop;');
+                    let newH = await this.driver.executeScript('return document.documentElement.scrollTop;');
                     console.log('NEW SCROLL HEIGHT:', newH);
 
                     console.log(`Scroll ${iterations}/${scrollLimit}`);
@@ -117,7 +120,7 @@ export class ScraperStream extends Stream {
 
         async function iterate() {
 
-            let eles = await driver.findElements(webdriver.By.xpath("//li[@class='first']/a"));
+            let eles = await this.driver.findElements(this.webdriver.By.xpath("//li[@class='first']/a"));
             console.log(`\nPAGE ${pages}`);
             console.log(`Got ${eles.length} elements`);
 
@@ -130,10 +133,10 @@ export class ScraperStream extends Stream {
 
             pages++;
 
-            let button = await driver.findElements(webdriver.By.xpath(nextXPath));
+            let button = await this.driver.findElements(this.webdriver.By.xpath(nextXPath));
     
             if(button.length > 0) {
-                await driver.findElement(webdriver.By.xpath(nextXPath)).click();
+                await this.driver.findElement(this.webdriver.By.xpath(nextXPath)).click();
             } else {
                 console.log("\nCannot find next page button");
                 return;
@@ -164,7 +167,7 @@ export class ScraperStream extends Stream {
 
             for(let div of divs) {
 
-                let title = await div.findElement(webdriver.By.className("title may-blank ")).getText();
+                let title = await div.findElement(this.webdriver.By.className("title may-blank ")).getText();
                 console.log(`Title: ${titleNo} - ${title}`);
                 titleNo += 1;
 
@@ -176,54 +179,102 @@ export class ScraperStream extends Stream {
         }
     }
 
-    // Function that takes in links and opens them in a new tab iteratively
-    public async openKillTab(links: any[]): Promise<SearchioResponse> {
-        console.log("Opening links in new tab");
+    // Function that takes in links and opens them in a new tab iteratively to perform a process
+    public async openKillTab(links: any[], process: any): Promise<SearchioResponse> {
+        let results: any[] = [];
         
-        let linkNo: number = 1;
         try {
             for(let link of links) {
 
                 // Opening link in new tab
-                await link.sendKeys(webdriver.Key.CONTROL + webdriver.Key.RETURN);
+                await link.sendKeys(this.webdriver.Key.CONTROL + this.webdriver.Key.RETURN);
                 
                 await this.pause(2000);
 
                 // Switching tabs
-                let tabs = await driver.getAllWindowHandles();
-                console.log(tabs);
-                console.log(tabs.length);
-                await driver.switchTo().window(tabs[1]);
-                let tabTitle = await driver.getTitle();
-                console.log(`Tab title: ${tabTitle}`);
+                let tabs = await this.driver.getAllWindowHandles();
+                console.log(`START TABS: ${tabs}`);
+                await this.driver.switchTo().window(tabs[tabs.length - 1]);
+                
+                // Performing process
+                let result = await process();
+                results.push(result.data);
+
                 
                 await this.pause(1500);
                 
                 // Killing tab
-                console.log(`Killing tab ${linkNo}`);
-                await driver.close();
+                await this.driver.close();
                 await this.pause(2000);
-                await driver.switchTo().window(tabs[0]);
+                await this.driver.switchTo().window(tabs[tabs.length - 2]);
+                console.log(`END TABS: ${tabs}`);
                 
-                linkNo += 1;
 
             }
-            return success(`(ScraperStream) Successfully iterated links and opened/killed tabs`);
+            return success(`(ScraperStream) Successfully iterated links and opened/killed tabs`,results);
         } catch(err) {
+            console.log(err);
             return error(`(ScraperStream) Could not iterate through links opening/killing tabs`, err);
         }
     }
 
+    // Function to collect links when given XPath
+    public async collectLinks(XPath: string): Promise<SearchioResponse> {
+        try {
 
-    // TEST FUNCTION - Function to test the other functions
-    public async main(url: string) {
-        await this.loadSearchEngine();
-        await this.naviagteTo(url);
-        //await this.flipThrough("//span[@class='next-button']/a", this.stripTitles, 2);
-        await this.flipThrough("//span[@class='next-button']/a", this.openKillTab.bind(this), 1);
-        console.log("\nComplete");
+            let links = await this.driver.findElements(this.webdriver.By.xpath(XPath));
+            return success(`(ScraperStream) Successfully collected links`, links);
+            
+        } catch (err) {
+            return error(`(ScraperStream) Could not collect links`, err);
+        }
     }
 
-    
+    // Function to iterate through tabs and perform a given process when also given the xpath for the tabs
+    // public async flipThroughTabs(tabsXPath: string, processes: any, tabLimit: number = 10): Promise<SearchioResponse> {
+
+    //     let tabsNo: number = 1;
+
+    //     try {
+    //         let tabs = await this.driver.findElements(this.webdriver.By.xpath(tabsXPath));
+
+    //         console.log(`\nTAB ${tabsNo}`);
+    //         console.log(`Got ${tabs.length} elements`);
+
+    //         for(let tab of tabs) {
+                
+    //             let text = await tab.getText();
+    //             text = text.split(/\r?\n/)[0];
+
+    //             console.log(`Clicking tab ${tabsNo} (${text})`);
+    //             await tab.click();
+
+    //             console.log(`\n\nTAB ${tabsNo} is ${text}`);
+
+    //             // if(processes[text]) {
+    //             //     let result = await processes[text]();
+    //             // } else {
+    //             //     error(`(ScraperStream) No process match current tab`);
+    //             // }
+
+
+    //             if (tabsNo >= tabLimit) {
+    //                 console.log("\nSet tab limit reached");
+    //                 return;
+    //             }
+
+    //             tabsNo++;
+
+    //         }
+
+    //         return success(`(ScraperStream) Successfully flipped through tabs`);
+
+    //     } catch(err) {
+    //         console.log(err);
+    //         return error(`(ScraperStream) Error flipping through tabs`, err);
+    //     }
+        
+
+    // }
 
 }
