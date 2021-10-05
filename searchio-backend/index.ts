@@ -64,10 +64,10 @@ IO.on("connection", (socket) => {
     socket.on("send", (message) => {
         IO.to(socket.id).emit(message);
     })
-
-    socket.on("status-update", (update) => {
-        console.log(`(IO) Got update from ${socket.id}`);
-        IO.to(socket.id).emit("status-update", update);
+    
+    socket.on("process-update", (update) => {
+        console.log(`(IO) Got process update from ${socket.id}`);
+        IO.to(socket.id).emit("process-update", update);
     })
 
 });

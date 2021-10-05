@@ -1,4 +1,5 @@
 import { io as IO, Socket } from 'socket.io-client';
+import { Process } from '../models/Process';
 import { SearchioResponse } from '../models/SearchioResponse';
 import { DataSourceName } from '../types/DataSourceName';
 import { error, success } from './ResponseHandler';
@@ -26,9 +27,8 @@ export class SocketService {
 
     }
 
-    public statusUpdate(query: string, source: DataSourceName, update: any) {
-        console.log("(SocketService) Emitting update!");
-        this.socket.emit("status-update", { query: query, source: source, statuses: update });
+    public processUpdate(process: Process) {
+        this.socket.emit("process-update", process);
     }
 
     public getID(): string {

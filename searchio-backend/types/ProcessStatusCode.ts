@@ -1,12 +1,16 @@
-export type StreamStatusCode = 
-| 1   //  DORMANT
+export type ProcessCode = 
+ 1   //  DORMANT
 | 2   //  ACTIVE
 | 3   //  COMPLETED
 | 4   //  ERROR
 
+export type ProcessStatus =
+"DORMANT" |
+"ACTIVE" |
+"COMPLETED" |
+"ERROR";
 
-
-export const StreamStatusCodeEnum = {
+export const ProcessStatusCodeEnum = {
   
   1: "DORMANT",
   2: "ACTIVE",

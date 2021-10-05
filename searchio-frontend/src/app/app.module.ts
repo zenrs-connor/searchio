@@ -14,6 +14,7 @@ import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { CapitalifyPipe } from './pipes/capitalify.pipe';
 import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ListProcessComponent } from './list-process/list-process.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
     QueryResultComponent,
     ResultFilterComponent,
     CapitalifyPipe,
-    ProgressTrackerComponent
+    ProgressTrackerComponent,
+    ListProcessComponent
   ],
   imports: [
     BrowserModule,

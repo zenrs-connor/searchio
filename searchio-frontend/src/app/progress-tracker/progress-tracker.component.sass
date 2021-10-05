@@ -5,3 +5,35 @@
     height: 30px
     border-radius: $margin-s
     background-color: $light-grey
+    display: flex
+    flex-direction: row
+    overflow: hidden
+
+
+    .process 
+        flex: 1
+
+        &.active
+            background: $active-color
+        
+        &.complete
+            background: $completed-color
+
+        &.error
+            background: $error-color
+
+
+.progress-list-container
+    
+    background: red
+    width: $filters-width - $margin-m
+    position: absolute
+    
+
+    list-process
+
+        margin-bottom: $margin-s
+
+        &:last-child
+
+            margin-bottom: 0px

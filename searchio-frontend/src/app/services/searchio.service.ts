@@ -59,7 +59,7 @@ export class SearchioService {
           if(!this.CONNECTIONS[query]) {
             this.CONNECTIONS[query] = {
               socket: socket,
-              statuses: {}
+              sources: {}
             }
           }
 
@@ -67,16 +67,26 @@ export class SearchioService {
 
           /* EVENT HANDLING */
 
-          socket.on('status-update', (update) => {
-            console.log("Got Status Update!", update);
+          socket.on('process-update', (process) => {
+            console.log("Got Process Update!", process);
 
             console.log(this.CONNECTIONS);
 
-            if(this.CONNECTIONS[update.query]) {
-              this.CONNECTIONS[update.query].statuses[update.source] = update.statuses;
+            //  Check that the query made by this process has a valid connection
+            if(this.CONNECTIONS[process.query]) {
+
+              //  Check if there is there is ann existing DataSource key in the connection object
+              //  If not, initialise a new one
+              if(!this.CONNECTIONS[process.query].sources[process.source]) {
+
+                this.CONNECTIONS[process.query].sources[process.source] = {
+                  processes: {}   //  Object to hold processes for this data source
+                }
+
+              }
+
+              this.CONNECTIONS[process.query].sources[process.source].processes[process.name] = process;
             }
-
-
 
           });
 

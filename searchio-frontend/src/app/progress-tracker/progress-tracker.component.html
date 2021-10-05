@@ -1,7 +1,15 @@
-<div class="progress-bar-container">
+<div class="progress-bar-container" *ngIf="_manager.getProgress()">
+    <div class="process active" *ngFor="let active of _manager.getProgress().ACTIVE"></div>
+    <div class="process complete" *ngFor="let complete of _manager.getProgress().COMPLETED"></div>
+    <div class="process error" *ngFor="let error of _manager.getProgress().ERROR"></div>
+</div>
 
-    <!--<div class="process active" *ngFor="let active of _manager.getProgress()"></div>-->
-    
+<!--
+<div class="progress-list-container" *ngIf="_manager.getProgress()">
 
+    <list-process *ngFor="let active of _manager.getProgress().ACTIVE" [process]="active"></list-process>
+    <list-process *ngFor="let completed of _manager.getProgress().COMPLETED" [process]="completed"></list-process>
+    <list-process *ngFor="let error of _manager.getProgress().ERROR" [process]="error"></list-process>
 
 </div>
+-->

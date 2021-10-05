@@ -1,14 +1,14 @@
 import { Credentials } from "../../models/Credentials";
 import { PatternProcessPair } from "../../models/PatternProcessPair";
-import { StreamStatus } from "../../models/StreamStatus";
 import { DataSourceName } from "../../types/DataSourceName";
 import { StreamTag } from "../../types/StreamTag";
 import { CredentialsService } from "../CredentialsService";
 import { NumberFormats } from "../../models/NumberFormats";
 import { SocketService } from "../SocketService";
-import { StreamStatusCode, StreamStatusCodeEnum } from "../../types/StreamStatusCode";
+import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
 import { SearchioResponse } from "../../models/SearchioResponse";
 import { error, success } from "../ResponseHandler";
+import { Process } from "../../models/Process";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
@@ -18,7 +18,7 @@ export class Stream {
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
-    protected statuses: any = {};                   //  An object to hold the progress status of different queries
+    protected processes: any = {};                   //  An object to hold the status of processes held by this stream
     protected socket: SocketService;
 
     /*
@@ -50,7 +50,7 @@ export class Stream {
     public getId(): string { return this.id; }
     public getQuery(): string { return this.query; } 
     public getTags(): StreamTag[] { return this.tags; }
-    public getStatuses(): StreamStatus { return this.statuses; }
+    public getProcesses(): Process[] { return this.processes; }
 
     public getPatterns(): PatternProcessPair[] { return this.patterns }
 
@@ -79,26 +79,42 @@ export class Stream {
         return valid;
     }
 
-    public async setStatus(process: string, code: StreamStatusCode, message: string): Promise<SearchioResponse> {
-        if(this.statuses[process]) {
-            this.statuses[process] = {
-                code: code,
-                message: message
-            }
-            this.socket.statusUpdate(this.query, this.id, this.statuses);
-            return success(`(${this.id}) Set status to ${code} (${StreamStatusCodeEnum[code]})`)
-        } else {
-            return error(`(${this.id}) Unrecognised process '${process}''`)
-        }
+    public async setProcessStatus(process: string, code: ProcessCode, message: string): Promise<SearchioResponse> {
+
+
+        if(!this.processes[process]) return error(`(${this.id}) Unable to find process with name '${process}'`);
+
+        this.processes[process].code = code;
+        this.processes[process].message = message;
+        this.processes[process].status = ProcessStatusCodeEnum[code] as ProcessStatus;
+
+        this.socket.processUpdate(this.processes[process]);
+
+        return success(`(${this.id}) Set status of process '${process}' to ${code} (${ProcessStatusCodeEnum[code]})`)
+
     }
 
     public start() {
 
-        let queries = this.validQueries();
+        setTimeout(() => {
 
-        for(let q of queries) {
-            q()
-        }
+            let queries = this.validQueries();
+
+            for(let q of queries) {
+                q()
+            }
+
+        }, 1000)
+
+        
+    }
+
+    protected success(message: string, data: any = undefined): SearchioResponse {
+        return success(`(${this.id}) ${message}`, data);
+    }
+
+    protected error(message: string, data: any = undefined): SearchioResponse {
+        return error(`(${this.id}) ${message}`, data);
     }
 
     //  Function to fetch a set of credentials to be used while making a query

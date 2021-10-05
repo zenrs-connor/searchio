@@ -67,21 +67,23 @@ export class PageManagerService {
     if(!connection) return undefined;
 
     const progress: any = {
-      1: [],      //  DORMANT
-      2: [],      //  ACTIVE
-      3: [],      //  COMPLETED
-      4: []       //  ERROR
+      DORMANT: [],      
+      ACTIVE: [],      
+      COMPLETED: [],      
+      ERROR: []      
     }
 
     let source, process;
 
-    for(let s in connection.statuses) {
-      source = connection.statuses[s];
-      for(let p in source) {
+    for(let s in connection.sources) {
 
-        process = source[p];
+      source = connection.sources[s];
 
-        progress[process.code].push({ source: s, process: p, message: process.message });
+      for(let p in source.processes) {
+
+        process = source.processes[p];
+
+        progress[process.status].push({ ...process });
 
       }
     }

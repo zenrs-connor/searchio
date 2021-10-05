@@ -4,6 +4,8 @@ export function success(message: string, data: any = undefined): SearchioRespons
     return { success: true, message: message, data: data }
 }
 
-export function error(message: string, data: any = undefined): SearchioResponse {
+export function error(message: string, data: any = undefined, verbose: boolean = true): SearchioResponse {
+
+    if(verbose) console.log(`ERROR: ${message}`);
     return { success: false, message: `ERROR: ${message}`, data: data }
 }
