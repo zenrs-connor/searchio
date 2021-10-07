@@ -89,8 +89,8 @@ HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
 
-let y = new CompaniesHouseStream("");
-y.stripCompanyInformation('04398417');
+let y = new OpenCorporatesStream("");
+y.scrapeCompany('gb', '06671721'); // Merthyr
+//y.scrapeFilings('gb', '11690192'); // Antiend
+//y.scrapeFilings('gb', '04398417'); // Timepiece
 
-// let x = new CompaniesHouseStream("ABC");
-// x.stripCompanyCharges();

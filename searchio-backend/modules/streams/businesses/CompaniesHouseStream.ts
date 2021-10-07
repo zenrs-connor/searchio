@@ -17,45 +17,6 @@ export class CompaniesHouseStream extends ScraperStream {
     }
 
 
-
-
-    // public async companyProfile(companyNumber: string) {
-    //     let response;
-
-    //     await new Promise((resolve) => {
-
-    //         let options = {
-    //             url: `https://api.company-information.service.gov.uk/company/${companyNumber}`,
-    //             headers: {
-    //                 'Host': 'api.company-information.service.gov.uk',
-    //                 'Authorization': `Basic development@zenrs.com`
-    //             },
-    //             json: true
-    //         };
-
-    //         console.log("\n\n");
-    //         console.log(options);
-
-    //         request(options, async (err, res, body) => {
-
-    //             console.log("\n\nRes:");
-    //             console.log(res);
-    //             response = body;
-
-    //             if(err) {
-    //                 response = { success: false, error: err };
-    //             }
-    //             resolve(undefined);
-    //         });
-    //     });
-
-    //     return response;
-    // }
-
-
-
-
-
     // Function to strip companies out of search
     public async companySearch(company: string): Promise<SearchioResponse> {
 
