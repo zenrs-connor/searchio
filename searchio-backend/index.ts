@@ -21,6 +21,8 @@ import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
 import { ScraperStream } from "./modules/streams/ScraperStream";
+import { ProcessResult } from "./models/ProcessResult";
+import { Process } from "./models/Process";
 
 
 const PORT = 5000;
@@ -52,8 +54,36 @@ const IO = new Server(HTTP_SERVER, {});
 
 
 IO.on("connection", (socket) => {
-    console.log("New WebSocket Connection", socket.id);
+
+    console.log("(IO) New WebSocket Connection", socket.id);
+
+    socket.on("join", (room: string) => {
+        console.log(`(IO) Socket ${socket.id} joining room ${room}`);
+        socket.join(room);
+    });
+
+
+    socket.on("send", (message) => {
+        IO.to(socket.id).emit(message);
+    })
+    
+    //  Event called when a Stream updates the status of one of its processes
+    socket.on("process-update", (update: Process) => {
+        console.log(`(IO) Got process update from ${socket.id}`);
+        IO.to(socket.id).emit("process-update", update);
+    });
+
+    //  Event called when a stream emits a result
+    socket.on("process-result", (result: ProcessResult) => {
+        console.log(`(IO) Got a result from ${socket.id}`);
+        IO.to(socket.id).emit("process-result", result);
+    });
+
 });
+
+/*IO.of("/").adapter.on("create-room", (room) => {
+    console.log(`(IO) Created a new room: ${room}`);
+});*/
 
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
