@@ -1,0 +1,22 @@
+<ng-container *ngIf="percentage() >= 0">
+
+    <div class="progress-bar-container" (click)="open = !open" [ngClass]="{ open: open }">
+
+
+        <div class="process active" *ngFor="let active of _manager.getProgress().ACTIVE"></div>
+        <div class="process complete" *ngFor="let complete of _manager.getProgress().COMPLETED"></div>
+        <div class="process error" *ngFor="let error of _manager.getProgress().ERROR"></div>
+    </div>
+    
+    
+    <div class="message">{{ percentage() }}% Complete ({{ open ? 'Collapse' : 'Expand' }}) </div>
+    
+    
+    <div class="progress-list-container" *ngIf="open">
+        <list-process *ngFor="let active of _manager.getProgress().ACTIVE" [process]="active"></list-process>
+        <list-process *ngFor="let completed of _manager.getProgress().COMPLETED" [process]="completed"></list-process>
+        <list-process *ngFor="let error of _manager.getProgress().ERROR" [process]="error"></list-process>
+    </div>
+
+</ng-container>
+
