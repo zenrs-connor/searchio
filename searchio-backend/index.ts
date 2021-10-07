@@ -21,6 +21,8 @@ import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
 import { ScraperStream } from "./modules/streams/ScraperStream";
+import { ProcessResult } from "./models/ProcessResult";
+import { Process } from "./models/Process";
 
 
 const PORT = 5000;
@@ -65,10 +67,17 @@ IO.on("connection", (socket) => {
         IO.to(socket.id).emit(message);
     })
     
-    socket.on("process-update", (update) => {
+    //  Event called when a Stream updates the status of one of its processes
+    socket.on("process-update", (update: Process) => {
         console.log(`(IO) Got process update from ${socket.id}`);
         IO.to(socket.id).emit("process-update", update);
-    })
+    });
+
+    //  Event called when a stream emits a result
+    socket.on("process-result", (result: ProcessResult) => {
+        console.log(`(IO) Got a result from ${socket.id}`);
+        IO.to(socket.id).emit("process-result", result);
+    });
 
 });
 

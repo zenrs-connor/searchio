@@ -9,12 +9,13 @@ import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/P
 import { SearchioResponse } from "../../models/SearchioResponse";
 import { error, success } from "../ResponseHandler";
 import { Process } from "../../models/Process";
+import { ProcessResult } from "../../models/ProcessResult";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
 export class Stream {
 
-    protected id: DataSourceName;                   //  Unique identifier used to tell data streams apart.
+    protected id: DataSourceName = "Unnamed Source";                   //  Unique identifier used to tell data streams apart.
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
@@ -92,7 +93,7 @@ export class Stream {
 
         return success(`(${this.id}) Set status of process '${process}' to ${code} (${ProcessStatusCodeEnum[code]})`)
 
-    }
+    };
 
     public start() {
 
@@ -114,6 +115,9 @@ export class Stream {
     }
 
     protected error(message: string, data: any = undefined): SearchioResponse {
+
+        console.log("FOO", data)
+
         return error(`(${this.id}) ${message}`, data);
     }
 

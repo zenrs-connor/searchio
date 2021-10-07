@@ -8,8 +8,19 @@ import { ServiceInjectedComponent } from '../service-injected/service-injected.c
 })
 export class ProgressTrackerComponent extends ServiceInjectedComponent {
 
+  public open: boolean = false;
+
   constructor(injector: Injector) { super(injector); }
 
+  public percentage(): number {
+
+    const progress = this._manager.getProgress();
+
+    if(!progress) return NaN;
+
+    return Math.round((progress.COMPLETED.length + progress.ERROR.length) / (progress.ACTIVE.length + progress.COMPLETED.length + progress.ERROR.length) * 100);
+
+  }
   
 
 }

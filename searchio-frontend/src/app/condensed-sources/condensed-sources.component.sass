@@ -1,0 +1,60 @@
+@import "../../utilities/variables"
+
+.condensed-sources-container
+
+    line-height: $result-line-height
+    display: flex
+    flex-direction: row
+    cursor: pointer
+
+    div
+        display: inline-block
+
+    .source-icon
+
+        height: 25px
+        width: 25px
+        background: $light-grey
+        border-radius: 100%
+        margin-right: - $margin-s
+        border: 1px solid $mid-grey
+        box-sizing: border-box
+
+    .more
+
+        margin-left: 2 * $margin-s
+            
+
+    .hover-card
+
+        display: none    
+        position: absolute
+        background: $dark-grey
+        color: #FFF
+        pointer-events: none
+        margin-top: -$margin-s
+        right: $margin-m + ($margin-s)
+        padding: $margin-s
+        box-shadow: $hover-card-shadow
+        border-radius: $margin-s
+
+        .source
+
+            display: flex
+            flex-direction: row
+            margin-bottom: $margin-s
+
+            *
+                display: inline-block
+
+            .source-icon
+                margin: 0
+                margin-left: $margin-s
+
+            &:last-child
+                margin-bottom: 0
+
+    &:hover 
+        
+        .hover-card
+            display: block

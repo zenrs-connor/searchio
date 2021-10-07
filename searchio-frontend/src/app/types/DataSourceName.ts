@@ -1,1 +1,1 @@
-export type DataSourceName = "Numverify";
+export type DataSourceName = "Unnamed Source" | "Numverify";

@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
+import { ServiceInjectedComponent } from '../service-injected/service-injected.component';
 
 @Component({
   selector: 'searchio-results',
   templateUrl: './searchio-results.component.html',
   styleUrls: ['./searchio-results.component.sass']
 })
-export class SearchioResultsComponent implements OnInit {
+export class SearchioResultsComponent extends ServiceInjectedComponent {
 
-  constructor() { }
+  constructor(injector: Injector) { super(injector); }
 
-  ngOnInit(): void {
-  }
 
 }

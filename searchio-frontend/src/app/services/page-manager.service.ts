@@ -9,6 +9,8 @@ export class PageManagerService {
   private queryTabs: string[] = [];
   private activeTab: string = "";
 
+  private QUERIES: any = {};
+
   constructor(private searchio: SearchioService) { }
 
   public getQueryTabs(): string[] {
@@ -33,9 +35,31 @@ export class PageManagerService {
 
   }
 
+  public sortResults(field: string = "name", asc: boolean = false, query: string = this.activeTab) {
+
+    if(this.QUERIES[query]) {
+      this.QUERIES[query].sort_field = field;
+      this.QUERIES[query].sort_ascending = asc;
+    }
+
+    this.searchio.sortResults(query, field, asc);
+
+  }
+
+  public getQueryData(query: string = this.activeTab) {
+    return this.QUERIES[query];
+  }
+
   public async addTab(query: string) {
 
     const index = this.queryTabs.indexOf(query);
+
+    if(!this.QUERIES[query]) {
+      this.QUERIES[query] = {
+        sort_field: "name",
+        sort_ascending: false
+      }
+    }
 
     if(index >= 0) {
       
@@ -43,6 +67,7 @@ export class PageManagerService {
     }
 
     this.queryTabs.splice(0, 0, query);
+
 
     this.selectTab(query);
 
@@ -91,6 +116,17 @@ export class PageManagerService {
 
     return progress;
 
+  }
+
+  public getResults(query: string = this.activeTab) {
+
+    const connection = this.searchio.getConnection(query);
+
+    if(connection) {
+      return connection.resultsArray;
+    }
+
+    return [];
   }
 
 }

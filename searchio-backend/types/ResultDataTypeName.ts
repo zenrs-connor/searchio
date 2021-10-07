@@ -1,0 +1,1 @@
+export type ResultDataTypeName = "WebPage" | "Location" | "PhoneNumber" | "Boolean" | "Text";

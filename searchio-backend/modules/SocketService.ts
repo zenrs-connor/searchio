@@ -1,5 +1,6 @@
 import { io as IO, Socket } from 'socket.io-client';
 import { Process } from '../models/Process';
+import { ProcessResult } from '../models/ProcessResult';
 import { SearchioResponse } from '../models/SearchioResponse';
 import { DataSourceName } from '../types/DataSourceName';
 import { error, success } from './ResponseHandler';
@@ -30,6 +31,11 @@ export class SocketService {
     public processUpdate(process: Process) {
         this.socket.emit("process-update", process);
     }
+
+    public result(result: ProcessResult) {
+        this.socket.emit("process-result", result);
+    }
+    
 
     public getID(): string {
         return this.socket.id;

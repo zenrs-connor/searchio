@@ -1,3 +1,8 @@
-<div class="query-result">
+<div class="query-result" *ngIf="result">
+
+    <div class="name">{{ result.name }}</div>
+    <div class="data">{{ result.data }}</div>
+
+    <condensed-sources [sources]="result.sources"></condensed-sources>
 
 </div>

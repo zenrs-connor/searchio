@@ -1,1 +1,0 @@
-export type ResultTypeName = "WebPage" | "Location" | "PhoneNumber";

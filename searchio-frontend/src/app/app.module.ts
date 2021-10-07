@@ -15,6 +15,7 @@ import { CapitalifyPipe } from './pipes/capitalify.pipe';
 import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ListProcessComponent } from './list-process/list-process.component';
+import { CondensedSourcesComponent } from './condensed-sources/condensed-sources.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ListProcessComponent } from './list-process/list-process.component';
     ResultFilterComponent,
     CapitalifyPipe,
     ProgressTrackerComponent,
-    ListProcessComponent
+    ListProcessComponent,
+    CondensedSourcesComponent
   ],
   imports: [
     BrowserModule,
