@@ -60,9 +60,3 @@ IO.on("connection", (socket) => {
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
-
-let y = new RapidCarCheckStream("");
-y.scrapeVehicleDetails("Y999 MOG");
-//y.scrapeVehicleDetails("X561 UPU");
-//y.scrapeVehicleDetails("NA04 RNU");
-//y.scrapeVehicleDetails("TOM 211Y");
