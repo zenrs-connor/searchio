@@ -21,6 +21,8 @@ import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
 import { ScraperStream } from "./modules/streams/ScraperStream";
+import { DVLAStream } from "./modules/streams/registration-plates/DVLAStream";
+import { RapidCarCheckStream } from "./modules/streams/registration-plates/RapidCarCheckStream";
 
 
 const PORT = 5000;
@@ -59,8 +61,8 @@ HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
 
-let y = new CompaniesHouseStream("");
-y.stripCompanyInformation('04398417');
-
-// let x = new CompaniesHouseStream("ABC");
-// x.stripCompanyCharges();
+let y = new RapidCarCheckStream("");
+y.scrapeVehicleDetails("Y999 MOG");
+//y.scrapeVehicleDetails("X561 UPU");
+//y.scrapeVehicleDetails("NA04 RNU");
+//y.scrapeVehicleDetails("TOM 211Y");

@@ -25,11 +25,11 @@ export class ScraperStream extends Stream {
 
 
     // Function to pause/wait for a specified number of milliseconds
-    private async pause(ms: number = 0): Promise<SearchioResponse> {
+    public async pause(ms: number = 0): Promise<SearchioResponse> {
         try {
             return new Promise((resolve) => {
           
-                //console.log(`Pausing for ${ms} ms`);
+                console.log(`Pausing for ${ms} ms`);
                 setTimeout(() => {
                     resolve(undefined);
                 }, ms)
@@ -227,6 +227,38 @@ export class ScraperStream extends Stream {
             
         } catch (err) {
             return error(`(ScraperStream) Could not collect links`, err);
+        }
+    }
+
+    // Function to wait until an element loads in
+    public async waitForElement(xpath: string, seconds: number): Promise<SearchioResponse> {
+        try{
+
+            return new Promise(resolve => {
+
+                let iterations = 0
+                const interval = setInterval( async () => {
+
+                    iterations++;
+
+                    let element = await this.driver.findElements(this.webdriver.By.xpath(xpath));
+
+                    if (element.length > 0) {
+                        clearInterval(interval);
+                        resolve(undefined);
+                        return success(`(ScraperStream) Successfully waited and found element`);
+                    }
+
+                    if(iterations >= seconds) {
+                        clearInterval(interval);
+                        resolve(undefined);
+                        return error(`(ScraperStream) Error waiting for and findings element`);
+                    }
+                }, 1000);
+            });
+
+        } catch {
+            return error(`(ScraperStream) Error waiting for and findings element`);
         }
     }
 
