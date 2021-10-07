@@ -1,9 +1,27 @@
 @import "../../utilities/variables"
     
-$min-result-height: 50px
+
     
+
 .query-result
-    min-height: $min-result-height
+
+    padding: $margin-s
+    line-height: $result-line-height
     border-bottom: 1px solid $light-grey
     background: white
     border-radius: $margin-s
+    display: flex
+    flex-direction: row
+
+    .name
+
+        width: $result-name-width
+        font-weight: 600
+
+    .data
+        
+        flex: 1
+
+    
+
+
