@@ -21,8 +21,6 @@ import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
 import { ScraperStream } from "./modules/streams/ScraperStream";
-import { DVLAStream } from "./modules/streams/registration-plates/DVLAStream";
-import { RapidCarCheckStream } from "./modules/streams/registration-plates/RapidCarCheckStream";
 
 
 const PORT = 5000;
