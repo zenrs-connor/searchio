@@ -21,6 +21,7 @@ import { IPAPIStream } from "./modules/streams/domains/IPAPIStream";
 import { CompaniesHouseStream } from "./modules/streams/businesses/CompaniesHouseStream";
 import { OpenCorporatesStream } from "./modules/streams/businesses/OpenCorporatesStream";
 import { ScraperStream } from "./modules/streams/ScraperStream";
+import { Names192Stream } from "./modules/streams/names/Names192Stream";
 
 
 const PORT = 5000;
@@ -59,8 +60,8 @@ HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
 
-let y = new CompaniesHouseStream("");
-y.stripCompanyInformation('04398417');
+let y = new Names192Stream("");
+y.nameSearch('Elliot Phillips');
 
 // let x = new CompaniesHouseStream("ABC");
 // x.stripCompanyCharges();

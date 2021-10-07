@@ -25,7 +25,7 @@ export class ScraperStream extends Stream {
 
 
     // Function to pause/wait for a specified number of milliseconds
-    private async pause(ms: number = 0): Promise<SearchioResponse> {
+    public async pause(ms: number = 0): Promise<SearchioResponse> {
         try {
             return new Promise((resolve) => {
           
