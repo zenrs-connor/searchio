@@ -112,7 +112,7 @@ export class ScraperStream extends Stream {
     }
 
 
-    // Function to iterate through pages and perform a given process when also given the xpath for the next button
+    // Function to iterate through pages, perform a given processon all collected elements when also given the xpath for the next button
     public async flipThrough(nextXPath: string, collectElements: string, process: Function, pageLimit: number = 100): Promise<SearchioResponse> {
 
         let pages: number = 0;

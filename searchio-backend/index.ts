@@ -60,7 +60,4 @@ HTTP_SERVER.listen(PORT, () => {
 });
 
 let y = new OpenCorporatesStream("");
-y.scrapeCompany('gb', '06671721'); // Merthyr
-//y.scrapeFilings('gb', '11690192'); // Antiend
-//y.scrapeFilings('gb', '04398417'); // Timepiece
-
+y.nameSearch('David H Jones');
