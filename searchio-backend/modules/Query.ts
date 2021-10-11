@@ -6,6 +6,7 @@ import { QueryStatusCodeEnum } from "../types/QueryStatusCode";
 import { Streams } from "../assets/Streams";
 import { error, success } from "./ResponseHandler";
 import { SearchioResponse } from "../models/SearchioResponse";
+import { ResponseEmitter } from "./ResponseEmitter";
 
 export class Query {
 
@@ -33,6 +34,9 @@ export class Query {
             if(!res.success) return res;
 
             res = this.getValidStreams();
+
+            console.log(res);
+
             if(!res.success) return res;
 
             this.streams = res.data as Stream[];
@@ -51,21 +55,23 @@ export class Query {
 
     private getValidStreams(query: string = this.query) {
         let s: Stream;
+
+        console.log("GETTING VALID STREAMS (QUERY)")
         
         let streams: Stream[] = [];
 
         try {
             for(let proto of Streams) {
                 s = new proto(query, this.socket);
-                if(s.validQueries().length > 0) {
+                if(s.validProcesses().length > 0) {
                     streams.push(s);
                 }
             }
 
-            return success(`Got ${streams.length} valid data stream${ streams.length === 1 ? '' : 's' }.`, streams);
+            return success(`(Query) Got ${streams.length} valid data stream${ streams.length === 1 ? '' : 's' }.`, streams);
 
         } catch(err) {
-            return error(`Could not get valid streams.`)
+            return error(`(Query) Could not get valid streams.`)
         }
 
     }

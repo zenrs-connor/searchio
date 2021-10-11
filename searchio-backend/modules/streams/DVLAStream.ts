@@ -1,26 +1,50 @@
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { error, success } from "../../ResponseHandler";
-import { ScraperStream } from "../ScraperStream";
+import { REGISTRATION_PLATE } from "../../assets/RegexPatterns";
+import { PatternProcessPair } from "../../models/PatternProcessPair";
+import { ProcessResult } from "../../models/ProcessResult";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { DataSourceName } from "../../types/DataSourceName";
+import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
+import { error, success } from "../ResponseHandler";
+import { SocketService } from "../SocketService";
+import { ScraperStream } from "./ScraperStream";
+import * as MD5 from "md5";
+import { ResultData } from "../../models/ResultData";
+
 
 export class DVLAStream extends ScraperStream {
-    constructor(query: string) {
-        super(query);
+
+    protected id: DataSourceName = "DVLA";
+
+    protected processes: any = {
+        
+        "vehicle details": { 
+            source: this.id,
+            query: this.query,
+            name: "validate number", 
+            code: ProcessStatusCodeEnum.DORMANT as ProcessCode, 
+            status: "DORMANT" as ProcessStatus, 
+            message: `Awaiting command...`
+        }
+    };
+
+    protected patterns: PatternProcessPair[] = [
+        { pattern: REGISTRATION_PLATE, process: this.scrapeVehicleDetails.bind(this) }
+    ]
+
+    constructor(query: string, socket: SocketService) {
+        super(query, socket);
         this.tags.push("dvla");
-        console.log(this.tags);
     }
 
     public async loadVehicleDetails(reg: string): Promise<SearchioResponse> {
         try {
             await this.driver.get('https://vehicleenquiry.service.gov.uk/');
-
             await this.waitForElement('//div[@class="govuk-form-group"]/input', 20);
             await this.driver.findElement(this.webdriver.By.xpath('//div[@class="govuk-form-group"]/input')).sendKeys(reg);
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="submit_vrn_button"]')).click();
-            
             await this.waitForElement('//input[@id="yes-vehicle-confirm"]', 20);
             await this.driver.findElement(this.webdriver.By.xpath('//input[@id="yes-vehicle-confirm"]')).click();
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="capture_confirm_button"]')).click();
-
             return success(`(DVLAStream) Successfully entered vehicle details`);
         } catch(err) {
             console.log(err);
@@ -28,7 +52,14 @@ export class DVLAStream extends ScraperStream {
         }
     }
 
-    public async scrapeVehicleDetails(reg: string): Promise<SearchioResponse> {
+    public async scrapeVehicleDetails(reg: string = this.query): Promise<SearchioResponse> {
+
+        //  Set a name constant for this process
+        const PROCESS_NAME = "vehicle details"
+
+        //  Set status of this process to ACTIVE
+        this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.ACTIVE as ProcessCode, `Getting details for registration plate ${reg}...`);
+
         try {
             await this.loadVehicleDetails(reg);
 
@@ -61,84 +92,223 @@ export class DVLAStream extends ScraperStream {
 
             carFormat.registrationPlate = reg;
 
-            let vehicleMake = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="make"]/dd')).getText();
-            carFormat.vehicleMake = vehicleMake;
 
+            let vehicleMake = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="make"]/dd'));
+            if(vehicleMake.length > 0) {
+                carFormat.vehicleMake = await vehicleMake[0].getText();
+            } else { this.error(`Could not find "vehicle make" element.`) }
+
+            //
+
+            let taxStatus = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/h2'));
+            if(taxStatus.length > 0) {
+                if(await taxStatus[0].getText() == "✓ Taxed") {
+                    carFormat.taxStatus = "Taxed";
+                } else if (await taxStatus[0].getText() == "✗ Untaxed") {
+                    carFormat.taxStatus = "Untaxed";
+                } else {
+                    carFormat.taxStatus = "Unknown";
+                }
+            } else { this.error(`Could not find "taxt status" element.`) }
+
+            //
+
+            let taxDue = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/div/strong[2]'));
+            if(taxDue.length > 0) {
+                carFormat.taxDue = new Date(await taxDue[0].getText());
+            } else { this.error(`Could not find "tax due" element.`) }
+
+            //
+
+            let motStatus = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/h2'));
+
+            if(motStatus.length > 0) {
+                if(await motStatus[0].getText() == "✓ MOT") {
+                    carFormat.motStatus = "Valid MOT";
+                } else if (await motStatus[0].getText() == "✗ MOT") {
+                    carFormat.motStatus = "Invalid MOT";
+                } else {
+                    carFormat.motStatus = "Unknown";
+                }
+            } else { this.error(`Could not find "MOT status" element.`) }
+
+            //
             
-            let taxStatus = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/h2')).getText();
-            if(taxStatus == "✓ Taxed") {
-                carFormat.taxStatus = "Taxed";
-            } else if (taxStatus == "✗ Untaxed") {
-                carFormat.taxStatus = "Untaxed";
-            } else {
-                carFormat.taxStatus = "Unknown";
+            let motDue = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/div/strong[2]'));
+            if(motDue.length > 0) {
+                carFormat.motDue = new Date(await motDue[0].gettext());
+            } else { this.error(`Could not find "MOT due" element.`) }
+
+            //
+
+            let firstRegistration = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="date_of_first_registration"]/dd'));
+
+            if(firstRegistration.length > 0) {
+                carFormat.firstRegistration = new Date(await firstRegistration[0].getText());
+            } else { this.error(`Could not find "first registration" element.`) }
+
+            //
+            
+            let yearOfManufacture = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="year_of_manufacture"]/dd'));
+            if(yearOfManufacture.length > 0) {
+                carFormat.yearofManufacture = new Date(await yearOfManufacture[0].getText());
+            } else { this.error(`Could not find "year of manufacture" element.`) }
+
+            //
+
+            let cylinderCapacity = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="engine_capacity"]/dd'));
+            if(cylinderCapacity.length > 0) {
+                carFormat.cylinderCapacity = await cylinderCapacity[0].getText();
+            } else { this.error(`Could not find "cylinder capacity" element.`); }
+
+            //
+
+            let co2Emissions = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="co2_emissions"]/dd'));
+            if(co2Emissions.length > 0) {
+                carFormat.co2Emissions = await co2Emissions[0].getText();
+            } else { this.error(`Could not find "co2 emissions" element.`); }
+
+            //
+
+            let fuelType = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="fuel_type"]/dd'));
+            if(fuelType.length > 0) {
+                carFormat.fuelType = await fuelType[0].getText();
+            } else { this.error(`Could not find "fuel type" element.`); }
+
+            //
+
+            let euroStatus = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="euro_status"]/dd'));
+            if(euroStatus.length > 0) {
+                carFormat.euroStatus = await euroStatus[0].getText();
+            } else { this.error(`Could not find "euro status" element.`); }
+
+            //
+
+            let realDrivingEmissions = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="real_driving_emissions"]/dd'));
+            if(realDrivingEmissions.length > 0) {
+                carFormat.realDrivingEmissions = await realDrivingEmissions[0].getText();
+            } else { this.error(`Could not find "real driving emissions" element.`); }
+
+            //
+
+            let exportMarker = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="marked_for_export"]/dd'));
+            if(exportMarker.length > 0) {
+                carFormat.exportMarker = await exportMarker[0].getText();
+            } else { this.error(`Could not find "export marker" element.`); }
+
+            //
+
+            let vehicleStatus = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="vehicleStatus"]/dd'));
+            if(vehicleStatus.length > 0) {
+                carFormat.vehicleStatus = await vehicleStatus[0].getText();
+            } else { this.error(`Could not find "vehicle status" element.`); }
+            
+            //
+
+            let vehicleColour = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="colour"]/dd'));
+            if(vehicleColour.length > 0) {
+                carFormat.vehicleColour = await vehicleColour[0].getText();
+            } else { this.error(`Could not find "vehicle colour" element.`); }
+            
+            //
+
+            let vehicleTypeApproval = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="type_approval"]/dd'));
+            if(vehicleTypeApproval.length > 0) {
+                carFormat.vehicleTypeApproval = await vehicleTypeApproval[0].getText();
+            } else { this.error(`Could not find "vehicle type approval" element.`); }
+            
+            //
+
+            let wheelplan = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="wheelPlan"]/dd'));
+            if(wheelplan.length > 0) {
+                carFormat.wheelplan = await wheelplan[0].getText();
+            } else { this.error(`Could not find "wheelplan" element.`); }
+
+            //
+
+            let revenueWeight = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="revenue_weight"]/dd'));
+            if(revenueWeight.length > 0) {
+                carFormat.revenueWeight = await revenueWeight[0].getText();
+            } else { this.error(`Could not find "revenue weight" element.`); }
+            
+            //
+
+            let lastV5C = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="date_of_last_v5c_issued"]/dd'));
+            if(lastV5C.length > 0) {
+                carFormat.lastV5C = new Date(await lastV5C[0].getText());
+            } else { this.error(`Could not find "last V5C" element.`); }
+            
+
+            //  Build the array of Results from the response
+            const data: ResultData[] = [];
+
+            /*
+            registrationPlate: string, 
+                vehicleMake?: string,
+                taxStatus?: string, 
+                taxDue?: Date,
+                motStatus?: string,
+                motDue?: Date,
+                firstRegistration?: Date,
+                yearofManufacture?: Date,
+                cylinderCapacity?: string,
+                co2Emissions?: string,
+                fuelType?: string,
+                euroStatus?: string,
+                realDrivingEmissions?: string,
+                exportMarker?: string,
+                vehicleStatus?: string,
+                vehicleColour?: string,
+                vehicleTypeApproval?: string,
+                wheelplan?: string,
+                revenueWeight?: string,
+                lastV5C?: Date
+            */
+
+            if(carFormat.registrationPlate) data.push({ name: "Registration Plate", type: "Text", data: carFormat.registrationPlate });
+            if(carFormat.vehicleMake) data.push({ name: "Vehicle Make", type: "Text", data: carFormat.vehicleMake });
+            if(carFormat.taxStatus) data.push({ name: "Tax Status", type: "Text", data: carFormat.taxStatus });
+            if(carFormat.taxDue) data.push({ name: "Tax Due", type: "Date", data: carFormat.taxDue });
+            if(carFormat.motStatus) data.push({ name: "MOT Status", type: "Text", data: carFormat.motStatus });
+            if(carFormat.motDue) data.push({ name: "MOT Due", type: "Date", data: carFormat.motDue });
+            if(carFormat.firstRegistration) data.push({ name: "First Registration", type: "Date", data: carFormat.firstRegistration });
+            if(carFormat.yearofManufacture) data.push({ name: "Year of Manufacture", type: "Date", data: carFormat.yearofManufacture });
+            if(carFormat.cylinderCapacity) data.push({ name: "Cylinder Capacity", type: "Text", data: carFormat.cylinderCapacity });
+            if(carFormat.co2Emissions) data.push({ name: "CO2 Emmisions", type: "Text", data: carFormat.co2Emissions });
+            if(carFormat.fuelType) data.push({ name: "Fuel Type", type: "Text", data: carFormat.fuelType });
+            if(carFormat.euroStatus) data.push({ name: "Euro Status", type: "Text", data: carFormat.euroStatus });
+            if(carFormat.realDrivingEmissions) data.push({ name: "Real Driving Emissions", type: "Text", data: carFormat.realDrivingEmissions });
+            if(carFormat.exportMarker) data.push({ name: "Export marker", type: "Text", data: carFormat.exportMarker });
+            if(carFormat.vehicleStatus) data.push({ name: "Vehicle Status", type: "Text", data: carFormat.vehicleStatus });
+            if(carFormat.vehicleColour) data.push({ name: "Vehicle Colour", type: "Text", data: carFormat.vehicleColour });
+            if(carFormat.vehicleTypeApproval) data.push({ name: "Vehicle Type Approval", type: "Text", data: carFormat.vehicleTypeApproval });
+            if(carFormat.wheelplan) data.push({ name: "Wheelplan", type: "Text", data: carFormat.wheelplan });
+            if(carFormat.revenueWeight) data.push({ name: "Revenue Weight", type: "Text", data: carFormat.revenueWeight });
+            if(carFormat.lastV5C) data.push({ name: "Last V5C", type: "Date", data: carFormat.lastV5C });
+
+
+
+            //  Build the ProcessResult object
+            const result: any = {
+                source: this.id,
+                process: PROCESS_NAME,
+                data: data
             }
+            
+            result.hash = MD5(result);
+            result.query = this.query;
 
-            let taxDue = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/div/strong[2]')).getText();
-            carFormat.taxDue = new Date(taxDue);
+            //  Emit the result of this process
+            this.socket.result(result as ProcessResult);
 
-            let motStatus = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/h2')).getText();
-            if(motStatus == "✓ MOT") {
-                carFormat.motStatus = "Valid MOT";
-            } else if (motStatus == "✗ MOT") {
-                carFormat.motStatus = "Invalid MOT";
-            } else {
-                carFormat.motStatus = "Unknown";
-            }
+            this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.COMPLETED as ProcessCode, `Complete!`);
 
-            let motDue = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/div/strong[2]')).getText();
-            carFormat.motDue = new Date(motDue);
-
-            let firstRegistration = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="date_of_first_registration"]/dd')).getText();
-            carFormat.firstRegistration = new Date(firstRegistration);
-
-            let yearOfManufacture = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="year_of_manufacture"]/dd')).getText();
-            carFormat.yearofManufacture = new Date(yearOfManufacture);
-
-            let cylinderCapacity = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="engine_capacity"]/dd')).getText();
-            carFormat.cylinderCapacity = cylinderCapacity;
-
-            let co2Emissions = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="co2_emissions"]/dd')).getText();
-            carFormat.co2Emissions = co2Emissions;
-
-            let fuelType = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="fuel_type"]/dd')).getText();
-            carFormat.fuelType = fuelType;
-
-            let euroStatus = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="euro_status"]/dd')).getText();
-            carFormat.euroStatus = euroStatus;
-
-            let realDrivingEmissions = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="real_driving_emissions"]/dd')).getText();
-            carFormat.realDrivingEmissions = realDrivingEmissions;
-
-            let exportMarker = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="marked_for_export"]/dd')).getText();
-            carFormat.exportMarker = exportMarker;
-
-            let vehicleStatus = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="vehicleStatus"]/dd')).getText();
-            carFormat.vehicleStatus = vehicleStatus;
-
-            let vehicleColour = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="colour"]/dd')).getText();
-            carFormat.vehicleColour = vehicleColour;
-
-            let vehicleTypeApproval = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="type_approval"]/dd')).getText();
-            carFormat.vehicleTypeApproval = vehicleTypeApproval;
-
-            let wheelplan = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="wheelPlan"]/dd')).getText();
-            carFormat.wheelplan = wheelplan;
-
-            let revenueWeight = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="revenue_weight"]/dd')).getText();
-            carFormat.revenueWeight = revenueWeight;
-
-            let lastV5C = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="date_of_last_v5c_issued"]/dd')).getText();
-            carFormat.lastV5C = new Date(lastV5C);
-
-            // DATES NEED TO BE CHANGED WRT TIMEZONES
-
-            console.log(carFormat)
-
-            return success(`(DVLAStream) Successfully scraped vehicle details`, carFormat);
+            return this.success(`Successfully scraped vehicle details`, carFormat);
         } catch(err) {
-            console.log(err);
-            return error(`(DVLAStream) Error scraping vehicle details`, err);
+
+            this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.ERROR as ProcessCode, `Error!`);
+
+            return error(`Error scraping vehicle details`, err);
         }
     }
 }

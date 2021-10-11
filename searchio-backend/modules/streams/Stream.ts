@@ -8,8 +8,9 @@ import { SocketService } from "../SocketService";
 import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
 import { SearchioResponse } from "../../models/SearchioResponse";
 import { error, success } from "../ResponseHandler";
-import { Process } from "../../models/Process";
+import { ProcessData } from "../../models/ProcessData";
 import { ProcessResult } from "../../models/ProcessResult";
+import { Process } from "../processes/Process";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
@@ -19,7 +20,7 @@ export class Stream {
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
-    protected processes: any = {};                   //  An object to hold the status of processes held by this stream
+    protected processes: Process[] = [];                   //  An object to hold the status of processes held by this stream
     protected socket: SocketService;
 
     /*
@@ -36,8 +37,6 @@ export class Stream {
     ];
 
     */
-    protected patterns: PatternProcessPair[] = [];    
-    
 
     //  SERVICES
     protected _credentials: CredentialsService = new CredentialsService();
@@ -51,28 +50,27 @@ export class Stream {
     public getId(): string { return this.id; }
     public getQuery(): string { return this.query; } 
     public getTags(): StreamTag[] { return this.tags; }
-    public getProcesses(): Process[] { return this.processes; }
-
-    public getPatterns(): PatternProcessPair[] { return this.patterns }
 
     //  Function to check if a given query string matches one of the patterns of this type of Stream
     //  Parameters:
     //  query: string       -   The query term to be checked
-    public validQueries(query: string = this.query): Function[] {
+    public validProcesses(query: string = this.query): Process[] {
 
         let match: any;     //  Variable to hold the result of each pattern match
         let valid = [];     //  Array of valid query functions
 
-        //  Loop through each pattern of this Stream
-        for(let pair of this.patterns) {
+        console.log(this.processes);
 
-            console.log(pair);
+        //  Loop through each process of this Stream
+        for(let process of this.processes) {
+
+            console.log(process.getPattern());
 
             //  Check that the query matches the pattern
-            match = query.match(pair.pattern);  
+            match = query.match(process.getPattern());  
 
-            //  If so, add the query function into the arr, binding this Stream object to ensure data is carried over
-            if(match !== null) valid.push(pair.process.bind(this));
+            //  If so, add the process into the array
+            if(match !== null) valid.push(process);
 
         }
 
@@ -99,10 +97,13 @@ export class Stream {
 
         setTimeout(() => {
 
-            let queries = this.validQueries();
+            let processes = this.validProcesses();
 
-            for(let q of queries) {
-                q()
+            console.log("FOO");
+            console.log(processes);
+            
+            for(let p of processes) {
+                p.execute();
             }
 
         }, 1000)

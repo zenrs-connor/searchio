@@ -3,6 +3,7 @@ import { SearchioResponse } from "../../models/SearchioResponse";
 import { error, success } from "../ResponseHandler";
 import { ScraperStream } from "./ScraperStream";
 import { WebElement } from "selenium-webdriver";
+import { SocketService } from "../SocketService";
 
 //const request = require('request');
 
@@ -10,10 +11,9 @@ const COMPANIESHOUSE_API_KEY = '585a186b-ba2c-4978-be95-17e5ffbb773f';
 
 export class CompaniesHouseStream extends ScraperStream {
 
-    constructor(query: string) {
-        super(query);
+    constructor(query: string, socket: SocketService) {
+        super(query, socket);
         this.tags.push("companies-house");
-        console.log(this.tags);
     }
 
 
