@@ -1,26 +1,33 @@
+
+
 <div class="searchio-results">
+
+
+    <div class="results-header-outer" *ngIf="_manager.getQueryTabs().length > 0">
+        <div class="results-header">
+            <div (click)="_manager.sortResults('name', _manager.getQueryData().sort_field === 'name' ? !_manager.getQueryData().sort_ascending : true)">
+                Name {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'name' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
+            </div>
+            <div (click)="_manager.sortResults('data', _manager.getQueryData().sort_field === 'data' ? !_manager.getQueryData().sort_ascending : true)">
+                Data {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'data' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
+            </div>
+            <div (click)="_manager.sortResults('sources', _manager.getQueryData().sort_field === 'sources' ? !_manager.getQueryData().sort_ascending : true)">
+                Sources {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'sources' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
+            </div>
+        </div>
+    </div>
+    
 
     <div class="scroll-fader"></div>
 
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
-    <query-result></query-result>
+    <query-result *ngFor="let result of _manager.getResults()" [result]="result"></query-result>
 
+    <div class="empty-list" *ngIf="_manager.getQueryTabs().length > 0 &&  _manager.getResults().length === 0">
+        Awaiting results...
+    </div>
+
+    <div class="empty-list" *ngIf="_manager.getQueryTabs().length === 0">
+        Start a query using the search bar at the top of the page...
+    </div>
 
 </div>

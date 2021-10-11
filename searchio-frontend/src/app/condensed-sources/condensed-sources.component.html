@@ -1,0 +1,17 @@
+<div class="condensed-sources-container">
+
+    <ng-container *ngFor="let source of sources; let i = index">
+        <div class="source-icon" *ngIf="i <= 2">
+        </div>
+    </ng-container>
+
+    <div class="more" *ngIf="sources.length > 3">+ {{ sources.length - 3 }}</div>
+    
+    <div class="hover-card">
+        <div *ngFor="let source of sources" class="source">
+            <div>{{ source }}</div>
+            <div class="source-icon"></div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,52 @@
+@import "../../utilities/variables"
+
+$process-height: 30px
+
+
+
+
+.list-process-container
+
+    background: $light-grey
+    border-radius: $margin-s
+    padding: $margin-s
+    font-size: $process-height / 2.5
+    line-height: $process-height / 2
+    display: flex
+    flex-direction: row
+
+    *
+        margin-right: $margin-s
+    
+    *:last-child
+        margin-right: 0
+
+    .icon
+        height: $process-height
+        width: $process-height
+        border-radius: $margin-s
+        background-color: $mid-grey
+
+        &.status
+            border-radius: 100%
+
+        &.completed
+            background-color: $completed-color
+
+        &.active
+            background-color: $active-color
+
+        &.error
+            background-color: $error-color
+
+    .text
+        flex: 1
+        font-weight: 500
+
+        .name
+            font-size: 1em
+            display: flex
+
+        .message
+            font-size: 0.8em
+            font-style: italic
