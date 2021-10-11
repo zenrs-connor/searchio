@@ -110,16 +110,22 @@ export class Stream {
         
     }
 
+
+
     protected success(message: string, data: any = undefined): SearchioResponse {
         return success(`(${this.id}) ${message}`, data);
     }
 
     protected error(message: string, data: any = undefined): SearchioResponse {
 
-        console.log("FOO", data)
+        //  Log error to Streams Error file
 
         return error(`(${this.id}) ${message}`, data);
     }
+
+
+
+
 
     //  Function to fetch a set of credentials to be used while making a query
     private async fetchCredentials() {

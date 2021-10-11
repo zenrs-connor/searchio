@@ -1,12 +1,13 @@
-import { PHONE_NUMBER } from "../../../assets/RegexPatterns";
-import { PatternProcessPair } from "../../../models/PatternProcessPair";
-import { ProcessResult } from "../../../models/ProcessResult";
-import { ResultData } from "../../../models/ResultData";
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { DataSourceName } from "../../../types/DataSourceName";
-import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../../types/ProcessStatusCode";
-import { SocketService } from "../../SocketService";
-import { Stream } from "../Stream";
+import { PHONE_NUMBER } from "../../assets/RegexPatterns";
+import { PatternProcessPair } from "../../models/PatternProcessPair";
+import { ProcessResult } from "../../models/ProcessResult";
+import { ResultData } from "../../models/ResultData";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { DataSourceName } from "../../types/DataSourceName";
+import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
+import { SocketService } from "../SocketService";
+import { Stream } from "./Stream";
+
 
 import * as MD5 from "md5";
 

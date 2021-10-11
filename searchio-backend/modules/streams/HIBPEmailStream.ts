@@ -1,4 +1,4 @@
-import { Stream } from "../Stream";
+import { Stream } from "./Stream";
 
 const request = require('request');
 const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';

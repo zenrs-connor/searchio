@@ -1,6 +1,6 @@
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { error, success } from "../../ResponseHandler";
-import { ScraperStream } from "../ScraperStream";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
+import { ScraperStream } from "./ScraperStream";
 
 export class RapidCarCheckStream extends ScraperStream {
     constructor(query: string) {
@@ -248,6 +248,7 @@ export class RapidCarCheckStream extends ScraperStream {
 
                     entry.date = mileageDates[i];
                     entry.value = mileageFigures[i];
+                    console.log(entry);
                     data.push(entry);
                 }
 
@@ -256,7 +257,7 @@ export class RapidCarCheckStream extends ScraperStream {
                 let estimatedMileage = await this.driver.findElement(this.webdriver.By.xpath('//div[@class="wpb_text_column wpb_content_element  vc_custom_1559137789162"]/div/p/strong')).getText();
                 mileageFormat.estimatedMileage = estimatedMileage;
                 
-                return success(`(RapidCarCheckStream) Successfully scraped vehicle mileage information`, mileageFormat);
+                return success(`(RapidCarCheckStream) Successfully scraped vehicle mileage information`);
             }
         } catch(err) {
             console.log(err);
@@ -267,95 +268,24 @@ export class RapidCarCheckStream extends ScraperStream {
     public async scrapeMOTHistory(reg: string): Promise<SearchioResponse> {
         try{
             let motFormat: {
-                motData: any[],
+                motData?: any[],
                 firstMOTDue?: Date
 
             } = {
                 motData: undefined
             };
 
+            let motCheck: {
+                date: Date,
+                passFail?: string,
+                mileage?: string,
+                expiryDate?: Date,
 
-            let motData: any[] = [];
+            } = {
+                date: undefined
+            };
 
-            let container = await this.driver.findElements(this.webdriver.By.xpath('//div[@class="eltdf-full-width-inner"]/div[4]/div/div/div/div/div/div/div/div/div[@class="wpb_wrapper"]'));
-
-            if(container.length == 0) {
-                let firstMOTDue = await this.driver.findElement(this.webdriver.By.xpath('//div[@class="eltdf-full-width-inner"]/div[4]/div/div/div/div/div/div/div/div/p')).getText();
-                motFormat.firstMOTDue = firstMOTDue;
-                motFormat.motData = [];
-            } else {
-
-                for(let record of container) {
-
-                    let motCheck: {
-                        date: Date,
-                        passFail?: string,
-                        advisoryNotices?: any[],
-                        failureNotices?: any[],
-                        mileage?: string,
-                        expiryDate?: Date,
-        
-                    } = {
-                        date: undefined
-                    };
-
-                    let date = await record.findElement(this.webdriver.By.xpath('.//h3[@class="mottitledate"]')).getText();
-                    motCheck.date = new Date(date);
-
-                    let pass = await record.findElements(this.webdriver.By.xpath('.//h2[@class="mottitlePASS"]'));
-                    let fail = await record.findElements(this.webdriver.By.xpath('.//h2[@class="mottitleFAIL"]'));
-
-
-                    if(pass.length > 0 && fail.length> 0) {
-                        motCheck.passFail = 'Unknown';
-                    } else if(pass.length > 0) {
-                        motCheck.passFail = 'Pass';
-                    } else if (fail.length > 0) {
-                        motCheck.passFail = 'Fail';
-                    } else {
-                        motCheck.passFail = 'Unknown';
-                    }
-
-                    let advisoryNotices: any[] = [];
-                    let failureNotices: any[] = [];
-
-                    let notices = await record.findElements(this.webdriver.By.xpath('.//div[@class="wpb_text_column wpb_content_element  motcomment"]'));
-
-                    for(let notice of notices) {
-                        let type = await notice.findElement(this.webdriver.By.xpath('./div/p/i')).getAttribute('class');
-                        let text = await notice.findElement(this.webdriver.By.xpath('./div/p')).getText();
-
-                        if(type == 'eltdf-icon-font-awesome fa fa-times-circle eltdf-icon-element') {
-                            failureNotices.push(text);
-                        } else if (type == 'eltdf-icon-font-awesome fa fa-exclamation-circle eltdf-icon-element') {
-                            advisoryNotices.push(text);
-                        }
-                    }
-
-                    motCheck.advisoryNotices = advisoryNotices;
-                    motCheck.failureNotices = failureNotices;
-
-                    let specs = await record.findElement(this.webdriver.By.xpath('.//div[@class="wpb_text_column wpb_content_element  motspecs"]')).getText();
-                    specs = specs.split('\n');
-                    let mileage = specs[0].split(': ')[1];
-                    motCheck.mileage = mileage;
-                    let expiryDate = specs[1].split(': ')[1];
-                    motCheck.expiryDate = new Date(expiryDate);
-                    
-                    
-                    motData.push(motCheck);
-
-                }
-
-                motFormat.motData = motData;
-            }
-
-            console.log(motFormat);
-
-
-            // DATETIMES NEED TO BE ALTERED FOR TIMEZONES
-
-            return success(`(RapidCarCheckStream) Successfully scraped vehicle MOT history`, motFormat);
+            return success(`(RapidCarCheckStream) Successfully scraped vehicle MOT history`);
         } catch(err) {
             console.log(err);
             return error(`(RapidCarCheckStream) Error scraping vehicle MOT history`, err);
@@ -365,21 +295,15 @@ export class RapidCarCheckStream extends ScraperStream {
     public async scrapeVehicleDetails(reg: string): Promise<SearchioResponse> {
         try{
             await this.loadVehicleDetails(reg);
-            let vehicleInformation = await this.scrapeVehicleInformation(reg);
-            let vehicleDetails = vehicleInformation.data;
+            // let vehicleInformation = await this.scrapeVehicleInformation(reg);
+            // let vehicleDetails = vehicleInformation.data;
 
-            let mileageInformation = await this.scrapeMileageInformation(reg);
-            console.log(mileageInformation.data);
-            vehicleDetails.estimatedMileage = mileageInformation.data.estimatedMileage;
-            vehicleDetails.mileageData = mileageInformation.data.mileageData;
+            // let mileageInformation = await this.scrapeMileageInformation(reg);
+            // vehicleDetails.estimatedMileage = mileageInformation.data.estimatedMileage;
+            // vehicleDetails.mileageData = mileageInformation.data.mileageData;
 
 
-            let motHistoryInformation = await this.scrapeMOTHistory(reg);
-            console.log(motHistoryInformation.data);
-            vehicleDetails.motHistoryInformation = motHistoryInformation.data;
-
-            console.log(`\n\n------------ WHOLE THING -----------------`);
-            console.log(vehicleDetails);
+            // let motHistoryInformation = await this.scrapeMOTHistory(reg);
 
             return success(`(RapidCarCheckStream) Successfully loaded vehicle details`);
         } catch(err) {

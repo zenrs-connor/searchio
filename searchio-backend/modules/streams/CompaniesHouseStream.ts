@@ -1,7 +1,7 @@
 //import { Stream } from "../Stream";
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { error, success } from "../../ResponseHandler";
-import { ScraperStream } from "../ScraperStream";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
+import { ScraperStream } from "./ScraperStream";
 import { WebElement } from "selenium-webdriver";
 
 //const request = require('request');

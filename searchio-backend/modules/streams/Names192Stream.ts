@@ -1,6 +1,6 @@
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { error, success } from "../../ResponseHandler";
-import { ScraperStream } from "../ScraperStream";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
+import { ScraperStream } from "./ScraperStream";
 import { WebElement } from "selenium-webdriver";
 
 

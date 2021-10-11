@@ -1,4 +1,4 @@
-import { NumverifyStream } from "../modules/streams/phone-numbers/NumverifyStream";
+import { NumverifyStream } from "../modules/streams/NumverifyStream";
 
 export const Streams: any[] = [
     NumverifyStream

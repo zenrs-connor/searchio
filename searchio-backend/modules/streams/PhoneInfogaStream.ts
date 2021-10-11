@@ -1,5 +1,5 @@
-import { NumberFormats } from "../../../models/NumberFormats";
-import { Stream } from "../Stream";
+import { NumberFormats } from "../../models/NumberFormats";
+import { Stream } from "./Stream";
 
 export class PhoneInfogaStream extends Stream {
     
