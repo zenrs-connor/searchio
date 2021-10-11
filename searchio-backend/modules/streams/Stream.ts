@@ -115,9 +115,6 @@ export class Stream {
     }
 
     protected error(message: string, data: any = undefined): SearchioResponse {
-
-        console.log("FOO", data)
-
         return error(`(${this.id}) ${message}`, data);
     }
 

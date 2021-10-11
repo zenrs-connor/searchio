@@ -8,6 +8,7 @@ require('chromedriver');
 import { WebElement } from 'selenium-webdriver';
 import { error, success } from "../ResponseHandler";
 import { SearchioResponse } from "../../models/SearchioResponse";
+import { SocketService } from "../SocketService";
 
 var options = {'args':['--disable-notifications','--no-sandbox']}
 
@@ -19,8 +20,8 @@ export class ScraperStream extends Stream {
     protected capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions',options);;
     protected driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
 
-    constructor(query: string) {
-        super(query);
+    constructor(query: string, socket: SocketService) {
+        super(query, socket);
     }
 
 

@@ -1,15 +1,50 @@
+import { REGISTRATION_PLATE } from "../../../assets/RegexPatterns";
+import { PatternProcessPair } from "../../../models/PatternProcessPair";
 import { SearchioResponse } from "../../../models/SearchioResponse";
+import { DataSourceName } from "../../../types/DataSourceName";
+import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../../types/ProcessStatusCode";
 import { error, success } from "../../ResponseHandler";
+import { SocketService } from "../../SocketService";
 import { ScraperStream } from "../ScraperStream";
 
 export class DVLAStream extends ScraperStream {
-    constructor(query: string) {
-        super(query);
+
+    //  Unique identifier for this data source
+    protected id: DataSourceName = "DVLA";
+
+    //  Object containin the processes utilised by this stream
+    //  Each process is indexed with a "process name", which concisely describes the process
+    //  Each property of the object is a Process interface (see models/Process)
+    protected processes: any = {
+        
+        "vehicle details": { 
+            source: this.id,
+            query: this.query,
+            name: "vehicle details", 
+            code: ProcessStatusCodeEnum.DORMANT as ProcessCode, 
+            status: "DORMANT" as ProcessStatus, 
+            message: `Awaiting command...`
+        }
+    };
+
+    //  Object containing the valid patterns for each process used by this stream
+    protected patterns: PatternProcessPair[] = [
+        { pattern: REGISTRATION_PLATE, process: this.scrapeVehicleDetails.bind(this) }
+    ]
+
+    /*
+    *       The Stream/ScraperStream classes have been altered to take a SocketService in the contructor.
+    */
+
+
+    constructor(query: string, socket: SocketService) {
+        super(query, socket);
         this.tags.push("dvla");
-        console.log(this.tags);
     }
 
+
     public async loadVehicleDetails(reg: string): Promise<SearchioResponse> {
+
         try {
             await this.driver.get('https://vehicleenquiry.service.gov.uk/');
 
@@ -23,13 +58,20 @@ export class DVLAStream extends ScraperStream {
 
             return success(`(DVLAStream) Successfully entered vehicle details`);
         } catch(err) {
-            console.log(err);
             return error(`(DVLAStream) Error entering vehicle details`, err);
         }
     }
 
-    public async scrapeVehicleDetails(reg: string): Promise<SearchioResponse> {
+    public async scrapeVehicleDetails(reg: string = this.query): Promise<SearchioResponse> {
+
+        //  Set a name constant for this process
+        const PROCESS_NAME = "vehicle details"
+
+        //  Set status of this process to ACTIVE
+        this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.ACTIVE as ProcessCode, `Fetching vehicle details ${reg}...`);
+
         try {
+
             await this.loadVehicleDetails(reg);
 
             await this.waitForElement('//main[@class="govuk-main-wrapper"]/div[2]/div/div/h2', 20);
@@ -61,38 +103,83 @@ export class DVLAStream extends ScraperStream {
 
             carFormat.registrationPlate = reg;
 
-            let vehicleMake = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="make"]/dd')).getText();
-            carFormat.vehicleMake = vehicleMake;
+
+            //  Find the vehicle make
+
+            let vehicleMake = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="make"]/dd'));
+            
+            if(vehicleMake.length > 0) {
+                carFormat.vehicleMake = vehicleMake[0].getText();
+            } else {
+                this.error(`Could not find "vehicle make" element...`);
+            }
+
+            //  Find the tax status
+            
+            let taxStatus = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/h2'));
+            
+            if(taxStatus.length > 0) {
+                if(taxStatus[0].getText() == "✓ Taxed") {
+                    carFormat.taxStatus = "Taxed";
+                } else if (taxStatus[0].getText() == "✗ Untaxed") {
+                    carFormat.taxStatus = "Untaxed";
+                } else {
+                    carFormat.taxStatus = "Unknown";
+                }
+            } else {
+                this.error(`Could not find "tax status" element...`);
+            }
+
+            //  Find the tax due date
+            
+
+            let taxDue = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/div/strong[2]'));
+            
+            if(taxDue.length > 0) {
+                carFormat.taxDue = new Date(taxDue[0].getText());
+            } else {
+                this.error(`Could not find "tax due" element...`);
+            }
+
+            //  Find the MOT status
+
+            let motStatus = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/h2'));
+            
+            if(motStatus.length > 0) {
+                if(motStatus[0].getText() == "✓ MOT") {
+                    carFormat.motStatus = "Valid MOT";
+                } else if (motStatus[0].getText() == "✗ MOT") {
+                    carFormat.motStatus = "Invalid MOT";
+                } else {
+                    carFormat.motStatus = "Unknown";
+                }
+            } else {
+                this.error(`Could not find "MOT status" element...`);
+            }
+            
+            //  Find the MOT due date
+            
+            let motDue = await this.driver.findElements(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/div/strong[2]'));
+            
+            if(taxDue.length > 0) {
+                carFormat.motDue = new Date(motDue[0].getText());
+            } else {
+                this.error(`Could not find "tax due" element...`);
+            }
+    
+            // Find the first registration plate of this vehicle
+
+            let firstRegistration = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="date_of_first_registration"]/dd'));
+
+            if(firstRegistration.length > 0) {
+                carFormat.firstRegistration = new Date(firstRegistration[0].getText());
+            } else {
+                this.error(`Could not find "first registration" element...`);
+            }
 
             
-            let taxStatus = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/h2')).getText();
-            if(taxStatus == "✓ Taxed") {
-                carFormat.taxStatus = "Taxed";
-            } else if (taxStatus == "✗ Untaxed") {
-                carFormat.taxStatus = "Untaxed";
-            } else {
-                carFormat.taxStatus = "Unknown";
-            }
 
-            let taxDue = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div/div/div/strong[2]')).getText();
-            carFormat.taxDue = new Date(taxDue);
-
-            let motStatus = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/h2')).getText();
-            if(motStatus == "✓ MOT") {
-                carFormat.motStatus = "Valid MOT";
-            } else if (motStatus == "✗ MOT") {
-                carFormat.motStatus = "Invalid MOT";
-            } else {
-                carFormat.motStatus = "Unknown";
-            }
-
-            let motDue = await this.driver.findElement(this.webdriver.By.xpath('//main[@class="govuk-main-wrapper"]/div[2]/div[2]/div/div/strong[2]')).getText();
-            carFormat.motDue = new Date(motDue);
-
-            let firstRegistration = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="date_of_first_registration"]/dd')).getText();
-            carFormat.firstRegistration = new Date(firstRegistration);
-
-            let yearOfManufacture = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="year_of_manufacture"]/dd')).getText();
+            /*let yearOfManufacture = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="year_of_manufacture"]/dd')).getText();
             carFormat.yearofManufacture = new Date(yearOfManufacture);
 
             let cylinderCapacity = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="engine_capacity"]/dd')).getText();
@@ -129,16 +216,18 @@ export class DVLAStream extends ScraperStream {
             carFormat.revenueWeight = revenueWeight;
 
             let lastV5C = await this.driver.findElement(this.webdriver.By.xpath('//div[@id="date_of_last_v5c_issued"]/dd')).getText();
-            carFormat.lastV5C = new Date(lastV5C);
+            carFormat.lastV5C = new Date(lastV5C);*/
 
             // DATES NEED TO BE CHANGED WRT TIMEZONES
 
-            console.log(carFormat)
+            console.log(carFormat);
 
-            return success(`(DVLAStream) Successfully scraped vehicle details`, carFormat);
+            this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.COMPLETED as ProcessCode, `Completed!`);
+            return this.success(`Successfully scraped vehicle details`, carFormat);
         } catch(err) {
-            console.log(err);
-            return error(`(DVLAStream) Error scraping vehicle details`, err);
+            
+            this.setProcessStatus(PROCESS_NAME, ProcessStatusCodeEnum.ERROR as ProcessCode, `Error!`);
+            return this.error(`Error scraping vehicle details`, err);
         }
     }
 }

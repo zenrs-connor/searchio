@@ -356,7 +356,6 @@ export class CompaniesHouseStream extends ScraperStream {
         
         try {
             let charges = await this.driver.findElements(this.webdriver.By.xpath("//div[@id='mortgage-content']/div/h2/a"));
-
             let result  = await this.openKillTab(charges, this.stripCompanyCharge.bind(this));
             companyChargesList = result.data;
 

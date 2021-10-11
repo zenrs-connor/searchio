@@ -15,10 +15,11 @@ const NUMVERIFY_API_KEY = 'c69d685d3534f116078b3386efae3eee';
 
 export class NumverifyStream extends Stream {
 
+
     protected id: DataSourceName = "Numverify";
 
     protected processes: any = {
-        
+
         "validate number": { 
             source: this.id,
             query: this.query,
@@ -27,6 +28,7 @@ export class NumverifyStream extends Stream {
             status: "DORMANT" as ProcessStatus, 
             message: `Awaiting command...`
         }
+
     };
 
     protected patterns: PatternProcessPair[] = [
