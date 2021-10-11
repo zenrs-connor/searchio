@@ -1,0 +1,14 @@
+<div *ngIf="process" class="list-process-container">
+
+    <div class="icon"></div>
+
+    <div class="text">
+        <div class="name"><b>{{ process.source }}:</b>&nbsp;{{ process.name | capitalify }}</div>
+        <div class="message">{{ process.message }}</div>
+    </div>
+
+    
+
+    <div class="icon status" [ngClass]="{ active: process.code === 2, completed: process.code === 3, error: process.code === 4 }"></div>
+
+</div>

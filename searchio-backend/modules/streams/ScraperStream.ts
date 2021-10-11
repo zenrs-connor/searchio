@@ -112,31 +112,34 @@ export class ScraperStream extends Stream {
     }
 
 
-    // Function to iterate through pages and perform a given process when also given the xpath for the next button
-    public async flipThrough(nextXPath: string, process: Function, pageLimit: number = 100): Promise<SearchioResponse> {
+    // Function to iterate through pages, perform a given processon all collected elements when also given the xpath for the next button
+    public async flipThrough(nextXPath: string, collectElements: string, process: Function, pageLimit: number = 100): Promise<SearchioResponse> {
 
-        let pages: number = 1;
+        let pages: number = 0;
         let processComplete = false;
+        let results: any[] = [];
+
+        const t = this;
 
         async function iterate() {
+            pages++;
 
-            let eles = await this.driver.findElements(this.webdriver.By.xpath("//li[@class='first']/a"));
+            let eles = await t.driver.findElements(t.webdriver.By.xpath(collectElements));
             console.log(`\nPAGE ${pages}`);
             console.log(`Got ${eles.length} elements`);
 
-            await process(eles);
+            let proc = await process(eles);
+            results = results.concat(proc.data);
 
             if (pages >= pageLimit){
                 console.log("\nSet page limit reached");
                 return;
             }
 
-            pages++;
-
-            let button = await this.driver.findElements(this.webdriver.By.xpath(nextXPath));
+            let button = await t.driver.findElements(t.webdriver.By.xpath(nextXPath));
     
             if(button.length > 0) {
-                await this.driver.findElement(this.webdriver.By.xpath(nextXPath)).click();
+                await t.driver.findElement(t.webdriver.By.xpath(nextXPath)).click();
             } else {
                 console.log("\nCannot find next page button");
                 return;
@@ -145,12 +148,11 @@ export class ScraperStream extends Stream {
             return iterate();
         }
 
-
         try {
 
             let finalResponse = await iterate();
 
-            return success(`(ScraperStream) Flipped though ${pages} pages`);
+            return success(`(ScraperStream) Flipped though ${pages} pages`, results);
 
         } catch(err) {
             return error(`(ScraperStream) Could not flip through pages`, err);
@@ -229,7 +231,7 @@ export class ScraperStream extends Stream {
             return error(`(ScraperStream) Could not collect links`, err);
         }
     }
-
+  
     // Function to wait until an element loads in
     public async waitForElement(xpath: string, seconds: number): Promise<SearchioResponse> {
         try{
@@ -308,5 +310,4 @@ export class ScraperStream extends Stream {
         
 
     // }
-
 }

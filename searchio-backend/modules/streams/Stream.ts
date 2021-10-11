@@ -1,28 +1,33 @@
 import { Credentials } from "../../models/Credentials";
-import { PatternQueryPair } from "../../models/PatternQueryPair";
-import { StreamStatus } from "../../models/StreamStatus";
+import { PatternProcessPair } from "../../models/PatternProcessPair";
 import { DataSourceName } from "../../types/DataSourceName";
 import { StreamTag } from "../../types/StreamTag";
 import { CredentialsService } from "../CredentialsService";
 import { NumberFormats } from "../../models/NumberFormats";
+import { SocketService } from "../SocketService";
+import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
+import { Process } from "../../models/Process";
+import { ProcessResult } from "../../models/ProcessResult";
 
 
 //   This class is the the superclass for all data streams used by Searchio.
 export class Stream {
 
-    protected id: DataSourceName;                   //  Unique identifier used to tell data streams apart.
+    protected id: DataSourceName = "Unnamed Source";                   //  Unique identifier used to tell data streams apart.
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
-    
-
+    protected processes: any = {};                   //  An object to hold the status of processes held by this stream
+    protected socket: SocketService;
 
     /*
 
-    A list of pattern/query function pairs to allow for multiple functionalitites from one stream.
+    A list of pattern/process function pairs to allow for multiple functionalitites from one stream.
     The following example shows how this should be used.
 
-    protected patterns: PatternQueryPair[] = [
+    protected patterns: PatternProcessPair[] = [
         { pattern: /^[a-z]+$/, query: this.lowercaseQuery },
         { pattern: /^[A-Z]+$/, query: this.uppercaseQuery },
         { pattern: /^[a-zA-Z]+$/, query: this.mixedcaseQuery },
@@ -31,23 +36,24 @@ export class Stream {
     ];
 
     */
-    protected patterns: PatternQueryPair[] = [];    
+    protected patterns: PatternProcessPair[] = [];    
     
-
-    protected status: StreamStatus;                 //  An object holding the current state of this Stream object
 
     //  SERVICES
     protected _credentials: CredentialsService = new CredentialsService();
 
-    constructor(query: string) {
+    constructor(query: string, socket: SocketService) {
         this.query = query;
+        this.socket = socket;
     }
 
     /* GETTERS */
     public getId(): string { return this.id; }
     public getQuery(): string { return this.query; } 
     public getTags(): StreamTag[] { return this.tags; }
-    public getStatus(): StreamStatus { return this.status; }
+    public getProcesses(): Process[] { return this.processes; }
+
+    public getPatterns(): PatternProcessPair[] { return this.patterns }
 
     //  Function to check if a given query string matches one of the patterns of this type of Stream
     //  Parameters:
@@ -60,16 +66,59 @@ export class Stream {
         //  Loop through each pattern of this Stream
         for(let pair of this.patterns) {
 
+            console.log(pair);
+
             //  Check that the query matches the pattern
             match = query.match(pair.pattern);  
 
             //  If so, add the query function into the arr, binding this Stream object to ensure data is carried over
-            if(match !== null) valid.push(pair.query.bind(this));
+            if(match !== null) valid.push(pair.process.bind(this));
 
         }
 
         //  Return the list of valid functions
         return valid;
+    }
+
+    public async setProcessStatus(process: string, code: ProcessCode, message: string): Promise<SearchioResponse> {
+
+
+        if(!this.processes[process]) return error(`(${this.id}) Unable to find process with name '${process}'`);
+
+        this.processes[process].code = code;
+        this.processes[process].message = message;
+        this.processes[process].status = ProcessStatusCodeEnum[code] as ProcessStatus;
+
+        this.socket.processUpdate(this.processes[process]);
+
+        return success(`(${this.id}) Set status of process '${process}' to ${code} (${ProcessStatusCodeEnum[code]})`)
+
+    };
+
+    public start() {
+
+        setTimeout(() => {
+
+            let queries = this.validQueries();
+
+            for(let q of queries) {
+                q()
+            }
+
+        }, 1000)
+
+        
+    }
+
+    protected success(message: string, data: any = undefined): SearchioResponse {
+        return success(`(${this.id}) ${message}`, data);
+    }
+
+    protected error(message: string, data: any = undefined): SearchioResponse {
+
+        console.log("FOO", data)
+
+        return error(`(${this.id}) ${message}`, data);
     }
 
     //  Function to fetch a set of credentials to be used while making a query
@@ -85,7 +134,6 @@ export class Stream {
            business = business.replace(/\s/g, "+");
            resolve(undefined)
         });
-        console.log(business);
         return(business);
     }
 
@@ -97,7 +145,6 @@ export class Stream {
 
         await new Promise((resolve) => {
             domain = url.match(domainPattern)[1];
-            console.log("DOMAIN EXTRACTED: " + domain);
             resolve(undefined);
         });
         return domain;

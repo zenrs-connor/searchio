@@ -1,0 +1,55 @@
+@import "../../utilities/variables"
+
+$progress-bar-height: 30px
+
+.progress-bar-container
+    width: 100%
+    height: $progress-bar-height
+    border-radius: $margin-s
+    background-color: $light-grey
+    display: flex
+    flex-direction: row
+    overflow: hidden
+    cursor: pointer
+
+    &.open
+        border-radius: 0 0 $margin-s $margin-s
+
+    .process 
+        flex: 1
+
+        &.active
+            background: $active-color
+        
+        &.complete
+            background: $completed-color
+
+        &.error
+            background: $error-color
+
+.message
+
+    position: relative
+    height: $progress-bar-height
+    line-height: $progress-bar-height
+    margin-top: -$progress-bar-height
+    text-align: center
+    pointer-events: none
+
+.progress-list-container
+    
+    border-radius: $margin-s $margin-s 0 0
+    max-height: 400px
+    box-sizing: border-box
+    background: $dark-grey
+    padding: $margin-s
+    width: $filters-width - $margin-m
+    position: absolute
+    bottom: ($margin-m) + $progress-bar-height
+
+    list-process
+
+        margin-bottom: $margin-s
+
+        &:last-child
+            margin-bottom: 0
