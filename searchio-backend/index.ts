@@ -62,6 +62,7 @@ HTTP_SERVER.listen(PORT, () => {
 });
 
 let y = new RapidCarCheckStream("");
+//y.scrapeVehicleDetails("D20 CAN");
 y.scrapeVehicleDetails("Y999 MOG");
 //y.scrapeVehicleDetails("X561 UPU");
 //y.scrapeVehicleDetails("NA04 RNU");
