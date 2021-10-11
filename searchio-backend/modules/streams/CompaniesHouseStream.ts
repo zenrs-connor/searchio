@@ -403,11 +403,23 @@ export class CompaniesHouseStream extends ScraperStream {
             console.log("\n\n---------COMPANY INFORMATION---------");
             console.log(companyInformation[0]);
 
-            return success(`(CompaniesHouseStream) Successfully stripeed company information`, companyInformation[0]);
+            return success(`(CompaniesHouseStream) Successfully stripped company information`, companyInformation[0]);
 
         } catch(err) {
             console.log(err);
             return error(`(CompaniesHouseStream) Could not strip company information`, err);
+        }
+    }
+
+    // Function to search for prior or current officers within a company
+    public async nameSearch(name: string = this.query): Promise<SearchioResponse>{
+        try{
+            name = name.replace(/\s+/g, '+');
+            await this.driver.get(`https://find-and-update.company-information.service.gov.uk/search?q=${name}`);
+
+            return success(`(CompaniesHouseStream) Successfully performed name search`);
+        } catch(err) {
+            return error(`(CompaniesHouseStream) Could not perform name search`, err);
         }
     }
 

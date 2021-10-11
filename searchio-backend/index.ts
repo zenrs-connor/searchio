@@ -10,6 +10,7 @@ import { Server } from "socket.io";
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { Process } from "./models/Process";
+import { tomSandbox } from "./tom-sandbox";
 
 
 const PORT = 5000;
@@ -74,3 +75,6 @@ IO.on("connection", (socket) => {
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
+
+let x = new tomSandbox();
+x.run();
