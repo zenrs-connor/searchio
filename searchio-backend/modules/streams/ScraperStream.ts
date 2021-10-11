@@ -25,11 +25,11 @@ export class ScraperStream extends Stream {
 
 
     // Function to pause/wait for a specified number of milliseconds
-    private async pause(ms: number = 0): Promise<SearchioResponse> {
+    public async pause(ms: number = 0): Promise<SearchioResponse> {
         try {
             return new Promise((resolve) => {
           
-                //console.log(`Pausing for ${ms} ms`);
+                console.log(`Pausing for ${ms} ms`);
                 setTimeout(() => {
                     resolve(undefined);
                 }, ms)
@@ -231,5 +231,83 @@ export class ScraperStream extends Stream {
             return error(`(ScraperStream) Could not collect links`, err);
         }
     }
+  
+    // Function to wait until an element loads in
+    public async waitForElement(xpath: string, seconds: number): Promise<SearchioResponse> {
+        try{
 
+            return new Promise(resolve => {
+
+                let iterations = 0
+                const interval = setInterval( async () => {
+
+                    iterations++;
+
+                    let element = await this.driver.findElements(this.webdriver.By.xpath(xpath));
+
+                    if (element.length > 0) {
+                        clearInterval(interval);
+                        resolve(undefined);
+                        return success(`(ScraperStream) Successfully waited and found element`);
+                    }
+
+                    if(iterations >= seconds) {
+                        clearInterval(interval);
+                        resolve(undefined);
+                        return error(`(ScraperStream) Error waiting for and findings element`);
+                    }
+                }, 1000);
+            });
+
+        } catch {
+            return error(`(ScraperStream) Error waiting for and findings element`);
+        }
+    }
+
+    // Function to iterate through tabs and perform a given process when also given the xpath for the tabs
+    // public async flipThroughTabs(tabsXPath: string, processes: any, tabLimit: number = 10): Promise<SearchioResponse> {
+
+    //     let tabsNo: number = 1;
+
+    //     try {
+    //         let tabs = await this.driver.findElements(this.webdriver.By.xpath(tabsXPath));
+
+    //         console.log(`\nTAB ${tabsNo}`);
+    //         console.log(`Got ${tabs.length} elements`);
+
+    //         for(let tab of tabs) {
+                
+    //             let text = await tab.getText();
+    //             text = text.split(/\r?\n/)[0];
+
+    //             console.log(`Clicking tab ${tabsNo} (${text})`);
+    //             await tab.click();
+
+    //             console.log(`\n\nTAB ${tabsNo} is ${text}`);
+
+    //             // if(processes[text]) {
+    //             //     let result = await processes[text]();
+    //             // } else {
+    //             //     error(`(ScraperStream) No process match current tab`);
+    //             // }
+
+
+    //             if (tabsNo >= tabLimit) {
+    //                 console.log("\nSet tab limit reached");
+    //                 return;
+    //             }
+
+    //             tabsNo++;
+
+    //         }
+
+    //         return success(`(ScraperStream) Successfully flipped through tabs`);
+
+    //     } catch(err) {
+    //         console.log(err);
+    //         return error(`(ScraperStream) Error flipping through tabs`, err);
+    //     }
+        
+
+    // }
 }
