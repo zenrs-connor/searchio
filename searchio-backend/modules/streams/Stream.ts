@@ -16,7 +16,7 @@ import { Process } from "../processes/Process";
 //   This class is the the superclass for all data streams used by Searchio.
 export class Stream {
 
-    protected id: DataSourceName = "Unnamed Source";                   //  Unique identifier used to tell data streams apart.
+    protected id: DataSourceName = "Unknown";                   //  Unique identifier used to tell data streams apart.
     protected query: string = '';                //  Empty string to hold the query term used while searching.
     protected credentials: Credentials;              //  Property to hold the current set of credentials that are being used by this Stream to make API calls.
     protected tags: StreamTag[] = [];               //  List of tags relevent to each data stream. Subclasses of this class will populate the list.
@@ -59,15 +59,12 @@ export class Stream {
         let match: any;     //  Variable to hold the result of each pattern match
         let valid = [];     //  Array of valid query functions
 
-        console.log(this.processes);
-
         //  Loop through each process of this Stream
         for(let process of this.processes) {
-
-            console.log(process.getPattern());
-
+            
             //  Check that the query matches the pattern
             match = query.match(process.getPattern());  
+
 
             //  If so, add the process into the array
             if(match !== null) valid.push(process);
@@ -98,9 +95,6 @@ export class Stream {
         setTimeout(() => {
 
             let processes = this.validProcesses();
-
-            console.log("FOO");
-            console.log(processes);
             
             for(let p of processes) {
                 p.execute();

@@ -35,6 +35,7 @@ export class Query {
 
             res = this.getValidStreams();
 
+            console.log("(Query) Valid Streams")
             console.log(res);
 
             if(!res.success) return res;
@@ -55,8 +56,6 @@ export class Query {
 
     private getValidStreams(query: string = this.query) {
         let s: Stream;
-
-        console.log("GETTING VALID STREAMS (QUERY)")
         
         let streams: Stream[] = [];
 

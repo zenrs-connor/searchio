@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 /* MODULES */
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
-import { Process } from "./models/Process";
+import { ProcessData } from "./models/ProcessData";
 
 
 const PORT = 5000;
@@ -54,7 +54,7 @@ IO.on("connection", (socket) => {
     })
     
     //  Event called when a Stream updates the status of one of its processes
-    socket.on("process-update", (update: Process) => {
+    socket.on("process-update", (update: ProcessData) => {
         console.log(`(IO) Got process update from ${socket.id}`);
         IO.to(socket.id).emit("process-update", update);
     });
