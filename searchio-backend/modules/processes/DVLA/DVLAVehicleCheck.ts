@@ -12,7 +12,7 @@ export class DVLAVehicleCheck extends DVLAProcess {
     protected name: "Vehicle Check";                 
     protected pattern: RegExp = REGISTRATION_PLATE;        
 
-    //  Process extends the ResponseEmitter class, so bve sure to include an argument for the socket
+    //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
     //  Processes also take a query on creation
     constructor(socket: SocketService, query: string) {
         super(socket, query);
