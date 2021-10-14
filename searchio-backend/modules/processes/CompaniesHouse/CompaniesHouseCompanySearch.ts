@@ -2,12 +2,12 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
-import { BUSINESS, NAMES } from "../../../assets/RegexPatterns";
+import { BUSINESS } from "../../../assets/RegexPatterns";
 
 
-export class CompaniesHouse extends CompaniesHouseProcess {
+export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
 
-    protected id = "CompaniesHouse";           
+    protected id = "CompaniesHouseCompanySearch";           
     protected name: "Company Check";
     protected pattern: RegExp = BUSINESS;
 
@@ -407,155 +407,6 @@ export class CompaniesHouse extends CompaniesHouseProcess {
         } catch(err) {
             console.log(err);
             return this.error(`(CompaniesHouseStream) Could not strip company information`, err);
-        }
-    }
-
-
-
-
-
-
-    /*
-
-
-
-        ----- NAME SEARCH FUNCTIONALITY -----
-
-
-
-    */
-
-
-
-    // Function to search for prior or current officers within a company
-    public async nameSearch(name: string = this.query): Promise<SearchioResponse> {
-        try{
-            name = name.replace(/\s+/g, '+');
-            await this.driver.get(`https://find-and-update.company-information.service.gov.uk/search/officers?q=${name}`);
-            let people = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripNamesPage.bind(this), 1);
-            console.log(people.data[7]);
-
-            return this.success(`(CompaniesHouseStream) Successfully performed name search`, people.data);
-        } catch(err) {
-            return this.error(`(CompaniesHouseStream) Could not perform name search`, err);
-        }
-    }
-
-    public async stripNamesPage(links): Promise<SearchioResponse> {
-        try{
-            const t = this;
-            let people = await t.openKillTab(links, this.stripOfficer.bind(this));
-
-            return this.success(`(CompaniesHouseStream) Successfully stripped a page of officers`, people.data);
-        } catch(err) {
-            return this.error(`(CompaniesHouseStream) Could not perform strip on page of officers`, err);
-        }
-    }
-
-    public async stripOfficer(): Promise<SearchioResponse> {
-        try{
-
-            const t = this;
-
-            let officerFormat: {   
-                name: string,
-                numberOfAppointments?: string, 
-                DOB?: string,
-                appointments?: any[]
-            } = {
-                name: undefined
-            };
-
-            // Check name element is present
-            let name = await t.driver.findElements(t.webdriver.By.xpath('//h1[@id="officer-name"]'));
-            if(name.length > 0) {
-                name = await t.driver.findElement(t.webdriver.By.xpath('//h1[@id="officer-name"]')).getText();
-                officerFormat.name = name;
-            }
-
-            // Check number of appointments element is present
-            let numberOfAppointments = await t.driver.findElements(t.webdriver.By.xpath('//h2[@id="personal-appointments"]'));
-            if(numberOfAppointments.length > 0){
-                numberOfAppointments = await t.driver.findElement(t.webdriver.By.xpath('//h2[@id="personal-appointments"]')).getText();
-                officerFormat.numberOfAppointments = numberOfAppointments;
-            }
-
-            // Check DOB element is present
-            let DOB = await t.driver.findElements(t.webdriver.By.xpath('//dd[@id="officer-date-of-birth-value"]'));
-            //console.log(`DOB Length: ${DOB.length}`);
-            if(DOB.length > 0) {
-                DOB = await t.driver.findElement(t.webdriver.By.xpath('//dd[@id="officer-date-of-birth-value"]')).getText();
-                officerFormat.DOB = DOB;
-            }
-
-            // Collect appointment divs
-            let appointments = await t.driver.findElements(t.webdriver.By.xpath('//div[@class="appointments-list"]/div'));
-
-            let appointmentsArray: any[] = [];
-
-            for(let appointment of appointments) {
-                let appointmentFormat: {
-                    companyName: string,
-                    companyStatus?: string,
-                    address?: string,
-                    role?: string,
-                    roleStatus?: string,
-                    appointed?: Date,
-                    resigned?: Date,
-                    nationality?: string,
-                    country?: string,
-                    occupation?: string
-                } = {
-                    companyName: undefined
-                }
-
-                let companyName = await appointment.findElements(t.webdriver.By.xpath('./h2/a'));
-                if(companyName.length > 0) {
-                    companyName = await appointment.findElement(t.webdriver.By.xpath('./h2/a')).getText();
-                    appointmentFormat.companyName = companyName;
-                }
-
-                let elements = await appointment.findElements(t.webdriver.By.tagName('dl'));
-                for(let element of elements) {
-                    let title = await element.findElements(t.webdriver.By.xpath('./dt'));
-                    let text = await element.findElements(t.webdriver.By.xpath('./dd'));
-                    if(title.length> 0 && text.length > 0) {
-                        title = await element.findElement(t.webdriver.By.xpath('./dt')).getText();
-                        text = await element.findElement(t.webdriver.By.xpath('./dd')).getText();
-                        if(title == "Company status") {
-                            appointmentFormat.companyStatus = text;
-                        } else if(title == "Correspondence address") {
-                            appointmentFormat.address = text;
-                        } else if(title == "Role ACTIVE") {
-                            appointmentFormat.role = text;
-                            appointmentFormat.roleStatus = title;
-                        } else if(title == "Role RESIGNED") {
-                            appointmentFormat.role = text;
-                            appointmentFormat.roleStatus = title;
-                        } else if(title == "Appointed on") {
-                            appointmentFormat.appointed = new Date(text);
-                        } else if(title == "Resigned on") {
-                            appointmentFormat.resigned = new Date(text);
-                        } else if(title == "Nationality") {
-                            appointmentFormat.nationality = text;
-                        } else if(title == "Country of residence") {
-                            appointmentFormat.country = text;
-                        } else if(title == "Occupation") {
-                            appointmentFormat.occupation = text;
-                        } else if(title == "other") {
-                            console.log('---------other---------');
-                        } 
-                        
-                    }
-                }
-                appointmentsArray.push(appointmentFormat);
-
-            }
-            officerFormat.appointments = appointmentsArray;
-
-            return this.success(`(CompaniesHouseStream) Successfully stripped officer page`, officerFormat);
-        } catch(err) {
-            return this.error(`(CompaniesHouseStream) Could not strip officer`, err);
         }
     }
 
