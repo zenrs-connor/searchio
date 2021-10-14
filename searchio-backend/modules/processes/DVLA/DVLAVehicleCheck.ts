@@ -1,22 +1,16 @@
 import { REGISTRATION_PLATE } from "../../../assets/RegexPatterns";
 import { SearchioResponse } from "../../../models/SearchioResponse";
-import { DataSourceName } from "../../../types/DataSourceName";
-import { ProcessStatusCodeEnum } from "../../../types/ProcessStatusCode";
 import { SocketService } from "../../SocketService";
-import { Process } from "../Process";
 import * as MD5 from "md5";
 import { ProcessResult } from "../../../models/ProcessResult";
 import { ResultData } from "../../../models/ResultData";
+import { DVLAProcess } from "./DVLAProcesss";
 
-export class DVLAVehicleCheck extends Process {
+export class DVLAVehicleCheck extends DVLAProcess {
 
-
-    protected id = "DVLAVehicleCheck";                   
-    protected source: DataSourceName = "DVLA";      
+    protected id = "DVLAVehicleCheck";           
     protected name: "Vehicle Check";                 
     protected pattern: RegExp = REGISTRATION_PLATE;        
-    
-    
 
     //  Process extends the ResponseEmitter class, so bve sure to include an argument for the socket
     //  Processes also take a query on creation
@@ -28,8 +22,11 @@ export class DVLAVehicleCheck extends Process {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
+        this.initWebdriver();
         await this.loadVehicleDetails();
-        return await this.scrapeVehicleDetails();
+        let result = await this.scrapeVehicleDetails();
+        this.destroyWebdriver();
+        return result;
     }
 
     /*
@@ -244,29 +241,6 @@ export class DVLAVehicleCheck extends Process {
             //  Build the array of Results from the response
             const data: ResultData[] = [];
 
-            /*
-            registrationPlate: string, 
-                vehicleMake?: string,
-                taxStatus?: string, 
-                taxDue?: Date,
-                motStatus?: string,
-                motDue?: Date,
-                firstRegistration?: Date,
-                yearofManufacture?: Date,
-                cylinderCapacity?: string,
-                co2Emissions?: string,
-                fuelType?: string,
-                euroStatus?: string,
-                realDrivingEmissions?: string,
-                exportMarker?: string,
-                vehicleStatus?: string,
-                vehicleColour?: string,
-                vehicleTypeApproval?: string,
-                wheelplan?: string,
-                revenueWeight?: string,
-                lastV5C?: Date
-            */
-
             if(carFormat.registrationPlate) data.push({ name: "Registration Plate", type: "Text", data: carFormat.registrationPlate });
             if(carFormat.vehicleMake) data.push({ name: "Vehicle Make", type: "Text", data: carFormat.vehicleMake });
             if(carFormat.taxStatus) data.push({ name: "Tax Status", type: "Text", data: carFormat.taxStatus });
@@ -288,24 +262,9 @@ export class DVLAVehicleCheck extends Process {
             if(carFormat.revenueWeight) data.push({ name: "Revenue Weight", type: "Text", data: carFormat.revenueWeight });
             if(carFormat.lastV5C) data.push({ name: "Last V5C", type: "Date", data: carFormat.lastV5C });
 
+            this.setStatus("COMPLETED", `Got ${data.length} data.`);
 
-
-            //  Build the ProcessResult object
-            const result: any = {
-                source: this.source,
-                process: this.name,
-                data: data
-            }
-            
-            result.hash = MD5(result);
-            result.query = this.query;
-
-            //  Emit the result of this process
-            this.socket.result(result as ProcessResult);
-
-            this.setStatus("COMPLETED", `Got ${data} data.`);
-
-            return this.success(`Successfully scraped vehicle details`, carFormat);
+            return this.success(`Successfully scraped vehicle details`, data);
         } catch(err) {
 
             console.log(err);

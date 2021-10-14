@@ -1,3 +1,4 @@
+import { ResultData } from "../../models/ResultData";
 import { SearchioResponse } from "../../models/SearchioResponse";
 import { DataSourceName } from "../../types/DataSourceName";
 import { SocketService } from "../SocketService";
@@ -11,7 +12,8 @@ import { Process } from "./Process";
 
 
 
-//  Export a new class (the filename should be the same as this) which extends the Process superclass
+//  Export a new class (the filename should be the same as this) which extends a Process superclass
+//  There should be a superclass specific to this data source such as "DVLAProcess" or "NumverifyProcess"
 export class TemplateProcess extends Process {
 
     /* 
@@ -19,7 +21,6 @@ export class TemplateProcess extends Process {
     */
 
     protected id = "TemplateProcess";                   //  The ID of a Process should be the same as the class name
-    protected source: DataSourceName = "Unknown";       //  Define which source this process calls upon
     protected name: "Template Process";                 //  Provide a user-readble name for this process.
     protected pattern: RegExp = /^$/;                   //  Assign a valid regex pattern to match against potential queries
 
@@ -30,8 +31,7 @@ export class TemplateProcess extends Process {
     }
 
     //  Overwrite of the abstract function held in Process.ts
-    //  This function is what is called when the Process executes
-    //  It returns a SearchioResponse containing any success or error data
+    //  This function is what is called when the Process executes and it should return a searchio response containing any results
     protected async process(): Promise<SearchioResponse> {
 
         //  Remember to use proper error handling
@@ -46,7 +46,7 @@ export class TemplateProcess extends Process {
             //  Feel free to update the status of the process, but remember that these messages will be user-facing.
             this.setStatus("ACTIVE", `Scraped thing, rejigging format... `)
 
-            let results = await this.rejigFormat();
+            let results: ResultData[] = await this.rejigFormat();
 
             this.setStatus("COMPLETED");
 
@@ -71,7 +71,7 @@ export class TemplateProcess extends Process {
     */
 
     private async scrapeThing() {}
-    private async rejigFormat() {}
+    private async rejigFormat(): Promise<ResultData[]> { return [] }
 
 
 }
