@@ -2,7 +2,7 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
-import { BUSINESS, NAMES } from "../../../assets/RegexPatterns";
+import { NAMES } from "../../../assets/RegexPatterns";
 
 
 export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
