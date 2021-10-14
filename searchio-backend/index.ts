@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 /* MODULES */
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
-import { ProcessData } from "./models/ProcessData";
+import { Process } from "./models/Process";
 
 
 const PORT = 5000;

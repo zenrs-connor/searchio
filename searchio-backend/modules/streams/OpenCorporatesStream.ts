@@ -1,8 +1,8 @@
-import { SearchioResponse } from "../../../models/SearchioResponse";
-import { error, success } from "../../ResponseHandler";
-import { ScraperStream } from "../ScraperStream";
+import { SearchioResponse } from "../../models/SearchioResponse";
+import { error, success } from "../ResponseHandler";
+import { ScraperStream } from "./ScraperStream";
 import { WebElement } from "selenium-webdriver";
-import { Stream } from "../Stream";
+import { Stream } from "./Stream";
 import { Console } from "console";
 import { copyFile } from "fs";
 

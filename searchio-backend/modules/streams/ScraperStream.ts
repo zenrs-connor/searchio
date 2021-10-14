@@ -185,31 +185,34 @@ export class ScraperStream extends Stream {
     // Function that takes in links and opens them in a new tab iteratively to perform a process
     public async openKillTab(links: any[], process: any): Promise<SearchioResponse> {
         let results: any[] = [];
+        console.log("\n\nIn openKillTab");
+        console.log(`We have ${links.length} links`);
+        const t = this; 
         
         try {
             for(let link of links) {
-
-                // Opening link in new tab
-                await link.sendKeys(this.webdriver.Key.CONTROL + this.webdriver.Key.RETURN);
                 
-                await this.pause(2000);
+                // Opening link in new tab
+                await link.sendKeys(t.webdriver.Key.CONTROL + t.webdriver.Key.RETURN);
+                
+                await t.pause(2000);
 
                 // Switching tabs
-                let tabs = await this.driver.getAllWindowHandles();
+                let tabs = await t.driver.getAllWindowHandles();
                 console.log(`START TABS: ${tabs}`);
-                await this.driver.switchTo().window(tabs[tabs.length - 1]);
+                await t.driver.switchTo().window(tabs[tabs.length - 1]);
                 
                 // Performing process
                 let result = await process();
                 results.push(result.data);
 
                 
-                await this.pause(1500);
+                await t.pause(1500);
                 
                 // Killing tab
-                await this.driver.close();
-                await this.pause(2000);
-                await this.driver.switchTo().window(tabs[tabs.length - 2]);
+                await t.driver.close();
+                await t.pause(2000);
+                await t.driver.switchTo().window(tabs[tabs.length - 2]);
                 console.log(`END TABS: ${tabs}`);
                 
 
