@@ -6,15 +6,15 @@ import { Process } from "../Process";
 import * as MD5 from "md5";
 import { ProcessResult } from "../../../models/ProcessResult";
 import { PHONE_NUMBER } from "../../../assets/RegexPatterns";
+import { NumverifyProcess } from "./NumverifyProcess";
 
 const request = require('request');
 const NUMVERIFY_API_KEY = 'c69d685d3534f116078b3386efae3eee';
 
 
-export class NumverifyValidate extends Process {
+export class NumverifyValidate extends NumverifyProcess {
 
     protected id = "NumverifyValidate";
-    protected source: DataSourceName = "Numverify";
     protected name: "Validate Number";
     protected pattern: RegExp = PHONE_NUMBER;
 
@@ -27,7 +27,6 @@ export class NumverifyValidate extends Process {
         //  Set status of this process to ACTIVE
         this.setStatus("ACTIVE", `Validating number ${this.query}...`);
 
-        
         //  As a "request" call is being made to an API, a Promise is needed rather than a simple "await"
         //  The result of the call is stored in  a constant
         const response: any = await new Promise((resolve) => {
@@ -68,24 +67,8 @@ export class NumverifyValidate extends Process {
                 { name: "Line Type", type: "Text", data: response.line_type },
             ];
 
-            //  Build the ProcessResult object
-            const result: any = {
-                source: this.id,
-                process: this.name,
-                data: data
-            }
-            
-            result.hash = MD5(result);
-            result.query = this.query;
-
-            //  Update the process state to COMPLETED
-            this.setStatus("COMPLETED");
-
-            //  Emit the result of this process
-            this.socket.result(result as ProcessResult);
-
             //  Return a successful SearchioResponse attaching the result
-            return this.success(`Validated phone number.`, result)
+            return this.success(`Validated phone number.`, data)
 
         } else {
 

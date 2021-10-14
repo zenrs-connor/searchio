@@ -4,13 +4,16 @@ import { DataSourceName } from "../../types/DataSourceName";
 import { ProcessCode, ProcessStatus, ProcessStatusCodeEnum } from "../../types/ProcessStatusCode";
 import { ResponseEmitter } from "../ResponseEmitter";
 import { SocketService } from "../SocketService";
+import * as MD5 from "md5";
 
 //  Class to control each individual process held by a Stream
 
 require('chromedriver');
 
 import { WebElement } from 'selenium-webdriver';
-var options = {'args':['--disable-notifications','--no-sandbox']}
+import { ResultData } from "../../models/ResultData";
+import { ProcessResult } from "../../models/ProcessResult";
+
 
 
 export class Process extends ResponseEmitter {
@@ -24,14 +27,37 @@ export class Process extends ResponseEmitter {
     protected message: string = "Awaiting instruction...";      //  A message to describe the current status of this process
     protected pattern: RegExp = /^$/;
 
-    //  Scraping Capabilities
-    protected webdriver = require('selenium-webdriver');
-    protected capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions',options);;
-    protected driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
+    //  Webdriver Variables
+    protected webdriver: any;
+    protected capabilities: any;
+    protected driver: any;
+    
+
 
     constructor(socket: SocketService, query: string = "") {
         super(socket);
         this.query = query;
+    }
+
+    //  Function to build a webdriver to use for scraping
+    //  Defaults to headless, so make to to assign headless = false when testing
+    public initWebdriver(headless: boolean = true) {
+
+        var options = { args:['--disable-notifications','--no-sandbox']}
+        if(headless) options.args.push('--headless');
+        this.webdriver = require('selenium-webdriver');
+        this.capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions' ,options);
+        this.driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
+
+    }
+
+    //  Function to destroy the webdriver after a process has completed
+    //  Make sure to call this at the end of each scraping process to prevent memory leaks into unused browser windows. 
+    public destroyWebdriver() {
+        this.driver.close();
+        delete this.webdriver;
+        delete this.capabilities;
+        delete this.driver;
     }
 
     public getPattern(): RegExp { return this.pattern; }
@@ -94,25 +120,54 @@ export class Process extends ResponseEmitter {
 
     //  Start the process
     public async execute() {
-
-
-        console.log("EXECUTING!");
-
+        
         this.setStatus("ACTIVE");
 
         try {
-            let result = await this.process();
-            if(result.success) {
-                this.setStatus("COMPLETED", result.message);
+
+            //  Begin the process function
+            const response = await this.process();
+
+            if(response.success) {
+
+                //  Update the status of this process to Completed
+                this.setStatus("COMPLETED", response.message);
+
+                //  Build a formatted result to be emitted and cached
+                const result = this.buildResult(response.data);
+
+                //  Emit the result of this process
+                this.socket.result(result as ProcessResult);
+
             } else {
-                this.setStatus("ERROR", result.message);
+                //  If an error has occured as a result of the process, update the status to Error
+                this.setStatus("ERROR", response.message);
             }
         } catch(err) {
+
+            //  In the case of an uncaught process error, update the status to Error
             this.setStatus("ERROR", JSON.stringify(err))
         }
 
     }
 
+    protected buildResult(data: ResultData[]): ProcessResult {
+
+        //  Build the ProcessResult object without 
+        const result: any = {
+            source: this.source,
+            process_id: this.id,
+            process: this.name,
+            data: data
+        }
+        
+        //  Create a hash of this result data, then 
+        result.hash = MD5(result);
+        result.query = this.query;
+
+        return result as ProcessResult;
+
+    }
 
     //  ABSTRACT FUNCTION!
     //  This function is the meat of the whole class
@@ -121,9 +176,7 @@ export class Process extends ResponseEmitter {
         return this.success("Success!");
     }
 
-
-
-
+    
     /* SCRAPER FUNCTIONALITY */
 
     // Function to pause/wait for a specified number of milliseconds

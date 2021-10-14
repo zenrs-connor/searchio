@@ -32,7 +32,10 @@ export class QueryManager {
                 if(!res.success) return res;
 
                 //  Start the data collection process of the Query
-                q.start();
+
+                setTimeout(() => {
+                    q.start();
+                }, 1000);
 
                 //  Add the query to the index of active queries
                 this.queries[query] = q;
