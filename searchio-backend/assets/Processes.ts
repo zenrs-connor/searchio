@@ -1,4 +1,5 @@
 import { DVLAVehicleCheck } from "../modules/processes/DVLA/DVLAVehicleCheck";
+import { HaveIBeenPwnedBreaches } from "../modules/processes/HIBP/HaveIBeenPwnedBreaches";
 import { NumverifyValidate } from "../modules/processes/Numverify/NumverifyValidate";
 
 /*
@@ -16,4 +17,7 @@ export const PROCESSES: any = [
 
     DVLAVehicleCheck,
 
+    // HaveIBeenPwned Processes
+
+    HaveIBeenPwnedBreaches
 ]
