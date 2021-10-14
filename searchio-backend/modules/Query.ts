@@ -6,11 +6,14 @@ import { QueryStatusCodeEnum } from "../types/QueryStatusCode";
 import { Streams } from "../assets/Streams";
 import { error, success } from "./ResponseHandler";
 import { SearchioResponse } from "../models/SearchioResponse";
+import { ResponseEmitter } from "./ResponseEmitter";
+import { Process } from "./processes/Process";
+import { PROCESSES } from "../assets/Processes";
 
 export class Query {
 
     private query: string;
-    private streams: Stream[] = [];
+    private processes: Process[] = [];
     private socket: SocketService;
     private status: QueryStatus = {
         code: 1,
@@ -32,10 +35,11 @@ export class Query {
 
             if(!res.success) return res;
 
-            res = this.getValidStreams();
+            res = this.getValidProcesses();
+
             if(!res.success) return res;
 
-            this.streams = res.data as Stream[];
+            this.processes = res.data as Process[];
             return success(`(Query) Successfully built query "${this.query}"`)
         
 
@@ -48,25 +52,29 @@ export class Query {
         return this.socket.getID();
     }
 
+    private getValidProcesses(query: string = this.query) {
 
-    private getValidStreams(query: string = this.query) {
-        let s: Stream;
-        
-        let streams: Stream[] = [];
+        const processes: Process[] = []
+        let p: Process;
+        let match: any;
 
         try {
-            for(let proto of Streams) {
-                s = new proto(query, this.socket);
-                if(s.validQueries().length > 0) {
-                    streams.push(s);
+
+            for(let proto of PROCESSES) {
+                p = new proto(this.socket, query);
+                match = query.match(p.getPattern());
+                if(match) {
+                    processes.push(p);
                 }
             }
 
-            return success(`Got ${streams.length} valid data stream${ streams.length === 1 ? '' : 's' }.`, streams);
+            return success(`(Query) Got ${processes.length} valid process${ processes.length === 1 ? '' : 'es' }.`, processes);
 
         } catch(err) {
-            return error(`Could not get valid streams.`)
+            return error(`(Query) Could not get valid processes.`)
         }
+
+
 
     }
 
@@ -86,8 +94,8 @@ export class Query {
         return this.status;
     }
 
-    public getStreams() {
-        return this.streams;
+    public getProcesses() {
+        return this.processes;
     }
 
     public start() {
@@ -97,8 +105,8 @@ export class Query {
             message: "Query is active."
         }
 
-        for(let stream of this.streams) {
-            stream.start();
+        for(let process of this.processes) {
+            process.execute();
         }
 
     }

@@ -14,7 +14,6 @@ export class CompaniesHouseStream extends ScraperStream {
     constructor(query: string, socket: SocketService) {
         super(query, socket);
         this.tags.push("companies-house");
-        console.log(this.tags);
     }
 
 

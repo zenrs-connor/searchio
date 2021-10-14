@@ -10,7 +10,6 @@ import { Server } from "socket.io";
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { Process } from "./models/Process";
-import { tomSandbox } from "./tom-sandbox";
 
 
 const PORT = 5000;
@@ -55,7 +54,7 @@ IO.on("connection", (socket) => {
     })
     
     //  Event called when a Stream updates the status of one of its processes
-    socket.on("process-update", (update: Process) => {
+    socket.on("process-update", (update: ProcessData) => {
         console.log(`(IO) Got process update from ${socket.id}`);
         IO.to(socket.id).emit("process-update", update);
     });
@@ -75,6 +74,3 @@ IO.on("connection", (socket) => {
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
-
-let x = new tomSandbox();
-x.run();

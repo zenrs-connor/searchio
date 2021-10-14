@@ -1,5 +1,5 @@
 import { io as IO, Socket } from 'socket.io-client';
-import { Process } from '../models/Process';
+import { ProcessData } from '../models/ProcessData';
 import { ProcessResult } from '../models/ProcessResult';
 import { SearchioResponse } from '../models/SearchioResponse';
 import { DataSourceName } from '../types/DataSourceName';
@@ -28,7 +28,7 @@ export class SocketService {
 
     }
 
-    public processUpdate(process: Process) {
+    public processUpdate(process: ProcessData) {
         this.socket.emit("process-update", process);
     }
 
