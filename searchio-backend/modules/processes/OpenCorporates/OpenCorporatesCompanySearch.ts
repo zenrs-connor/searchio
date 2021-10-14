@@ -90,31 +90,6 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
         return response;
     }
 
-    public async officerSearch(name: string) {
-        let response;
-
-        await new Promise((resolve) => {
-
-            this.reformat(name).then(name => {
-                let url = `https://api.opencorporates.com/v0.4/officers/search?q=${name}`;
-
-                request(url, async (err, res, body) => {
-
-                    console.log(body);
-                    response = body;
-
-                    if(err) {
-                        response = { success: false, error: err };
-                    }
-                    resolve(undefined);
-                });
-            });
-        });
-
-        return response;
-    }
-
-
 
     /*
 
