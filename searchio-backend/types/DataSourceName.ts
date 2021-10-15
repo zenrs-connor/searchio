@@ -1,1 +1,1 @@
-export type DataSourceName = "Unknown" | "Numverify" | "DVLA" | "Companies-House" | "Open-Corporates" | "HIBP" | "Hunter";
+export type DataSourceName = "Unknown" | "Numverify" | "DVLA" | "Companies-House" | "Open-Corporates" | "HIBP" | "Hunter" | "IPAPI" | "IPStack" | "MailBoxLayer" | "192" | "PhoneInfoga" | "RapidCarCheck";
