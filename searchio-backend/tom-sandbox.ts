@@ -6,17 +6,18 @@ import { HunterDomainSearch } from "./modules/processes/Hunter/HunterDomainSearc
 import { HunterEmailSearch } from "./modules/processes/Hunter/HunterEmailSearch";
 import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
+import { Process } from "./modules/processes/Process";
 
 
-export class tomSandbox extends Stream {
+export class tomSandbox extends Process {
 
     constructor() {
-        super('',undefined);
+        super(undefined, '');
     };
 
     public async run() {
-        let x = new MailBoxLayerSearch(undefined, "");
-        let y = await x.validateEmail("PhillipsEJ1@cardiff.ac.uk");
+        let x = new HunterDomainSearch(undefined, "");
+        let y = await x.process("cardiff.ac.uk");
         console.log(y);
     }
 

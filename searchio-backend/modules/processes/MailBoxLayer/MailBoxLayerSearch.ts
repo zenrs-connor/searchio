@@ -21,9 +21,16 @@ export class MailBoxLayerSearch extends MailBoxLayerProcess {
         super(socket, query);
     }
 
+    //  Overwrite of the abstract function held in Process.ts
+    //  This function is what is called when the Process executes
+    //  It returns a SearchioResponse containing any success or error data
+    protected async process(): Promise<SearchioResponse> {
+        let result = await this.validateEmail();
+        return result;
+    }
 
     // Returns information about the status of a given email address
-    public async validateEmail(email: string): Promise<SearchioResponse> {
+    public async validateEmail(email: string = this.query): Promise<SearchioResponse> {
         let response;
         try {
 
