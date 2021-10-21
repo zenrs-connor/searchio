@@ -31,7 +31,7 @@ export class HunterDomainSearch extends HunterProcess {
     }
 
 
-    
+    // Returns a list of emails associated with a domain
     public async domainSearch(domain: string = this.query) {
         let response;
         

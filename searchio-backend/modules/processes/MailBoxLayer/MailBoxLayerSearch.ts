@@ -22,7 +22,7 @@ export class MailBoxLayerSearch extends MailBoxLayerProcess {
     }
 
 
-
+    // Returns information about the status of a given email address
     public async validateEmail(email: string): Promise<SearchioResponse> {
         let response;
         try {

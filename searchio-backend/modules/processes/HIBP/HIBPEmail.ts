@@ -6,6 +6,8 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 const request = require('request');
 const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
 
+import * as fs from "fs";
+
 export class HIBPEmail extends HIBPProcess {
 
     protected id = "HIBP";           
@@ -30,7 +32,7 @@ export class HIBPEmail extends HIBPProcess {
     }
 
 
-
+    // Returns a list of all breaches recorded
     public async breaches() {
         let response;
         try {
@@ -56,7 +58,7 @@ export class HIBPEmail extends HIBPProcess {
         
     }
 
-
+    // Returns a list of all breaches an account was involved in
     public async pastesForAccount(account: string = this.query) {
         let response;
 
@@ -73,18 +75,18 @@ export class HIBPEmail extends HIBPProcess {
                 };
         
                 request(options, (err, res, body) => {
-                    
+
                     if(err) {
                         response = { success: false, error: err };
                     } else {
-        
+                        
                         body = body ? body : [];
         
                         let arr = [];
                         let d;
         
                         for(let paste of body) {
-        
+
                             let name = paste.Source;
                             let description = `ID: ${paste.Id}<br>`;
         

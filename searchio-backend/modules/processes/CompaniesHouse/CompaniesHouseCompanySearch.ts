@@ -33,11 +33,12 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
     // Function to strip companies out of search
     public async companySearch(company: string): Promise<SearchioResponse> {
 
+        // Prepare company name for URL
         company = company.replace(/\s+/g, '+');
         let links: any[] = [];
 
         try {
-            //await this.loadSearchEngine();
+
             await this.naviagteTo(`https://find-and-update.company-information.service.gov.uk/search?q=${company}`);
 
             let res = await this.collectLinks("//ul[@id='results']/li/h3/a");

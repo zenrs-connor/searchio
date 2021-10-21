@@ -31,7 +31,7 @@ export class HunterEmailSearch extends HunterProcess {
     }
 
 
-    
+    // Returns a possible email for a domain when given a first and last name
     public async emailFinder(firstName: string, lastName: string, domain: string) {
         let response;
         try{

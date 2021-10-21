@@ -57,7 +57,6 @@ export class DVLAVehicleCheck extends DVLAProcess {
 
         try {
             
-
             await this.loadVehicleDetails(reg);
 
             this.setStatus("ACTIVE", `Scraping vehicle details...`)

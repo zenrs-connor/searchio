@@ -69,6 +69,8 @@ export class PhoneInfogaSearch extends PhoneInfogaProcess {
 
     }
 
+
+    // Function to generate social media google dork links
     public async generateSocialMediaDorks(numbers: NumberFormats): Promise<SearchioResponse> {
         let socialMediaDorks: string[] = [];
         try {
@@ -92,6 +94,7 @@ export class PhoneInfogaSearch extends PhoneInfogaProcess {
         }
     }
 
+    // Function to generate google dork links for traces of a number online (community based)
     public async generateFootprintDorks(numbers: NumberFormats): Promise<SearchioResponse> {
         let footprintDorks: string[] = [];
         try {
@@ -116,6 +119,7 @@ export class PhoneInfogaSearch extends PhoneInfogaProcess {
         return(undefined);
     }
 
+    // Function to generate google dork links to see if a number is being offered by a temporary or disposable phone number serivce
     public async generateTemporaryDorks(numbers: NumberFormats): Promise<SearchioResponse> {
         let temporaryDorks: string[] = [];
         try {

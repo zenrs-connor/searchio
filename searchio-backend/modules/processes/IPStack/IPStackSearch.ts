@@ -30,6 +30,7 @@ export class IPStackSearch extends IPStackProcess {
     }
 
     
+    // Returns information associated with an IP address
     public async ipLookup(IP: string = this.query) {
         
         let response;

@@ -32,6 +32,8 @@ export class IPAPISearch extends IPAPIProcess {
         return result;
     }
 
+
+    // Returns information associated with an IP address
     public async ipLookup(IP: string = this.query): Promise<SearchioResponse> {
         let response;
         try {

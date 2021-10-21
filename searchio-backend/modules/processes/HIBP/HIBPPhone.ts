@@ -30,7 +30,7 @@ export class HIBPPhone extends HIBPProcess {
     }
 
 
-
+    // Returns a list of all breaches recorded
     public async breaches() {
         let response;
         try {
@@ -56,7 +56,7 @@ export class HIBPPhone extends HIBPProcess {
         
     }
 
-
+    // Returns a list of all breaches a phone number was involved in
     public async pastesForAccount(account: string = this.query) {
         let response;
 

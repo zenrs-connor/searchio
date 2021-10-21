@@ -40,6 +40,7 @@ export class Names192Search extends Names192Process {
             
             await this.pause(3000);
 
+            // Input name and click search button
             await this.driver.findElement(this.webdriver.By.xpath('//input[@id="peopleBusinesses_name"]')).sendKeys(name);
             await this.driver.findElement(this.webdriver.By.xpath('//input[@id="searchBtn"]')).click();
 
@@ -61,7 +62,10 @@ export class Names192Search extends Names192Process {
 
             let records: any[] = [];
 
+            // Collect all records
             let results = await this.driver.findElements(this.webdriver.By.xpath('//ul[@class="js-ont-gmap-recordset ont-ul-results-list"]/li'));
+            
+            // Iterate through records and strip info
             for(let result of results){
                 
                 let recordFormat: {

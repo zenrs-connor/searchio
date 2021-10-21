@@ -29,6 +29,7 @@ export class RapidCarCheckStream extends RapidCarCheckProcess {
 
 
 
+    // Fcuntion to load the search and check daily limit has not been met
     public async loadVehicleDetails(reg: string): Promise<SearchioResponse> {
         try{
             reg = reg.replace(/\s+/g, '+');
@@ -52,6 +53,7 @@ export class RapidCarCheckStream extends RapidCarCheckProcess {
         }
     }
 
+    // Function to scrape majority of vehicle information
     public async scrapeVehicleInformation(reg: string): Promise<SearchioResponse> {
         try{
             let carFormat: {   
@@ -230,6 +232,7 @@ export class RapidCarCheckStream extends RapidCarCheckProcess {
         }
     }
 
+    // Function to scrape estimated mileage and mileage data obtained through MOT's
     public async scrapeMileageInformation(reg: string): Promise<SearchioResponse> {
         try{
             let mileageFormat: {   
@@ -284,6 +287,7 @@ export class RapidCarCheckStream extends RapidCarCheckProcess {
         }
     }
 
+    // Function to scrape MOT history information
     public async scrapeMOTHistory(reg: string): Promise<SearchioResponse> {
         try{
             let motFormat: {
@@ -311,6 +315,7 @@ export class RapidCarCheckStream extends RapidCarCheckProcess {
         }
     }
 
+    // Main function to call, will collate all information
     public async scrapeVehicleDetails(reg: string = this.query): Promise<SearchioResponse> {
         try{
             await this.loadVehicleDetails(reg);
