@@ -51,19 +51,7 @@ export class HaveIBeenPwnedBreaches extends HaveIBeenPwnedProcess {
                 return accountBreached;
             }
 
-
             const results: ResultData[] = [];
-
-            /*for(let breach of accountBreached.data) {
-
-                b = breaches.data[breach.Name];
-
-                results.push({
-                    name: 'Title',
-                    type: 
-                })
-
-            }*/
 
             const table = {
 
@@ -73,7 +61,7 @@ export class HaveIBeenPwnedBreaches extends HaveIBeenPwnedProcess {
                     { title: "Date", key: "date", type: "Date" },
                     { title: "Data Types", key: "data", type: "Text" },
                     { title: "No. Pwned", key: "count", type: "Number" },
-                    { title: "Description", key: "description", type: "Text" }
+                    { title: "Description", key: "description", type: "Html", width: '500px' }
                 ],
                 rows: []
             }
@@ -89,19 +77,22 @@ export class HaveIBeenPwnedBreaches extends HaveIBeenPwnedProcess {
                     dataTypes += `${type}, `;
                 }
                 if(dataTypes !== "") {
-                    dataTypes.substr(0, dataTypes.length - 2);
+                    dataTypes = dataTypes.substr(0, dataTypes.length - 2);
                 }
 
                 table.rows.push({
                     logo: b.LogoPath,
-                    title: b.title,
-                    date: b.breachDate,
+                    title: b.Title,
+                    date: b.BreachDate,
                     data: dataTypes,
-                    count: b.PwnedCount,
+                    count: b.PwnCount,
                     description: b.Description
                 });
 
             }
+
+
+
 
             let result: ResultData = {
                 name: `Account Breaches For ${ this.query } (HaveIBeenPwned)`,
@@ -200,6 +191,45 @@ export class HaveIBeenPwnedBreaches extends HaveIBeenPwnedProcess {
 
         } catch(err) {
             return this.error(`Uncaught error while getting account breaches.`, err);
+        }
+        
+
+
+    }
+
+    public async accountPastes(query: string = this.query): Promise<SearchioResponse> {
+
+        try {
+
+            let response: any = await new Promise(resolve => {
+            
+                const options = {
+                    url: `https://haveibeenpwned.com/api/v3/pasteaccount/${query}`,
+                    headers: {
+                        'User-Agent': 'request',
+                        'hibp-api-key': HIBP_API_KEY
+                    },
+                    json: true
+                }
+
+
+                request(options, async (err, res, body) => {
+                    if(!err) {
+                        resolve({ success: true, data: body });
+                    } else {;
+                        resolve({ success: false, data: err });
+                    }
+                });
+            });
+    
+            if(response.success) {
+                return this.success(`Successfully got HaveIBeenPwned account pastes!`, response.data);
+            } else {
+                return this.error(`Could not get HaveIBeenPwned account pastes.`, response.data)
+            }
+
+        } catch(err) {
+            return this.error(`Uncaught error while getting account pastes.`, err);
         }
         
 
