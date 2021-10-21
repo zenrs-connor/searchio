@@ -31,7 +31,7 @@ export class DVLAVehicleCheck extends DVLAProcess {
 
     /*
     
-    ADDITIONAL FUNCTIONS 
+    ADDITIONAL FUNCTIONS
     
     */
 

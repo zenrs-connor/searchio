@@ -16,6 +16,7 @@ import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.co
 import { HttpClientModule } from '@angular/common/http';
 import { ListProcessComponent } from './list-process/list-process.component';
 import { CondensedSourcesComponent } from './condensed-sources/condensed-sources.component';
+import { DataTableComponent } from './data-table/data-table.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { CondensedSourcesComponent } from './condensed-sources/condensed-sources
     CapitalifyPipe,
     ProgressTrackerComponent,
     ListProcessComponent,
-    CondensedSourcesComponent
+    CondensedSourcesComponent,
+    DataTableComponent
   ],
   imports: [
     BrowserModule,

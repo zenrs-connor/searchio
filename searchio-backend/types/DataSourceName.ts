@@ -1,1 +1,1 @@
-export type DataSourceName = "Unknown" | "Numverify" | "DVLA";
+export type DataSourceName = "Unknown" | "Numverify" | "DVLA" | "HaveIBeenPwned";
