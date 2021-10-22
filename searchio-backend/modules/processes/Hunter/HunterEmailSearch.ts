@@ -24,9 +24,7 @@ export class HunterEmailSearch extends HunterProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
-        this.initWebdriver();
         let result = await this.emailFinder();
-        this.destroyWebdriver();
         return result;
     }
 

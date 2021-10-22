@@ -37,7 +37,6 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
             name = name.replace(/\s+/g, '+');
             await this.driver.get(`https://find-and-update.company-information.service.gov.uk/search/officers?q=${name}`);
             let people = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripNamesPage.bind(this), 1);
-            console.log(people.data[7]);
 
             return this.success(`(CompaniesHouseStream) Successfully performed name search`, people);
         } catch(err) {
