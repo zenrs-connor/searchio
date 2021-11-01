@@ -23,9 +23,10 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
-        this.initWebdriver();
+        
+        await this.initWebdriver();
         let result = await this.stripCompanyInformation();
-        this.destroyWebdriver();
+        await this.destroyWebdriver();
         return result;
     }
 
@@ -176,7 +177,6 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
         let companyPeople: any[] = []; 
 
         try {
-            await this.driver.get('https://find-and-update.company-information.service.gov.uk/company/04398417/officers');
             let appointments = await this.driver.findElements(this.webdriver.By.xpath("//div[@class='appointments-list']/div"));
 
             for(let person of appointments) {
@@ -372,11 +372,12 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
 
     // Function to determine current tab and strip information
     public async stripCompanyInformation(companyIdentifier: string = this.query): Promise<SearchioResponse> {
-        let companyInformation: any[];
+        let companyInformation: any[] = [];
         
         try {
             await this.driver.get(`https://find-and-update.company-information.service.gov.uk/company/${companyIdentifier}`);
 
+            // Function to be performed depending on tab title
             const tabFunctions = {
                 "Company": this.stripCompanyOverview.bind(this),
                 "Filing history": this.stripCompanyFilings.bind(this),
@@ -384,18 +385,22 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
                 "Charges": this.stripCompanyCharges.bind(this)
             }
 
+            // Collect the links of tabs
             let links = await (await this.collectLinks("//div[@class='section-tabs js-tabs']/ul/li")).data;
 
+            // Iterate through the links
             for(let link of links) {
                 let text = await link.getText();
                 text = text.split(/\r?\n/)[0];
 
+                // Check that we have made a function to handle it
                 if(tabFunctions[text]) {
                     console.log(text);
                     link = await link.findElement(this.webdriver.By.xpath('./h1/a | ./a'));
+                    // Open the link in a new tab
                     let res = await this.openKillTab([link], tabFunctions[text]);
                     console.log(`CH result`);
-                    console.log(res);
+                    console.log(res.data[0]);
                     companyInformation.push(res.data[0]);
                     
                 } else {
@@ -403,7 +408,7 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
                 }
             }
             
-            return this.success(`(CompaniesHouseStream) Successfully stripped company information`, companyInformation[0]);
+            return this.success(`(CompaniesHouseStream) Successfully stripped company information`, companyInformation);
 
         } catch(err) {
             console.log(err);

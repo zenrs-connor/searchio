@@ -33,13 +33,6 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
     // Function to strip companies out of search
     public async companiesSearch(company: string = this.query): Promise<SearchioResponse> {
 
-        //--- MUST REMOVE ---
-        var options = { args:['--disable-notifications','--no-sandbox']}
-        this.webdriver = require('selenium-webdriver');
-        this.capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions' ,options);
-        this.driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
-        //---------------------------------------------------------------------------------------------------
-
         // Prepare company name for URL
         company = company.replace(/\s+/g, '+');
         let links: any[] = [];

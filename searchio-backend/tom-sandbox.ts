@@ -10,30 +10,26 @@ import { Process } from "./modules/processes/Process";
 import { Names192Search } from "./modules/processes/192/Names192Search";
 import { Names192Process } from "./modules/processes/192/Names192Process";
 import { SocketService } from "./modules/SocketService";
-import { runMain } from "module";
 import { CompaniesHouseCompaniesSearch } from "./modules/processes/CompaniesHouse/CompaniesHouseCompaniesSearch";
-
-
-/*export class tomSandbox extends Process {
-
-    constructor() {
-        super(new SocketService(), 'Elliot Phillips');
-    };
-
-    
-
-}*/
+import { HMLandRegistryOverseas } from "./modules/processes/HMLandRegistry/HMLandRegistryOverseas";
+import { HMLandRegistryDomestic } from "./modules/processes/HMLandRegistry/HMLandRegistryDomestic";
+import { CompaniesHouseCompanySearch } from "./modules/processes/CompaniesHouse/CompaniesHouseCompanySearch";
+import { CompaniesHouseOfficerSearch } from "./modules/processes/CompaniesHouse/CompaniesHouseOfficerSearch";
+import { OpenCorporatesCompaniesSearch } from "./modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
+import { OpenCorporatesOfficerSearch } from "./modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
+import { HMLandRegistryPrices } from "./modules/processes/HMLandRegistry/HMLandRegistryPrices";
 
 
 
 export async function run() {
     
-    
-
     let socket = new SocketService();
     await socket.init();
 
-    let x = new CompaniesHouseCompaniesSearch(socket, "Elliot Phillips");
-    let y = await x.companiesSearch('Shop');
-    console.log(y.data);
+    let x = new HMLandRegistryPrices(socket, "14 Thesiger Street");
+    let y = await x.process();
+
+    console.log("\n\nBack to sandbox")
+    console.log(y);
+
 }

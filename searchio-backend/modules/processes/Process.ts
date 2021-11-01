@@ -362,7 +362,7 @@ export class Process extends ResponseEmitter {
                 
 
             }
-            return this.success(`Successfully iterated links and opened/killed tabs`,results);
+            return this.success(`Successfully iterated links and opened/killed tabs`, results);
         } catch(err) {
             return this.error(`Could not iterate through links opening/killing tabs`, err);
         }
