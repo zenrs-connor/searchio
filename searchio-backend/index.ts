@@ -9,7 +9,8 @@ import { Server } from "socket.io";
 /* MODULES */
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
-import { Process } from "./models/Process";
+import { ProcessData } from "./models/ProcessData";
+import { QueryStatus } from "./models/QueryStatus";
 
 
 const PORT = 5000;
@@ -63,6 +64,13 @@ IO.on("connection", (socket) => {
     socket.on("process-result", (result: ProcessResult) => {
         console.log(`(IO) Got a result from ${socket.id}`);
         IO.to(socket.id).emit("process-result", result);
+    });
+
+    
+    //  Event called when a Query's status is updated
+    socket.on("query-update", (update: QueryStatus) => {
+        console.log(`(IO) Got query update from ${socket.id}`);
+        IO.to(socket.id).emit("query-update", update);
     });
 
 });

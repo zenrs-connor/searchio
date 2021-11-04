@@ -1,6 +1,7 @@
 import { SearchioResponse } from "../models/SearchioResponse";
 import { Query } from "./Query";
 import { error, success } from "./ResponseHandler";
+import { StorageService } from "./StorageService";
 
 /*
 *   This class is in controll of adding, transporting, and killing active Queries. 
@@ -14,8 +15,29 @@ export class QueryManager {
     //  The key of each object is the query term
     private queries: any = {}
 
-    constructor() {}
+    private storage: StorageService = new StorageService();
+
+    constructor() {
+        this.cleaningLoop();
+    }
     
+
+    public cleaningLoop() {
+
+        const interval = setInterval(() => {
+
+            for(let query in this.queries) {
+                if(this.queries[query].getStatus().status === "COMPLETED") {
+                    console.log("DELETING COMPLETED QUERY");
+                    delete this.queries[query];
+                }
+            }
+
+        }, 1000 * 60 * 60);
+
+    }
+
+
     //  Function to add a new Query to the manager.
     //  Returns the ID of the newly created Socket
     public async add(query: string): Promise<SearchioResponse> {
@@ -40,11 +62,30 @@ export class QueryManager {
                 //  Add the query to the index of active queries
                 this.queries[query] = q;
 
-                return success(`(QueryManager) Added query "${query}".`, { socket: this.queries[query].getSocketID() })
+                return success(`(QueryManager) Added query "${query}".`, { 
+                    socket: this.queries[query].getSocketID(), 
+                    results: this.queries[query].getCache(),
+                    status: this.queries[query].getStatus()
+                })
             
 
             } else {
-                return success(`(QuerManager) Query "${query}" already exists.`, { socket: this.queries[query].getSocketID() })
+
+                let results = await this.storage.get(query);
+
+                let data = undefined;
+
+                console.log(results.data);
+
+                if(results.success) {
+                    data = results.data;
+                }
+
+                return success(`(QueryManager) Query "${query}" already exists.`, { 
+                    socket: this.queries[query].getSocketID(), 
+                    results: data,
+                    status: this.queries[query].getStatus()
+                })
             }
         } catch(err) {
             return error(`(QueryManager) Could not add query "${query}".`, err);
@@ -77,6 +118,23 @@ export class QueryManager {
 
         } catch(err) {
             return error(`(QueryManager) Could not kill query "${query}"`, err);
+        }
+    }
+
+    public async killAll(): Promise<SearchioResponse> {
+        try {
+
+            let count = 0;
+
+            for(let query in this.queries) {
+                delete this.queries[query];
+                count++;
+            }
+
+            return success(`(QueryManager) Killed ${count} ${ count === 1 ? 'query' : 'queries' }.`);
+
+        } catch(err) {
+            return error(`(QueryManager) Could not kill queries.`, err);
         }
     }
 }

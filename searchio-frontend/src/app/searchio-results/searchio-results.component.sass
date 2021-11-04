@@ -2,13 +2,14 @@
     
 .searchio-results
     background: $light-grey
-    width: calc(100% - #{2 * $margin-m})
+    width: calc(100% - #{1 * $margin-m})
     margin-left: $margin-m
-    height: calc(#{$filters-height} - #{$nav-height} - #{$margin-m})
+    height: calc(#{$filters-height} - #{ $nav-height } + #{$margin-m} )
     overflow-y: auto
     overflow-x: hidden
     border-radius: 0 $margin-s $margin-s $margin-s
     box-sizing: border-box
+    
 
     .empty-list
         text-align: center
@@ -34,21 +35,8 @@
             color: $light-grey
             border-radius: $margin-s
 
-            div
-                user-select: none
-                cursor: pointer
-
-                &:hover
-                    font-weight: 600
-
-            & div:nth-child(1)
-                width: $result-name-width
-
-            & div:nth-child(2)
-                flex: 1
-
-            & div:nth-child(3)
-                text-align: right
+            .button
+                margin-left: $margin-s
 
 
 .searchio-results::-webkit-scrollbar
@@ -69,18 +57,20 @@
 
 .scroll-fader
     width: 100%
-    height: calc(100% - #{$result-line-height + (3 * $margin-s)})
+    height: calc(100% - #{$result-line-height} - #{2 * $margin-m })
     box-shadow: inset $light-grey 0 0 ($margin-s / 2) ($margin-s - 1)
     position: sticky
     position: -webkit-sticky
-    top: $result-line-height + (3 * $margin-s)
+    top: $button-height + (3 * $margin-s)
     pointer-events: none
     margin-bottom: calc(-100vh + #{$header-height} + #{$nav-height} + #{$margin-m} + #{$result-line-height} + #{$margin-s * 4})
 
-query-result
+.result
 
     display: block
-    margin: 1px $margin-s 1px $margin-s
+    margin: $margin-s
+    border-radius: $margin-s
+    overflow: hidden
 
     &:last-child
         margin-bottom: $margin-s + 1

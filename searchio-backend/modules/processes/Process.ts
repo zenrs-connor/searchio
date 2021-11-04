@@ -13,6 +13,7 @@ require('chromedriver');
 import { WebElement } from 'selenium-webdriver';
 import { ResultData } from "../../models/ResultData";
 import { ProcessResult } from "../../models/ProcessResult";
+import { StorageService } from "../StorageService";
 
 
 
@@ -26,6 +27,7 @@ export class Process extends ResponseEmitter {
     protected code: ProcessCode = 1;                            //  Status code - for reference check the StreamStatusCode.ts type
     protected message: string = "Awaiting instruction...";      //  A message to describe the current status of this process
     protected pattern: RegExp = /^$/;
+    protected storage: StorageService = new StorageService();
 
     //  Webdriver Variables
     protected webdriver: any;
@@ -138,6 +140,9 @@ export class Process extends ResponseEmitter {
 
                 //  Emit the result of this process
                 this.socket.result(result as ProcessResult);
+
+                await this.storage.cache(result);
+
 
             } else {
                 //  If an error has occured as a result of the process, update the status to Error
@@ -265,7 +270,6 @@ export class Process extends ResponseEmitter {
 
         }
     }
-
 
     // Function to iterate through pages, perform a given processon all collected elements when also given the xpath for the next button
     public async flipThrough(nextXPath: string, collectElements: string, process: Function, pageLimit: number = 100): Promise<SearchioResponse> {
