@@ -22,9 +22,11 @@ export class HunterDomainSearch extends HunterProcess {
     }
 
 
-
+    //  Overwrite of the abstract function held in Process.ts
+    //  This function is what is called when the Process executes
+    //  It returns a SearchioResponse containing any success or error data
     // Returns a list of emails associated with a domain
-    public async process(domain: string = this.query) {
+    protected async process(domain: string = this.query) {
 
         try{
             const response: any = await new Promise((resolve) => {
@@ -49,7 +51,48 @@ export class HunterDomainSearch extends HunterProcess {
             //  Check that no error has occurred
             if(!response.error) {
 
-                console.log(response.data.emails)
+                const table = {
+
+                    columns: [
+                        { title: "Email", key: "email", type: "Text" },
+                        { title: "Type", key: "type", type: "Text" },
+                        { title: "Confidence Score", key: "score", type: "Number" },
+                        { title: "First Name", key: "firstName", type: "Text" },
+                        { title: "Last Name", key: "lastName", type: "Text" },
+                        { title: "Position", key: "position", type: "Text" },
+                        { title: "Seniority", key: "seniority", type: "Text" },
+                        { title: "Department", key: "department", type: "Text" },
+                        { title: "LinkedIn", key: "linkedin", type: "Text" },
+                        { title: "Twitter", key: "twitter", type: "Text" },
+                        { title: "Phone Number", key: "phoneNumber", type: "Text" },
+                        { title: "Verified Date", key: "verifiedDate", type: "Text" },
+                        { title: "Status", key: "status", type: "Text" },
+                        { title: "Sources", key: "sources", type: "Text" }
+                    ],
+                    rows: []
+                }
+    
+                for(let email of response.data.emails) {
+    
+    
+                    table.rows.push({
+                        email: email.value,
+                        type: email.type,
+                        score: email.confidence,
+                        firstName: email.first_name,
+                        lastName: email.last_name,
+                        position: email.position,
+                        seniority: email.seniority,
+                        department: email.department,
+                        linkedin: email.linkedin,
+                        twitter: email.twitter,
+                        phoneNumber: email.phone_number,
+                        verifiedDate: email.verification.date,
+                        status: email.verification.status,
+                        sources: email.sources[0].uri
+                    });
+    
+                }
 
                 //  Build the array of Results from the response
                 const data: ResultData[] = [
@@ -61,7 +104,7 @@ export class HunterDomainSearch extends HunterProcess {
                     { name: "Organisation", type: "Text", data: response.data.organization },
                     { name: "Country", type: "Text", data: response.data.country },
                     { name: "State", type: "Text", data: response.data.state },
-                    { name: "Emails", type: "Text", data: response.data.emails }
+                    { name: "Emails", type: "Table", data: table }
                 ];
 
                 //  Return a successful SearchioResponse attaching the result

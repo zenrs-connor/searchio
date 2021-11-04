@@ -13,6 +13,25 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
     protected id = "OpenCorporatesOfficerSearch";           
     protected name: "Officer Check";
     protected pattern: RegExp = NAMES;
+
+
+    public table = {
+
+        columns: [
+            { title: "Name", key: "personName", type: "Text" },
+            { title: "Role", key: "personRole", type: "Text" },
+            { title: "Role Status", key: "roleStatus", type: "Text" },
+            { title: "Link", key: "personLink", type: "Text" },
+            { title: "Company Jurisdiction", key: "companyJurisdiction", type: "Text" },
+            { title: "Company Status", key: "companyStatus", type: "Text" },
+            { title: "Company Name", key: "companyName", type: "Text" },
+            { title: "Company Number", key: "companyNumber", type: "Text" },
+            { title: "Company Start Date", key: "startDate", type: "Text" },
+            { title: "Company End Date", key: "endDate", type: "Text" },
+            { title: "Link", key: "companyLink", type: "Text" },
+        ],
+        rows: []
+    }
     
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -33,189 +52,153 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
     }
 
 
-
-    /*
-
-
-        ----- API FUNCTIONALITY -----
-
-
-    */
-
-    public async officerSearch(name: string) {
-        let response;
-
-        await new Promise((resolve) => {
-
-            this.reformat(name).then(name => {
-                let url = `https://api.opencorporates.com/v0.4/officers/search?q=${name}`;
-
-                request(url, async (err, res, body) => {
-
-                    console.log(body);
-                    response = body;
-
-                    if(err) {
-                        response = { success: false, error: err };
-                    }
-                    resolve(undefined);
-                });
-            });
-        });
-
-        return response;
-    }
-
-
-    /*
-
-
-        ----- SCRAPER FUNCTIONALITY -----
-
-
-    */
-
     // Function to scrape page of people resulting from a name search
     public async scrapePeople(people: any[]): Promise<SearchioResponse> {
         try {
-            let peopleArray: any[] = [];
 
             for(let person of people) {
+                                
+                    let rowName: string
+                    let rowRole: string
+                    let rowRoleStatus: string
+                    let rowPersonLink: string
+                    let rowCompanyJurisdiction: string
+                    let rowCompanyStatus: string
+                    let rowCompanyName: string
+                    let rowCompanyNumber: string
+                    let rowCompanyStart: string
+                    let rowCompanyEnd: string
+                    let rowCompanyLink: string
                 
-                let personFormat: {
-                    name: string,
-                    role?: string,
-                    roleStatus?: string,
-                    personLink?: string,
-                    companyJurisdiction?: string,
-                    companyStatus?: string,
-                    companyName?: string,
-                    companyNumber?: string,
-                    companyStart?: string,
-                    companyEnd?: string,
-                    companyLink?: string
-                } = {
-                    name: undefined
-                };
-
-
                 let name = await person.findElement(this.webdriver.By.xpath('./a')).getText();
-                personFormat.name = name;
+                rowName = name;
                 
                 let roleStatus = await person.findElement(this.webdriver.By.xpath('./a')).getAttribute('class');
                 if(roleStatus == "officer") {
                     roleStatus = "Active";
-                    personFormat.roleStatus = roleStatus;
+                    rowRoleStatus = roleStatus;
                 } else if (roleStatus == "officer inactive") {
                     roleStatus = "Inactive"
-                    personFormat.roleStatus = roleStatus;
+                    rowRoleStatus = roleStatus;
                 } else {
-                    personFormat.roleStatus = `(OpenCorporatesStream could not handle person with role status: ${roleStatus})`;
+                    rowRoleStatus = `Unknown role status: ${roleStatus})`;
                 }
 
                 let personLink = await person.findElement(this.webdriver.By.xpath('./a')).getAttribute('href');
-                personFormat.personLink = personLink;
+                rowPersonLink = personLink;
 
                 let companyJurisdiction = await person.findElement(this.webdriver.By.xpath('./a[2]')).getAttribute('class');
                 companyJurisdiction = companyJurisdiction.replace("jurisdiction_filter ","").toUpperCase();
-                personFormat.companyJurisdiction = companyJurisdiction;
+                rowCompanyJurisdiction = companyJurisdiction;
 
                 let companyStatus = await person.findElement(this.webdriver.By.xpath('./a[3]')).getAttribute('class');
                 if(companyStatus.includes("inactive")) {
                     companyStatus = "Inactive";
-                    personFormat.companyStatus = companyStatus;
+                    rowCompanyStatus = companyStatus;
                 } else {
                     companyStatus = "Active";
-                    personFormat.companyStatus = companyStatus;
+                    rowCompanyStatus = companyStatus;
                 }
 
                 let companyName = await person.findElement(this.webdriver.By.xpath('./a[3]')).getText();
-                personFormat.companyName = companyName;
+                rowCompanyName = companyName;
 
                 let companyNumber = await person.findElement(this.webdriver.By.xpath('./a[3]')).getAttribute('title');
                 companyNumber = companyNumber.split(" ");
                 companyNumber = companyNumber[companyNumber.length - 1].replace(')', '');
-                personFormat.companyNumber = companyNumber;
+                rowCompanyNumber = companyNumber;
 
                 let startDate = await person.findElements(this.webdriver.By.xpath('.//span[@class="start_date"]'));
                 if(startDate.length > 0){
                     startDate = await person.findElement(this.webdriver.By.xpath('.//span[@class="start_date"]')).getText();
-                    personFormat.companyStart = startDate;
+                    rowCompanyStart = startDate;
                 } else {
                     startDate = "Not available";
-                    personFormat.companyStart = startDate;
+                    rowCompanyStart = startDate;
                 }
                 
                 let endDate = await person.findElements(this.webdriver.By.xpath('.//span[@class="end_date"]'));
                 if(endDate.length > 0){
                     endDate = await person.findElement(this.webdriver.By.xpath('.//span[@class="end_date"]')).getText();
-                    personFormat.companyEnd = endDate;
+                    rowCompanyEnd = endDate;
                 } else {
                     endDate = "Not available";
-                    personFormat.companyEnd = endDate;
+                    rowCompanyEnd = endDate;
                 }
 
                 let role = await person.getText()
                 role = role.split(",")[0];
                 if(role.includes("agent")) {
                     role = "Agent";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("secretary")) {
                     role = "Secretary";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("president")) {
                     role = "President";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("vice president")) {
                     role = "Vice President";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("incorporator")) {
                     role = "Incorporator";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("director")) {
                     role = "Director";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("treasurer")) {
                     role = "Treasurer";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("ceo")) {
                     role = "CEO";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("chief executive officer")) {
                     role = "CEO";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("incorporator")) {
                     role = "Incorporator";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("manager")) {
                     role = "Manager";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("member")) {
                     role = "Member";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("govenor")) {
                     role = "Governor";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("cfo")) {
                     role = "CFO";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else if(role.includes("organizer")) {
                     role = "Organizer";
-                    personFormat.role = role;
+                    rowRole = role;
                 } else {
                     let link = await person.findElement(this.webdriver.By.xpath("./a")).getAttribute('href');
                     role = `Unknown (${link})`;
-                    personFormat.role = role;
+                    rowRole = role;
                 }
 
                 let companyLink = await person.findElement(this.webdriver.By.xpath('./a[3]')).getAttribute('href');
-                personFormat.companyLink = companyLink;
+                rowCompanyLink = companyLink;
 
-                peopleArray.push(personFormat);
+                this.table.rows.push({
+                    personName: rowName,
+                    personRole: rowRole,
+                    roleStatus: rowRoleStatus,
+                    personLink: rowPersonLink,
+                    companyJurisdiction: rowCompanyJurisdiction,
+                    companyStatus: rowCompanyStatus,
+                    companyName: rowCompanyName,
+                    companyNumber: rowCompanyNumber,
+                    startDate: rowCompanyStart,
+                    endDate: rowCompanyEnd,
+                    companyLink: rowCompanyLink
+                });
 
             }
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, peopleArray);
+            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, '');
 
         } catch(err) {
             return this.error(`(OpenCorporatesScraperStream) Error scraping a company`, err);
@@ -229,7 +212,7 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
             await this.driver.get(`https://opencorporates.com/officers?jurisdiction_code=&q=${name}&utf8=%E2%9C%93`);
             let people = await this.flipThrough('//li[@class="next next_page "]/a', '//ul[@class="officers unstyled"]/li', this.scrapePeople.bind(this), 25);
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`);
+            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, this.table);
 
         } catch(err) {
             return this.error(`(OpenCorporatesScraperStream) Error scraping a company`, err);

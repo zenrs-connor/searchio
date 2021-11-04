@@ -34,6 +34,7 @@ export class Names192Search extends Names192Process {
     // Function to load 192 and enter in search term
     public async loadSearch(name: string): Promise<SearchioResponse> {
         try {
+
             await this.driver.get('https://www.192.com/');
             // Accept cookies
             await this.driver.findElement(this.webdriver.By.xpath('//a[@class="js-ont-btn-ok2"]')).click();
@@ -60,7 +61,18 @@ export class Names192Search extends Names192Process {
             
             await this.loadSearch(name);
 
-            let records: any[] = [];
+            const table = {
+
+                columns: [
+                    { title: "Name", key: "name", type: "Text" },
+                    { title: "Age Guide", key: "ageGuide", type: "Text" },
+                    { title: "Sources", key: "sources", type: "Text" },
+                    { title: "Director", key: "director", type: "Text" },
+                    { title: "Partial Address", key: "partialAddress", type: "Text" },
+                    { title: "Other Occupants", key: "otherOccupants", type: "Text" }
+                ],
+                rows: []
+            }
 
             // Collect all records
             let results = await this.driver.findElements(this.webdriver.By.xpath('//ul[@class="js-ont-gmap-recordset ont-ul-results-list"]/li'));
@@ -68,45 +80,46 @@ export class Names192Search extends Names192Process {
             // Iterate through records and strip info
             for(let result of results){
                 
-                let recordFormat: {
-                    name: string,
-                    ageGuide?: string,
-                    source?: any[],
-                    director?: string,
-                    partialAddress?: string,
-                    otherOccupants?: any[]
-                } = {
-                    name: undefined
-                }
-
+                let rowName;
+                let rowAge;
+                let rowSources;
+                let rowDirector;
+                let rowPartialAddress;
+                let rowOtherOccupants;
+                
+                
                 let name = await result.findElement(this.webdriver.By.xpath('.//div[@class="test-name"]/a')).getText();
-                recordFormat.name = name;
+                rowName = name;
 
                 let ageGuide = await result.findElements(this.webdriver.By.xpath('.//div[@class="age-guide"]'));
                 if (ageGuide.length == 1) {
                     ageGuide = await result.findElement(this.webdriver.By.xpath('.//div[@class="age-guide"]/span[2]')).getText();
-                    recordFormat.ageGuide = ageGuide;
+                    rowAge = ageGuide;
+                } else {
+                    rowAge = 'Unknown';
                 }
 
                 let source = await result.findElement(this.webdriver.By.xpath('.//div[@class="test-er-years er-years"]')).getText();
                 if (source.length > 0) {
-                    source = source.replace(/\s/g,'');
-                    source = source.slice(2,);
-                    source = source.split(',');
-                    recordFormat.source = source;
+                    //source = source.replace(/\s/g,'');
+                    //source = source.slice(2,);
+                    //source = source.split(',');
+                    source = source.replace(/ER/g,'Electoral Register Years:');
+                    rowSources = source;
                 } else {
-                    let sourceArray = []
-                    recordFormat.source = sourceArray;
+                    rowSources = 'No sources';
                 }
 
                 let director = await result.findElements(this.webdriver.By.xpath('.//div[@class="test-director director tick"]'));
                 if (director.length == 1) {
                     director = await result.findElement(this.webdriver.By.xpath('.//div[@class="test-director director tick"]')).getText();
-                    recordFormat.director = director;
+                    rowDirector = director;
+                } else {
+                    rowDirector = 'Unknown'
                 }
 
                 let partialAddress = await result.findElement(this.webdriver.By.xpath('.//div[@class="results-address"]/div/span[2]')).getText();
-                recordFormat.partialAddress = partialAddress;
+                rowPartialAddress = partialAddress;
 
 
                 let otherOccupants = await result.findElements(this.webdriver.By.xpath('.//p[@class="test-occupants"]'));
@@ -118,18 +131,25 @@ export class Names192Search extends Names192Process {
                     
                     otherOccupants = await result.findElement(this.webdriver.By.xpath('.//p[@class="test-occupants"]')).getText();
                     
-                    otherOccupants = otherOccupants.split(', ');
-                    recordFormat.otherOccupants = otherOccupants
+                    //otherOccupants = otherOccupants.split(', ');
+                    rowOtherOccupants = otherOccupants
 
                 } else {
-                    recordFormat.otherOccupants = [];
+                    rowOtherOccupants = 'No others listed';
                 }
 
-                records.push(recordFormat);
+                table.rows.push({
+                    name: rowName,
+                    ageGuide: rowAge,
+                    sources: rowSources,
+                    director: rowDirector,
+                    partialAddress: rowPartialAddress,
+                    otherOccupants: rowOtherOccupants
+                });
             }
             
 
-            return this.success(`(Names192Search) Successfully collected people records`, records);
+            return this.success(`(Names192Search) Successfully collected people records`, table);
         } catch(err) {
             this.setStatus("ERROR", `Error retrieving records with name: ${this.query}...${err}`);
             return this.error(`(Names192Search) Error collecting people records`, err)
