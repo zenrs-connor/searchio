@@ -4,13 +4,15 @@
 
     <div class="data">
 
-        <ng-container *ngIf="result.type !== 'Table'">{{ result.data }}</ng-container>
+
+        <ng-container *ngIf="result.type === 'Text'">{{ result.data }}</ng-container>
+        <ng-container *ngIf="result.type === 'Date'">{{ result.data | date:'dd/MM/yyyy' }}</ng-container>
+
+
 
         <data-table *ngIf="result.type==='Table'" [data]="result.data"></data-table>
 
+
     </div>
-
-
-    <condensed-sources [sources]="result.sources"></condensed-sources>
 
 </div>

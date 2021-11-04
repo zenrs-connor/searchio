@@ -1,29 +1,33 @@
-import { Stream } from "./streams/Stream";
+
 import { QueryStatus } from "../models/QueryStatus";
-import { QueryData } from "../models/QueryData";
 import { SocketService } from "./SocketService";
-import { QueryStatusCodeEnum } from "../types/QueryStatusCode";
-import { Streams } from "../assets/Streams";
+import { QueryStatusCode, QueryStatusCodeEnum } from "../types/QueryStatusCode";
 import { error, success } from "./ResponseHandler";
 import { SearchioResponse } from "../models/SearchioResponse";
-import { ResponseEmitter } from "./ResponseEmitter";
 import { Process } from "./processes/Process";
 import { PROCESSES } from "../assets/Processes";
+import { StorageService } from "./StorageService";
+import { ProcessResult } from "../models/ProcessResult";
 
 export class Query {
 
     private query: string;
     private processes: Process[] = [];
     private socket: SocketService;
-    private status: QueryStatus = {
-        code: 1,
-        message: "Query is inititated, awaiting start."
-    };
+    private storage: StorageService = new StorageService();
+    private cached: ProcessResult[] = [];
+
+    private status: QueryStatus;
 
     private results: any = {};
 
     constructor(query: string){
         this.query = query;
+        this.setStatus("DORMANT", `Query is awaiting command...`);
+    }
+
+    public getCache(): ProcessResult[] {
+        return this.cached;
     }
 
     public async build(): Promise<SearchioResponse> {
@@ -36,6 +40,12 @@ export class Query {
             if(!res.success) return res;
 
             res = this.getValidProcesses();
+
+            let cached = await this.storage.get(this.query);
+
+            if(cached.success) {
+                this.cached = cached.data;
+            }
 
             if(!res.success) return res;
 
@@ -68,6 +78,7 @@ export class Query {
                 }
             }
 
+
             return success(`(Query) Got ${processes.length} valid process${ processes.length === 1 ? '' : 'es' }.`, processes);
 
         } catch(err) {
@@ -82,10 +93,6 @@ export class Query {
         // RETURNS DATA FROM A STREAM
     }
 
-    public cache() {
-        // CACHE
-    }
-
     public updateStatus(){
         this.status
     }
@@ -98,27 +105,54 @@ export class Query {
         return this.processes;
     }
 
-    public start() {
+    private setStatus(code: QueryStatusCode, message: string) {
 
         this.status = {
-            code: QueryStatusCodeEnum.ACTIVE,
-            message: "Query is active."
+            query: this.query,
+            code: typeof code === 'number' ? code : QueryStatusCodeEnum[code],
+            status: typeof code === 'string' ? code : QueryStatusCodeEnum[code],
+            message: message
         }
+
+        if(this.socket) this.socket.queryUpdate(this.status);
+
+    }
+
+    public detectCompletedLoop() {
+
+        const interval = setInterval(() => {
+        
+            for(let process of this.processes) {
+                if(process.getData().status !== "COMPLETED") return;
+            }
+            this.setStatus("COMPLETED", `Query has finished collection...`);
+            clearInterval(interval);
+
+        }, 1000);
+    }
+
+    public start() {
+        
+        this.setStatus("ACTIVE", `Query is active`);
 
         for(let process of this.processes) {
             process.execute();
         }
 
+        this.detectCompletedLoop();
+
     }
 
     public stop(){
-
-        this.status = {
+        
+        /*this.status = {
             code: QueryStatusCodeEnum.STOPPED,
             message: "Query is stopped."
-        }
-        
+        }*/
+
     }
+
+
 
     public refresh() {
         // REFRESH THE QUERY

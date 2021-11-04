@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ListProcessComponent } from './list-process/list-process.component';
 import { CondensedSourcesComponent } from './condensed-sources/condensed-sources.component';
 import { DataTableComponent } from './data-table/data-table.component';
+import { ProcessResultComponent } from './process-result/process-result.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { DataTableComponent } from './data-table/data-table.component';
     ProgressTrackerComponent,
     ListProcessComponent,
     CondensedSourcesComponent,
-    DataTableComponent
+    DataTableComponent,
+    ProcessResultComponent
   ],
   imports: [
     BrowserModule,

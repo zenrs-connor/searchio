@@ -9,7 +9,7 @@ import { DVLAProcess } from "./DVLAProcesss";
 export class DVLAVehicleCheck extends DVLAProcess {
 
     protected id = "DVLAVehicleCheck";           
-    protected name: "Vehicle Check";                 
+    protected name: string = "Vehicle Check";                 
     protected pattern: RegExp = REGISTRATION_PLATE;        
 
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket

@@ -5,22 +5,34 @@
 
     <div class="results-header-outer" *ngIf="_manager.getQueryTabs().length > 0">
         <div class="results-header">
-            <div (click)="_manager.sortResults('name', _manager.getQueryData().sort_field === 'name' ? !_manager.getQueryData().sort_ascending : true)">
-                Name {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'name' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
+
+            <ng-container *ngIf="_manager.getView() === 'Process'">
+            </ng-container>
+
+
+            <div class="flex">
+
+                <ng-container *ngIf="_manager.getQueryStatus() && _manager.getQueryStatus() !== {}">
+                    Status: {{ _manager.getQueryStatus().status }} - {{ _manager.getQueryStatus().message }}
+                </ng-container>
+
             </div>
-            <div (click)="_manager.sortResults('data', _manager.getQueryData().sort_field === 'data' ? !_manager.getQueryData().sort_ascending : true)">
-                Data {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'data' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
-            </div>
-            <div (click)="_manager.sortResults('sources', _manager.getQueryData().sort_field === 'sources' ? !_manager.getQueryData().sort_ascending : true)">
-                Sources {{ _manager.getQueryData() && _manager.getQueryData().sort_field === 'sources' ? _manager.getQueryData().sort_ascending ? '⯅' : '⯆' : '' }} 
-            </div>
+
+            <div class="button" (click)="_manager.showResults()">Show All</div>
+            <div class="button" (click)="_manager.hideResults()">Hide All</div>
+        
         </div>
     </div>
     
 
     <div class="scroll-fader"></div>
 
-    <query-result *ngFor="let result of _manager.getResults()" [result]="result"></query-result>
+    <ng-container *ngIf="_manager.getView() === 'Process'">
+        <process-result class="result" *ngFor="let result of _manager.getResults()" [result]="result"></process-result>
+    </ng-container>
+
+
+    <!--<query-result *ngFor="let result of _manager.getResults()" [result]="result"></query-result>-->
 
     <div class="empty-list" *ngIf="_manager.getQueryTabs().length > 0 &&  _manager.getResults().length === 0">
         Awaiting results...

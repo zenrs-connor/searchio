@@ -1,0 +1,17 @@
+<div class="process-result-container" *ngIf="!hidden()">
+
+    <div class="header">
+        <b>{{ result.source }}:</b> {{ result.process }}
+
+        <div class="hide" (click)="toggleHidden()">👁</div>
+    </div>
+
+    <div class="inner" *ngIf="!_manager.resultIsHidden(result.identifier)">
+
+        <ng-container *ngFor="let r of result.data">
+            <query-result *ngIf="!_manager.isHiddenDataType(r.type)" [result]="r"></query-result>
+        </ng-container>
+
+    </div>
+
+</div>
