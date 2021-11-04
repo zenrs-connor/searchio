@@ -46,32 +46,58 @@ export class ICIJSearch extends ICIJProcess {
         }
     }
 
-    // Function to load search
+    // Function to strip articles from result page
     public async stripArticles(): Promise<SearchioResponse> {
 
         try {
+
+            let table = {
+
+                columns: [
+                    { title: "Title and Snippet", key: "titleSnippet", type: "Text" },
+                    { title: "Link", key: "link", type: "Text" }
+                ],
+                rows: []
+            }
+
+
             let articles = await this.driver.findElements(this.webdriver.By.xpath('//article[@class="row search-item border-bottom mb-3 mt-3 pb-3"]'));
-            console.log(`WE HAVE ${articles.length} ARTICLES`);
 
             for(let article of articles) {
-                console.log('\n');
-                let title = await article.findElement(this.webdriver.By.xpath('.//h2[@class="article-title__title"]/a')).getText();
-                let link = await article.findElement(this.webdriver.By.xpath('.//h2[@class="article-title__title"]/a')).getAttribute('href');
+                
+                let articleTitle: string = '';
+                let articleLink: string = '';
+                let articleImage: string = '';
+                let articleSnippet: string = '';
+                
+                articleTitle = await article.findElement(this.webdriver.By.xpath('.//h2[@class="article-title__title"]/a')).getText();
+                articleLink = await article.findElement(this.webdriver.By.xpath('.//h2[@class="article-title__title"]/a')).getAttribute('href');
 
                 let image = await article.findElements(this.webdriver.By.xpath('.//div[@class="col-12 col-md-5"]/a/figure/img'));
                 if(image.length > 0) {
-                    image = await article.findElement(this.webdriver.By.xpath('.//div[@class="col-12 col-md-5"]/a/figure/img')).getAttribute('src');
-                    console.log(image);
+                    articleImage = await article.findElement(this.webdriver.By.xpath('.//div[@class="col-12 col-md-5"]/a/figure/img')).getAttribute('src');
+                } else {
+                    articleImage = 'Image not available';
                 }
-                console.log(title);
-                console.log(link);
+
+                let snippet = await article.findElements(this.webdriver.By.xpath('.//p[@class="article-title__excerpt"]'));
+                if(snippet.length > 0) {
+                    articleSnippet = await article.findElement(this.webdriver.By.xpath('.//p[@class="article-title__excerpt"]')).getText();
+                } else {
+                    articleSnippet = 'Snippet is not available';
+                }
+
+                table.rows.push({
+                    titleSnippet: 'Title: ' + articleTitle + '. Snippet: ' + articleSnippet,
+                    link: articleLink
+                });
+                
             }
             
-
-            return this.success(`Successfully loaded search`);
+            return this.success(`Successfully stripped articles`, table);
         
         } catch(err) {
-            return this.error(`Error loading search`, err)
+            return this.error(`Error stripping articles`, err)
         }
     }
 
@@ -83,9 +109,10 @@ export class ICIJSearch extends ICIJProcess {
             // Load the search
             await this.loadSearch(query);
 
-            await this.stripArticles();
+            // Strip the articles and returns a table
+            let articles = await this.stripArticles();
          
-            return this.success(`Successfully completed search for ${this.query}`);
+            return this.success(`Successfully completed search for ${this.query}`, articles.data);
         
         } catch(err) {
             return this.error(`Error completing search`, err)
