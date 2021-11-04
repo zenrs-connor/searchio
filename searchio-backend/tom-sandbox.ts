@@ -18,6 +18,8 @@ import { CompaniesHouseOfficerSearch } from "./modules/processes/CompaniesHouse/
 import { OpenCorporatesCompaniesSearch } from "./modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "./modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { HMLandRegistryPrices } from "./modules/processes/HMLandRegistry/HMLandRegistryPrices";
+import { StreetCheckSearch } from "./modules/processes/StreetCheck/StreetCheckSearch";
+import { ICIJSearch } from "./modules/processes/ICIJ/ICIJSearch";
 
 
 
@@ -26,7 +28,7 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new HMLandRegistryPrices(socket, "14 Thesiger Street");
+    let x = new ICIJSearch(socket, "Greg Miller");
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")

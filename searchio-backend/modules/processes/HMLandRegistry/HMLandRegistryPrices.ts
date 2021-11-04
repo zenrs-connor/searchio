@@ -24,7 +24,7 @@ export class HMLandRegistryPrices extends HMLandRegistryProcess {
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
         
-        await this.initWebdriver(false);
+        await this.initWebdriver();
         let result = await this.pricesSearch();
         await this.destroyWebdriver();
         return result;
@@ -63,6 +63,7 @@ export class HMLandRegistryPrices extends HMLandRegistryProcess {
         }
     }
 
+    // Function to compare two string and give a score on their similarity
     public async compare(address, value): Promise<SearchioResponse> {
         try {
             address = address.toLowerCase();
@@ -94,6 +95,7 @@ export class HMLandRegistryPrices extends HMLandRegistryProcess {
         }
     }
 
+    // Function to find the best address match out of results
     public async findBestMatch(address: string, elements: any[]): Promise<SearchioResponse> {
         try {
 
@@ -121,6 +123,7 @@ export class HMLandRegistryPrices extends HMLandRegistryProcess {
         }
     }
 
+    // Function to strip information from the chosen address page
     public async stripInfo(): Promise<SearchioResponse> {
         try {
 
@@ -152,7 +155,7 @@ export class HMLandRegistryPrices extends HMLandRegistryProcess {
         }
     }
 
-
+    // Main function to call (calls all others)
     public async pricesSearch(address: string = this.query): Promise<SearchioResponse> {
 
         try {
