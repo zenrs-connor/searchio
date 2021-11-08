@@ -21,6 +21,6 @@ export async function run() {
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")
-    console.log(y.data.officers);
+    console.log(y);
 
 }
