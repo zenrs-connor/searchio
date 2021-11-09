@@ -121,7 +121,7 @@ export class LawPagesSearch extends LawPagesProcess {
     public async scrapePages(): Promise<SearchioResponse> {
         try{
 
-            await this.flipThrough('//a[@class="next"]', '//table[@id="myTable"]/tbody', this.scrapePage.bind(this), 5);
+            await this.flipThrough('//a[@class="next"]', '//table[@id="myTable"]/tbody', this.scrapePage.bind(this), 1);
 
 
             return this.success(`Successfully scraped all pages`);

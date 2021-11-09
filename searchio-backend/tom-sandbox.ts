@@ -21,6 +21,5 @@ export async function run() {
 
     console.log("\n\nBack to sandbox")
     console.log(y.data);
-    console.log(`We have a total of ${y.data.rows.length} results`);
 
 }
