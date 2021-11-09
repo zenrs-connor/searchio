@@ -10,6 +10,7 @@ import { Process } from "./modules/processes/Process";
 import { SocketService } from "./modules/SocketService";
 import { OpenOwnershipCompaniesSearch } from "./modules/processes/OpenOwnership/OpenOwnershipCompaniesSearch";
 import { OpenOwnershipCompanySearch } from "./modules/processes/OpenOwnership/OpenOwnershipCompanySearch";
+import { OpenOwnershipOfficersSearch } from "./modules/processes/OpenOwnership/OpenOwnershipOfficersSearch";
 
 
 export async function run() {
@@ -17,10 +18,10 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new OpenOwnershipCompanySearch(socket, "06671721");
+    let x = new OpenOwnershipOfficersSearch(socket, "David Jones");
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")
-    console.log(y);
+    console.log(y.data.rows);
 
 }
