@@ -7,18 +7,20 @@ import { HunterEmailSearch } from "./modules/processes/Hunter/HunterEmailSearch"
 import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
+import { SocketService } from "./modules/SocketService";
+import { LawPagesSearch } from "./modules/processes/LawPages/LawPagesSearch";
 
 
-export class tomSandbox extends Process {
+export async function run() {
+    
+    let socket = new SocketService();
+    await socket.init();
 
-    constructor() {
-        super(undefined, '');
-    };
+    let x = new LawPagesSearch(socket, "Jones");
+    let y = await x.process();
 
-    public async run() {
-        let x = new HunterDomainSearch(undefined, "");
-        let y = await x.process("cardiff.ac.uk");
-        console.log(y);
-    }
+    console.log("\n\nBack to sandbox")
+    console.log(y.data);
+    console.log(`We have a total of ${y.data.rows.length} results`);
 
 }
