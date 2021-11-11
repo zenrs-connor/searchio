@@ -10,7 +10,7 @@ export class HunterEmailSearch extends HunterProcess {
     
     
     protected id = "HunterEmailSearch";           
-    protected name: "Email Check";
+    protected name: string = "Email Check";
     protected pattern: RegExp = EMAIL_ADDRESS;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -18,7 +18,6 @@ export class HunterEmailSearch extends HunterProcess {
     constructor(socket: SocketService, query: string) {
         super(socket, query);
     }
-
 
     //  Overwrite of the abstract function held in Process.ts
     //  This function is what is called when the Process executes

@@ -2,6 +2,7 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { OpenCorporatesProcess } from "./OpenCorporatesProcess";
 import { SocketService } from "../../SocketService";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 const request = require('request');
@@ -9,7 +10,7 @@ const request = require('request');
 export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
     
     protected id = "OpenCorporatesCompaniesSearch";           
-    protected name: "Companies Search";
+    protected name: string = "Companies Search";
     protected pattern: RegExp = BUSINESS;
     
     
@@ -50,6 +51,8 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
             return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
         }
     }
+
+    
 
     public async stripInfo(companies): Promise<SearchioResponse> {
         try{
@@ -130,7 +133,12 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
                 });
             }
 
-            return this.success(`(OpenCorporatesCompaniesSearch) Successfully performed companies search`, table);
+
+            const results: ResultData[] = [
+                { name: "Companies", type: "Table", data: table }
+            ]
+
+            return this.success(`(OpenCorporatesCompaniesSearch) Successfully performed companies search`, results);
         } catch(err) {
             return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
         }

@@ -139,10 +139,17 @@ export class Process extends ResponseEmitter {
                 //  Build a formatted result to be emitted and cached
                 const result = this.buildResult(response.data);
 
-                //  Emit the result of this process
-                this.socket.result(result as ProcessResult);
 
-                await this.storage.cache(result);
+                //  If there has been data returned by this process
+                if(response.data.length > 0) {
+                    //  Emit the result of this process
+                    this.socket.result(result as ProcessResult);
+
+                    //  Cache the collected information
+                    await this.storage.cache(result);
+                }
+
+
 
 
             } else {

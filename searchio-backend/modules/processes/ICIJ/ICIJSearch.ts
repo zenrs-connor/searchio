@@ -3,12 +3,13 @@ import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { ICIJProcess } from "./ICIJProcess";
 import { ResultData } from "../../../models/ResultData";
+import { WebLink } from "../../../models/WebLink";
 
 
 export class ICIJSearch extends ICIJProcess {
 
     protected id = "ICIJSearch";           
-    protected name: "ICIJ Check";
+    protected name: string = "ICIJ Check";
     protected pattern: RegExp = ANY;
 
 
@@ -24,7 +25,7 @@ export class ICIJSearch extends ICIJProcess {
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
         
-        await this.initWebdriver();
+        await this.initWebdriver(false);
         let result = await this.search();
         await this.destroyWebdriver();
         return result;
@@ -54,8 +55,9 @@ export class ICIJSearch extends ICIJProcess {
             let table = {
 
                 columns: [
-                    { title: "Title and Snippet", key: "titleSnippet", type: "Text" },
-                    { title: "Link", key: "link", type: "Text" }
+                    { title: "Order", key: "order", type: "Number", width: "75px" },
+                    { title: "Link", key: "link", type: "WebLink", width: "350px" },
+                    { title: "Snippet", key: "snippet", type: "Text" }
                 ],
                 rows: []
             }
@@ -88,13 +90,26 @@ export class ICIJSearch extends ICIJProcess {
                 }
 
                 table.rows.push({
-                    titleSnippet: 'Title: ' + articleTitle + '. Snippet: ' + articleSnippet,
-                    link: articleLink
+                    order: table.rows.length + 1,
+                    link: { text: articleTitle, url: articleLink } as WebLink,
+                    snippet: articleSnippet
                 });
                 
             }
+
+            if(table.rows.length > 0) {
+                let result: ResultData = {
+                    name: "Articles",
+                    type: "Table",
+                    data: table
+                }
+                
+                return this.success(`Successfully stripped articles`, [result]);
+            } else {
+                return this.success(`No articles found.`, []);
+            }
+
             
-            return this.success(`Successfully stripped articles`, table);
         
         } catch(err) {
             return this.error(`Error stripping articles`, err)

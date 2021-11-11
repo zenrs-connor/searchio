@@ -3,12 +3,13 @@ import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
 import { NAMES } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseOfficerSearch";           
-    protected name: "Officer Check";
+    protected name: string = "Officer Check";
     protected pattern: RegExp = NAMES;
 
     public table = {
@@ -48,7 +49,14 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
             await this.driver.get(`https://find-and-update.company-information.service.gov.uk/search/officers?q=${name}`);
             let people = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripNamesPage.bind(this), 1);
 
-            return this.success(`(CompaniesHouseStream) Successfully performed name search`, this.table);
+            let result: ResultData = {
+                name: "Officers",
+                type: "Table",
+                data: this.table
+            }
+
+
+            return this.success(`(CompaniesHouseStream) Successfully performed name search`, [result]);
         } catch(err) {
             return this.error(`(CompaniesHouseStream) Could not perform name search`, err);
         }

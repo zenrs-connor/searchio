@@ -3,12 +3,13 @@ import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseCompaniesSearch";           
-    protected name: "Companies Search";
+    protected name: string = "Companies Search";
     protected pattern: RegExp = BUSINESS;
 
 
@@ -131,7 +132,13 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
                 });
             }
 
-            return this.success(`(CompaniesHouseCompaniesSearch) Successfully performed companies search`, table);
+            let result: ResultData = {
+                name: "Companies",
+                type: "Table",
+                data: table
+            }
+
+            return this.success(`(CompaniesHouseCompaniesSearch) Successfully performed companies search`, [result]);
         } catch(err) {
             return this.error(`(CompaniesHouseCompaniesSearch) Error performing companies search`, err)
         }

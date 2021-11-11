@@ -73,6 +73,9 @@ export class SearchioService {
   }
 
   public addResult(result: any) {
+
+    console.log(result);
+
     if(this.CONNECTIONS[result.query]) {
       const identifier = `${result.source}:${result.process_id}`;
 
