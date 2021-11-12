@@ -2,6 +2,7 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { GoogleProcess } from "./GoogleProcess";
 import { SocketService } from "../../SocketService";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { WebLink } from "../../../models/WebLink";
 
 
 export class GoogleSearch extends GoogleProcess {
@@ -16,7 +17,7 @@ export class GoogleSearch extends GoogleProcess {
             { title: "Type", key: "type", type: "Text" },
             { title: "Title", key: "title", type: "Text" },
             { title: "Snippet", key: "snippet", type: "Text" },
-            { title: "Link", key: "link", type: "Text" }
+            { title: "Link", key: "link", type: "WebPage" }
         ],
         rows: []
     }
@@ -88,7 +89,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Video',
                     title: title,
-                    link: link,
+                    link:  { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -102,7 +103,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Video',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -116,7 +117,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Video',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -130,7 +131,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Article',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -144,7 +145,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Article',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -158,7 +159,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Article',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
@@ -172,7 +173,7 @@ export class GoogleSearch extends GoogleProcess {
                 this.table.rows.push({
                     type: 'Tweet',
                     title: title,
-                    link: link,
+                    link: { text: title, url: link } as WebLink,
                     snippet: '' 
                 });
             }
