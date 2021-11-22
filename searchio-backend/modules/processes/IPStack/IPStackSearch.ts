@@ -1,5 +1,6 @@
 //import {  } from "../../../assets/RegexPatterns";
 import { IPV4 } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { IPStackProcess } from "./IPStackProcess";
@@ -38,16 +39,26 @@ export class IPStackSearch extends IPStackProcess {
             await new Promise((resolve) => {
 
                 let url = `http://api.ipstack.com/${IP}?access_key=${IPSTACK_API_KEY}&format=1`;
-                console.log(url);
+
                 request(url, async (err, res, body) => {
 
-                    console.log(body);
+                    response = JSON.parse(body);
 
                     resolve(undefined);
                 });
             });
 
-            return this.success(`(IPStackSearch) Successfully performed ip lookup`, response);
+            let results: ResultData[] = [
+                { name: "Type", type: "Text", data: response.type },
+                { name: "Continent", type: "Text", data: response.continent_name },
+                { name: "Country", type: "Text", data: response.country_name },
+                { name: "Region", type: "Text", data: response.region_name },
+                { name: "City", type: "Text", data: response.city },
+                { name: "Postcode", type: "Text", data: response.zip },
+                { name: "Location", type: "WebLink", data: { text: "Google Maps", url: `https://www.google.com/maps/@${response.latitude},${response.longitude},10.5z` } }
+            ];
+
+            return this.success(`(IPStackSearch) Successfully performed ip lookup`, results);
 
         } catch(err) {
             return this.error(`(IPStackSearch) Could not perform ip lookup`, err);

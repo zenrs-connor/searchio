@@ -1,8 +1,6 @@
 <ng-container *ngIf="percentage() >= 0">
 
     <div class="progress-bar-container" (click)="open = !open" [ngClass]="{ open: open }">
-
-
         <div class="process active" *ngFor="let active of _manager.getProgress().ACTIVE"></div>
         <div class="process complete" *ngFor="let complete of _manager.getProgress().COMPLETED"></div>
         <div class="process error" *ngFor="let error of _manager.getProgress().ERROR"></div>

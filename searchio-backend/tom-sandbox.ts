@@ -12,14 +12,5 @@ import { AskSearch } from "./modules/processes/Ask/AskSearch";
 
 
 export async function run() {
-    
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new AskSearch(socket, "tom jones");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
 
 }
