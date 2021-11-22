@@ -21,7 +21,7 @@ export class HaveIBeenPwnedBreaches extends HaveIBeenPwnedProcess {
 
 
     protected id = "HIBPBreaches";                   //  The ID of a Process should be the same as the class name
-    protected name: "Breaches";                         //  Provide a user-readble name for this process.
+    protected name: string = "Breaches";                         //  Provide a user-readble name for this process.
     protected pattern: RegExp = EMAIL_ADDRESS;                   //  Assign a valid regex pattern to match against potential queries
 
     //  Process extends the ResponseEmitter class, so bve sure to include an argument for the socket

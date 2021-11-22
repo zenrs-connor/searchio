@@ -1,8 +1,7 @@
-<div class="result-filter">
-
-    <div class="hover-card">{{ type | capitalify }}</div>
-
-    <div class="icon"></div>
-    <div class="count"></div>
+<div class="result-filter" [ngClass]="{ faded: hidden }">
+    <div class="icon" [style.background-image]="'url(' + icon + ')'">
+    </div>
+    <div class="name">{{ name }} </div>
+    <div class="count">{{ count }}</div>
 </div>
 
