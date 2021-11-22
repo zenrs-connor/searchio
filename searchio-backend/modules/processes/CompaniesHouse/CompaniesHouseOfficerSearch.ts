@@ -3,13 +3,24 @@ import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
 import { NAMES } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseOfficerSearch";           
-    protected name: "Officer Check";
+    protected name: string = "Officer Search";
     protected pattern: RegExp = NAMES;
+
+    public table = {
+
+        columns: [
+            { title: "Name", key: "officerName", type: "Text" },
+            { title: "Date of Birth", key: "dateOfBirth", type: "Text" },
+            { title: "Total Appointments", key: "numberOfAppointments", type: "Text" }
+        ],
+        rows: []
+    }
 
 
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -28,6 +39,7 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
         this.destroyWebdriver();
         return result;
     }
+    
 
 
 
@@ -37,9 +49,17 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
             name = name.replace(/\s+/g, '+');
             await this.driver.get(`https://find-and-update.company-information.service.gov.uk/search/officers?q=${name}`);
             let people = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripNamesPage.bind(this), 1);
-            console.log(people.data[7]);
 
-            return this.success(`(CompaniesHouseStream) Successfully performed name search`, people);
+            let result: ResultData = {
+                name: "Officers",
+                type: "Table",
+                data: this.table
+            }
+
+
+            if(this.table.rows.length === 0) return this.success(`Found no officers matching that name.`, []);
+
+            return this.success(`(CompaniesHouseStream) Successfully performed name search`, [result]);
         } catch(err) {
             return this.error(`(CompaniesHouseStream) Could not perform name search`, err);
         }
@@ -63,27 +83,36 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
 
             const t = this;
 
-            let officerFormat: {   
-                name: string,
-                numberOfAppointments?: string, 
-                DOB?: string,
-                appointments?: any[]
-            } = {
-                name: undefined
-            };
+            let rowName: string;
+            let rowDOB: string;
+            let rowTA: string;
+
+            // let officerFormat: {   
+            //     name: string,
+            //     numberOfAppointments?: string, 
+            //     DOB?: string,
+            //     appointments?: any[]
+            // } = {
+            //     name: undefined
+            // };
 
             // Check name element is present
             let name = await t.driver.findElements(t.webdriver.By.xpath('//h1[@id="officer-name"]'));
             if(name.length > 0) {
                 name = await t.driver.findElement(t.webdriver.By.xpath('//h1[@id="officer-name"]')).getText();
-                officerFormat.name = name;
+                rowName = name;
+            } else {
+                rowName = 'Unknown';
             }
 
             // Check number of appointments element is present
             let numberOfAppointments = await t.driver.findElements(t.webdriver.By.xpath('//h2[@id="personal-appointments"]'));
             if(numberOfAppointments.length > 0){
                 numberOfAppointments = await t.driver.findElement(t.webdriver.By.xpath('//h2[@id="personal-appointments"]')).getText();
-                officerFormat.numberOfAppointments = numberOfAppointments;
+                numberOfAppointments = numberOfAppointments.replace('Total number of appointments ', '');
+                rowTA = numberOfAppointments;
+            } else {
+                rowTA = 'Unknown';
             }
 
             // Check DOB element is present
@@ -91,7 +120,9 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
             //console.log(`DOB Length: ${DOB.length}`);
             if(DOB.length > 0) {
                 DOB = await t.driver.findElement(t.webdriver.By.xpath('//dd[@id="officer-date-of-birth-value"]')).getText();
-                officerFormat.DOB = DOB;
+                rowDOB = DOB;
+            } else {
+                rowDOB = 'Unknown'
             }
 
             // Collect appointment divs
@@ -99,7 +130,8 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
 
             let appointmentsArray: any[] = [];
 
-            for(let appointment of appointments) {
+            // ------- !!!This functionality does work but has been temporarily removed for testing the table changeover!!! -------
+            /*for(let appointment of appointments) {
                 let appointmentFormat: {
                     companyName: string,
                     companyStatus?: string,
@@ -157,9 +189,15 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
                 appointmentsArray.push(appointmentFormat);
 
             }
-            officerFormat.appointments = appointmentsArray;
+            officerFormat.appointments = appointmentsArray;*/
 
-            return this.success(`(CompaniesHouseStream) Successfully stripped officer page`, officerFormat);
+            this.table.rows.push({
+                officerName: rowName,
+                dateOfBirth: rowDOB,
+                numberOfAppointments: rowTA
+            });
+
+            return this.success(`(CompaniesHouseStream) Successfully stripped officer page`, '');
         } catch(err) {
             return this.error(`(CompaniesHouseStream) Could not strip officer`, err);
         }

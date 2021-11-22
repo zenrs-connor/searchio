@@ -12,7 +12,7 @@ export class HunterDomainSearch extends HunterProcess {
     
     
     protected id = "HunterDomainSearch";           
-    protected name: "Domain Check";
+    protected name: string = "Domain Check";
     protected pattern: RegExp = DOMAIN;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -22,9 +22,11 @@ export class HunterDomainSearch extends HunterProcess {
     }
 
 
-
+    //  Overwrite of the abstract function held in Process.ts
+    //  This function is what is called when the Process executes
+    //  It returns a SearchioResponse containing any success or error data
     // Returns a list of emails associated with a domain
-    public async process(domain: string = this.query) {
+    protected async process(domain: string = this.query) {
 
         try{
             const response: any = await new Promise((resolve) => {
@@ -49,19 +51,73 @@ export class HunterDomainSearch extends HunterProcess {
             //  Check that no error has occurred
             if(!response.error) {
 
-                console.log(response.data.emails)
+                const table = {
+
+                    columns: [
+                        { title: "Email", key: "email", type: "Text" },
+                        { title: "Type", key: "type", type: "Text", width: '100px' },
+                        /*{ title: "Confidence Score", key: "score", type: "Number" },*/
+                        { title: "First Name", key: "firstName", type: "Text" },
+                        { title: "Last Name", key: "lastName", type: "Text" },
+                        /*{ title: "Position", key: "position", type: "Text" },
+                        { title: "Seniority", key: "seniority", type: "Text" },
+                        { title: "Department", key: "department", type: "Text" },*/
+                        /*{ title: "LinkedIn", key: "linkedin", type: "Text" },
+                        { title: "Twitter", key: "twitter", type: "Text" },*/
+                        { title: "Phone Number", key: "phoneNumber", type: "Text" },
+                        { title: "Verified", key: "verifiedDate", type: "Text", width: '100px' },
+                        { title: "Status", key: "status", type: "Text", width: '100px' },
+                        { title: "Sources", key: "sources", type: "Text" }
+                    ],
+                    rows: []
+                }
+
+
+                if(!response.data.domain) return this.success(`No matching domain.`, [])
+
+    
+                for(let email of response.data.emails) {
+    
+    
+                    table.rows.push({
+                        email: email.value,
+                        type: email.type,
+                        score: email.confidence,
+                        firstName: email.first_name,
+                        lastName: email.last_name,
+                        position: email.position,
+                        seniority: email.seniority,
+                        department: email.department,
+                        linkedin: email.linkedin,
+                        twitter: email.twitter,
+                        phoneNumber: email.phone_number,
+                        verifiedDate: email.verification.date,
+                        status: email.verification.status,
+                        sources: email.sources[0].uri
+                    });
+    
+                }
+
+
 
                 //  Build the array of Results from the response
                 const data: ResultData[] = [
                     { name: "Domain", type: "Text", data: response.data.domain },
-                    { name: "Disposable", type: "Boolean", data: response.data.disposable },
+
+
+                    //  I have ommitted some of this data because it does not seem entirely relevant
+                    //  We can always re-implement it if needed in future
+
+                    /*{ name: "Disposable", type: "Boolean", data: response.data.disposable },
                     { name: "Webmail", type: "Boolean", data: response.data.webmail },
                     { name: "Accepts All", type: "Boolean", data: response.data.accept_all },
-                    { name: "Pattern", type: "Text", data: response.data.pattern },
+                    { name: "Pattern", type: "Text", data: response.data.pattern },*/
+
+
                     { name: "Organisation", type: "Text", data: response.data.organization },
                     { name: "Country", type: "Text", data: response.data.country },
                     { name: "State", type: "Text", data: response.data.state },
-                    { name: "Emails", type: "Text", data: response.data.emails }
+                    { name: "Emails", type: "Table", data: table }
                 ];
 
                 //  Return a successful SearchioResponse attaching the result

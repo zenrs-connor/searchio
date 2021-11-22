@@ -12,11 +12,18 @@
 
 
 .header-logo
-    height: $header-height
-    width: $filters-width
+    height: $header-height - $margin-m
+    margin-top: $margin-m
+    margin-left: $margin-m
+    width: $filters-width - $margin-m
     text-align: center
     line-height: $header-height
     color: $mid-grey
+    background-image: url(../../assets/images/logo.png)
+    background-size: 60%
+    background-position: center
+    background-repeat: no-repeat
+
 
 .header-search-bar
     display: block
@@ -29,7 +36,6 @@
     padding-left: $margin-l
     padding-right: $margin-l
     margin-top: $margin-m
-    margin-left: $margin-m
     border-radius: $margin-s 0 0 $margin-s
     color: $dark-grey
 

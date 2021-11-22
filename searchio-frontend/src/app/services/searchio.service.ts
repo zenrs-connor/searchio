@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SearchioResponse } from '../models/SearchioResponse';
-import { io as IO } from 'socket.io-client';
-import { Md5 } from 'ts-md5';
+import { io as IO } from "socket.io-client";
+import * as MD5 from "md5"
 
 
 @Injectable({
@@ -15,7 +15,7 @@ export class SearchioService {
   private headers = new HttpHeaders({
     'Content-Type': 'application/json; charset=utf-8',
   });
-  private api = `http://localhost:5000/api`;
+  private api = `http://88.97.13.136:3002/api`;
 
   constructor(private http: HttpClient) { }
 
@@ -25,13 +25,38 @@ export class SearchioService {
       this.http.get<SearchioResponse>(`${this.api}/query/add/${query}`, { headers: this.headers }).subscribe((res: SearchioResponse) => {
 
         if(res.success) {
+
           this.initConnection(query, res.data.socket);
+
+          setTimeout(() => {
+
+            console.log(res);
+
+            if(res.data.results) {
+              for(let r of res.data.results) {
+                this.addResult(r);
+              }
+            }
+
+            if(res.data.status) {
+              if(this.CONNECTIONS[query]) {
+                this.CONNECTIONS[query].status = res.data.status;
+              }
+            }
+
+
+          }, 1000)
+          
         }
 
         resolve(res);
       })
     });
     
+  }
+
+  private async waitForConnection(query: string) {
+
   }
 
   public getQuery(query: string) {
@@ -49,48 +74,14 @@ export class SearchioService {
 
   public addResult(result: any) {
 
+    console.log(result);
+
     if(this.CONNECTIONS[result.query]) {
+      const identifier = `${result.source}:${result.process_id}`;
 
-      let identifier;
-
-      for(let datum of result.data) {
-        identifier = Md5.hashStr(JSON.stringify(datum));
-
-        if(!this.CONNECTIONS[result.query].resultsObject[identifier]) {
-          this.CONNECTIONS[result.query].resultsObject[identifier] = { ...datum, sources: [] }
-        }
-
-        if(this.CONNECTIONS[result.query].resultsObject[identifier].sources.indexOf(result.source) < 0) {
-          this.CONNECTIONS[result.query].resultsObject[identifier].sources.push(result.source);
-          this.CONNECTIONS[result.query].resultsObject[identifier].sources.sort();
-        }
-
-
-        /*
-        *
-        *   Code preserved in case of changing back to a source/process object 
-        * 
-        */
-
-
-        //  Check if a result with this identifier already exists in the results object
-        //  If not, then initialise one
-        /*if(!this.CONNECTIONS[result.query].resultsObject[identifier]) {
-          this.CONNECTIONS[result.query].resultsObject[identifier] = { ...datum, sources: {} }
-        }
-
-        if(!this.CONNECTIONS[result.query].resultsObject[identifier].sources[result.source]) {
-          this.CONNECTIONS[result.query].resultsObject[identifier].sources[result.source] = []
-        }
-
-        this.CONNECTIONS[result.query].resultsObject[identifier].sources[result.source].push(result.process);
-        this.CONNECTIONS[result.query].resultsObject[identifier].sources.sort();*/
-      }
-
-      this.sortResults(result.query);
-
+      this.CONNECTIONS[result.query].results[identifier] = result;
+      this.CONNECTIONS[result.query].resultHash = MD5(JSON.stringify(this.CONNECTIONS[result.query].results));
     }
-
   }
 
   public sortResults(query: string, field: string = "name", acscending: boolean = true) {
@@ -99,8 +90,6 @@ export class SearchioService {
 
     const sorted = [];
     const toSort = Object.keys(this.CONNECTIONS[query].resultsObject).map((x) => { return this.CONNECTIONS[query].resultsObject[x] });
-
-    console.log(toSort);
 
     let result: any, compare: any;
 
@@ -115,8 +104,6 @@ export class SearchioService {
         for(let j = 0 ; j < sorted.length ; j++) {
 
           compare = sorted[j];
-
-          console.log(result);
 
           if(JSON.stringify(result[field]) < JSON.stringify(compare[field])) {
             sorted.splice(j, 0, result);
@@ -140,9 +127,10 @@ export class SearchioService {
 
   private initConnection(query: string, socketID: string) {
 
-    const socket = IO("http://localhost:5000", { transports: ["websocket"]});
+    const socket = IO("http://88.97.13.136:3002", { transports: ["websocket"]});
 
         socket.on("connect", () => {
+
           console.log(`Client connection! Joining room ${ socketID }`);
 
           socket.emit('join', socketID);
@@ -150,18 +138,19 @@ export class SearchioService {
           if(!this.CONNECTIONS[query]) {
             this.CONNECTIONS[query] = {
               socket: socket,
+              results: {},
+              resultsHash: "",
               sources: {},
-              resultsObject: {},
-              resultsArray: []
+              status: {}
             }
           }
+
 
           socket.on('send', (message) => { console.log(message)})
 
           /* EVENT HANDLING */
 
           socket.on('process-update', (process) => {
-            console.log("Got Process Update!", process);
 
             //  Check that the query made by this process has a valid connection
             if(this.CONNECTIONS[process.query]) {
@@ -181,17 +170,24 @@ export class SearchioService {
 
           //  Event fired when a Stream emits a new result
           socket.on('process-result', (result) => {
-            console.log("Got Process Result!", result);
             this.addResult(result);
+
+          });
+
+
+          socket.on('query-update', (status) => {
+
+            //  Check that the query made by this process has a valid connection
+            if(this.CONNECTIONS[status.query]) {
+              this.CONNECTIONS[status.query].status = status;
+            }
 
           });
 
         });
 
 
-          
-
-          
+        
 
         socket.on("connect_error", () => {
           console.log("Could not connect!");
