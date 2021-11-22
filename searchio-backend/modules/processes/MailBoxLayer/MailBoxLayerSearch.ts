@@ -1,4 +1,5 @@
 import { EMAIL_ADDRESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { MailBoxLayerProcess } from "./MailBoxLayerProcess";
@@ -11,7 +12,7 @@ export class MailBoxLayerSearch extends MailBoxLayerProcess {
 
 
     protected id = "MailBoxLayerSearch";           
-    protected name: "Email Address Search";
+    protected name: string = "Email Address Search";
     protected pattern: RegExp = EMAIL_ADDRESS;
 
 
@@ -32,23 +33,39 @@ export class MailBoxLayerSearch extends MailBoxLayerProcess {
     // Returns information about the status of a given email address
     public async validateEmail(email: string = this.query): Promise<SearchioResponse> {
         let response;
+
+        console.log("FOO")
+
         try {
 
             await new Promise((resolve) => {
 
                 let url = `http://apilayer.net/api/check?access_key=${MAILBOXLAYER_API_KEY}&email=${email}&smtp=1&format=1`;
-                console.log(url);
-                request(url, async (err, res, body) => {
 
-                    response = body;
+                request(url, async (err, res, body) => {
+                    response = JSON.parse(body);
+                    
                     resolve(undefined);
                 });
             });
 
-            return this.success(`(MailBoxLayerSearch) Successfully performed email validation`, response);
+            console.log(response);
+            let results: ResultData[] = [
+                { name: "Valid Format", type: "Boolean", data: response.format_valid }, 
+                { name: "SMTP", type: "Boolean", data: response.smtp_check }, 
+                { name: "Mail Server", type: "Boolean", data: response.mx_found }, 
+                { name: "Catch All", type: "Boolean", data: response.catch_all }, 
+                { name: "Role", type: "Boolean", data: response.role }, 
+                { name: "Disposable", type: "Boolean", data: response.disposable }, 
+                { name: "Free", type: "Boolean", data: response.free }, 
+                { name: "Score", type: "Boolean", data: response.score }, 
+            ]
+
+
+            return this.success(`Successfully performed email validation`, results);
 
         } catch(err) {
-            return this.error(`(MailBoxLayerSearch) Could not perform email validation`, err);
+            return this.error(`Could not perform email validation`, err);
         }
         
     }

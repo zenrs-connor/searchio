@@ -7,19 +7,4 @@ import { HunterEmailSearch } from "./modules/processes/Hunter/HunterEmailSearch"
 import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
-import { SocketService } from "./modules/SocketService";
-import { LegacySearch } from "./modules/processes/Legacy/LegacySearch";
 
-
-export async function run() {
-    
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new LegacySearch(socket, "Elliot Phillips");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
-
-}

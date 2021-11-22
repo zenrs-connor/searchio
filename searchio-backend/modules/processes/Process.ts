@@ -13,6 +13,7 @@ require('chromedriver');
 import { WebElement } from 'selenium-webdriver';
 import { ResultData } from "../../models/ResultData";
 import { ProcessResult } from "../../models/ProcessResult";
+import { StorageService } from "../StorageService";
 import { NumberFormats } from "../../models/NumberFormats";
 
 
@@ -27,6 +28,7 @@ export class Process extends ResponseEmitter {
     protected code: ProcessCode = 1;                            //  Status code - for reference check the StreamStatusCode.ts type
     protected message: string = "Awaiting instruction...";      //  A message to describe the current status of this process
     protected pattern: RegExp = /^$/;
+    protected storage: StorageService = new StorageService();
 
     //  Webdriver Variables
     protected webdriver: any;
@@ -45,12 +47,28 @@ export class Process extends ResponseEmitter {
     public initWebdriver(headless: boolean = true) {
 
         var options = { args:['--disable-notifications','--no-sandbox']}
-        if(headless) options.args.push('--headless');
+        if(headless) {
+            
+            options.args.push('--headless');
+            options.args.push('--disable-gpu');
+            options.args.push('--disable-software-rasterizer');
+            options.args.push('--window-size=1920,1080');
+            options.args.push('--ignore-certificate-errors');
+            options.args.push('--allow-running-insecure-content');
+            options.args.push(`user-agent=${'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'}`);
+        }
+            
         this.webdriver = require('selenium-webdriver');
         this.capabilities = this.webdriver.Capabilities.chrome().set('goog:chromeOptions' ,options);
         this.driver = new this.webdriver.Builder().withCapabilities(this.capabilities).build();
 
     }
+
+    public async takeScreenshot() {
+        console.log("TAKING SCREENSHOT")
+        if(this.driver) console.log("data:image/png;base64," + (await this.driver.takeScreenshot()));
+    }
+
 
     //  Function to destroy the webdriver after a process has completed
     //  Make sure to call this at the end of each scraping process to prevent memory leaks into unused browser windows. 
@@ -137,8 +155,18 @@ export class Process extends ResponseEmitter {
                 //  Build a formatted result to be emitted and cached
                 const result = this.buildResult(response.data);
 
-                //  Emit the result of this process
-                this.socket.result(result as ProcessResult);
+
+                //  If there has been data returned by this process
+                if(response.data.length > 0) {
+                    //  Emit the result of this process
+                    this.socket.result(result as ProcessResult);
+
+                    //  Cache the collected information
+                    await this.storage.cache(result);
+                }
+
+
+
 
             } else {
                 //  If an error has occured as a result of the process, update the status to Error
@@ -267,7 +295,6 @@ export class Process extends ResponseEmitter {
         }
     }
 
-
     // Function to iterate through pages, perform a given processon all collected elements when also given the xpath for the next button
     public async flipThrough(nextXPath: string, collectElements: string, process: Function, pageLimit: number = 100): Promise<SearchioResponse> {
 
@@ -362,7 +389,7 @@ export class Process extends ResponseEmitter {
                 
 
             }
-            return this.success(`Successfully iterated links and opened/killed tabs`,results);
+            return this.success(`Successfully iterated links and opened/killed tabs`, results);
         } catch(err) {
             return this.error(`Could not iterate through links opening/killing tabs`, err);
         }

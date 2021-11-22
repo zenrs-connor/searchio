@@ -3,51 +3,50 @@
 $filter-height: 50px
 
 
+.heading
+    background: $dark-grey
+    color: #FFF
+    margin-left: -$margin-s
+    margin-top: -$margin-s
+    margin-right: -$margin-s
+    margin-bottom: $margin-s
+    display: flex
+    flex-direction: row
+
+    padding: $margin-s
+    padding-left: 2 * $margin-s
+    padding-right: 2 * $margin-s
+    line-height: $button-height
 
 .filter-bar
-    width: $filters-width
+    width: $filters-width - (2 * $margin-m)
     height: $filters-height
     box-sizing: border-box
-    padding-left: $margin-m
-    padding-top: $margin-m
+    padding: $margin-s
     display: flex
     flex-direction: column
+    background: $light-grey
+    margin-left: $margin-m
+    margin-top: $margin-m
+    border-radius: $margin-s
+    overflow: hidden
 
 
     .filters-container
         flex: 1
 
-
-.filter
-    height: $filter-height
-    width: 100%
-    border-bottom: 1px solid $light-grey
+        
+.filter-head
+    background: $mid-grey
+    color: #FFF
+    padding: $margin-s
+    border-radius: $margin-s
+    margin-bottom: $margin-s
     display: flex
-    box-sizing: border-box
     flex-direction: row
-    padding: $margin-m
+    line-height: $button-height
 
-    &:last-child
-        border: none
-
-    .icon
-        height: $filter-height - (2 * $margin-m)
-        width: $filter-height - (2 * $margin-m)
-        background: $light-grey
-        border-radius: $margin-s
-
-    .name
-        flex: 1
-
-    .count
-        height: $filter-height - (2 * $margin-m)
-        width: $filter-height - (2 * $margin-m)
-        background: $light-grey
-        border-radius: 100%
 
 
 result-filter
     margin-bottom: $margin-s
-
-progress-tracker
-    margin-bottom: $margin-m
