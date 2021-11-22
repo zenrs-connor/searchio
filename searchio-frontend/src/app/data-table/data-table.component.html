@@ -42,8 +42,15 @@
 
                     <ng-container *ngIf="column.type === 'Text'">{{ row[column.key] }}</ng-container>
                     <ng-container *ngIf="column.type === 'Number'">{{ row[column.key] | number:'1.0':'en-US' }}</ng-container>
-                    <div *ngIf="column.type === 'Html'" [innerHTML]="row[column.key]"></div> 
-                    <ng-container *ngIf="column.type === 'Date'">{{ row[column.key] | date:"dd/MM/yyyy" }}</ng-container>
+                    <div *ngIf="column.type === 'Html'" [innerHTML]="row[column.key]"></div>
+
+
+                    <ng-container *ngIf="column.type === 'Date'">
+
+                        <ng-container *ngIf="row[column.key]">{{ row[column.key] | date:"dd/MM/yyyy" }}</ng-container>
+                        <ng-container *ngIf="!row[column.key]">N/A</ng-container>
+
+                    </ng-container>
 
                     <a *ngIf="column.type === 'WebLink'" [href]="row[column.key].url" target="_blank">{{ row[column.key].text }} </a>
 

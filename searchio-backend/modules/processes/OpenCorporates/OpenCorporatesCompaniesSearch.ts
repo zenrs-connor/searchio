@@ -44,11 +44,10 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
 
             let table = await this.stripInfo(companies);
 
-
-            return this.success(`(OpenCorporatesCompaniesSearch) Successfully scraped companies`, table.data);
+            return this.success(`Completed`, table.data);
 
         } catch(err) {
-            return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
+            return this.error(`Error scraping companies`, err)
         }
     }
 
@@ -133,14 +132,16 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
                 });
             }
 
+            if(table.rows.length === 0) return this.success(`No results found`, []);
+
 
             const results: ResultData[] = [
                 { name: "Companies", type: "Table", data: table }
             ]
 
-            return this.success(`(OpenCorporatesCompaniesSearch) Successfully performed companies search`, results);
+            return this.success(`Successfully performed companies search`, results);
         } catch(err) {
-            return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
+            return this.error(`Error scraping companies`, err)
         }
     }
 

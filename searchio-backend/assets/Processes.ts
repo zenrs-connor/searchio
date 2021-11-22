@@ -17,6 +17,10 @@ import { IPStackSearch } from "../modules/processes/IPStack/IPStackSearch";
 import { MailBoxLayerSearch } from "../modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompanySearch";
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
+import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
+
+import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
+import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -26,45 +30,53 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 export const PROCESSES: any = [
 
     //  Numverify Processes
-    //NumverifyValidate,
+    NumverifyValidate,
 
     //  DVLA Processes
-    //DVLAVehicleCheck,
+    DVLAVehicleCheck,
 
     // HaveIBeenPwned Processes
-    //HaveIBeenPwnedBreaches,
-    //HaveIBeenPwnedPastes,
+    HaveIBeenPwnedBreaches,
+    HaveIBeenPwnedPastes,
 
     //  192
-    //Names192Search
+    Names192Search,
 
     //  Companies House
-    //CompaniesHouseCompaniesSearch
-    //CompaniesHouseCompanySearch
-    //CompaniesHouseOfficerSearch
+    CompaniesHouseCompaniesSearch,
+    CompaniesHouseCompanySearch,
+    CompaniesHouseOfficerSearch,
 
     // Hunter
-    //HunterDomainSearch
+    HunterDomainSearch,
 
     //  HM Land Registry
-    //HMLandRegistryDomestic
+    //HMLandRegistryDomestic,
 
     //  ICIJ
-    //ICIJSearch,
+    ICIJSearch,
 
     // IPAPI
-    //IPAPISearch
+    IPAPISearch,
 
     //  IPStack
-    //IPStackSearch
+    IPStackSearch,
 
 
     //  MailBoxLayer
-    //MailBoxLayerSearch
+    MailBoxLayerSearch,
 
 
     // OpenCorprates
     OpenCorporatesCompanySearch,
     OpenCorporatesCompaniesSearch,
+    OpenCorporatesOfficerSearch,
+
+
+    // PhoneInfoga
+    //PhoneInfogaSearch,
+
+    //  StreetCheck
+    StreetCheckSearch,
 
 ]

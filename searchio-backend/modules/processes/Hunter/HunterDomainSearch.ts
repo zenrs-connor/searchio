@@ -71,6 +71,10 @@ export class HunterDomainSearch extends HunterProcess {
                     ],
                     rows: []
                 }
+
+
+                if(!response.data.domain) return this.success(`No matching domain.`, [])
+
     
                 for(let email of response.data.emails) {
     
@@ -94,7 +98,7 @@ export class HunterDomainSearch extends HunterProcess {
     
                 }
 
-                console.log(response.data);
+
 
                 //  Build the array of Results from the response
                 const data: ResultData[] = [

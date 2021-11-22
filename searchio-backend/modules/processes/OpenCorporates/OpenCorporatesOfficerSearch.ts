@@ -1,9 +1,8 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
-import { Console } from "console";
-import { copyFile } from "fs";
 import { OpenCorporatesProcess } from "./OpenCorporatesProcess";
 import { SocketService } from "../../SocketService";
 import { NAMES } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 const request = require('request');
@@ -11,24 +10,21 @@ const request = require('request');
 export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
     
     protected id = "OpenCorporatesOfficerSearch";           
-    protected name: "Officer Check";
+    protected name: string = "Officer Search";
     protected pattern: RegExp = NAMES;
-
 
     public table = {
 
         columns: [
-            { title: "Name", key: "personName", type: "Text" },
+            { title: "Name", key: "personName", type: "WebLink" },
             { title: "Role", key: "personRole", type: "Text" },
             { title: "Role Status", key: "roleStatus", type: "Text" },
-            { title: "Link", key: "personLink", type: "Text" },
             { title: "Company Jurisdiction", key: "companyJurisdiction", type: "Text" },
             { title: "Company Status", key: "companyStatus", type: "Text" },
-            { title: "Company Name", key: "companyName", type: "Text" },
-            { title: "Company Number", key: "companyNumber", type: "Text" },
-            { title: "Company Start Date", key: "startDate", type: "Text" },
-            { title: "Company End Date", key: "endDate", type: "Text" },
-            { title: "Link", key: "companyLink", type: "Text" },
+            { title: "Company Name", key: "companyName", type: "WebLink" },
+            { title: "Company No.", key: "companyNumber", type: "Text" },
+            { title: "Company Start Date", key: "startDate", type: "Date" },
+            { title: "Company End Date", key: "endDate", type: "Date" }
         ],
         rows: []
     }
@@ -66,9 +62,8 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
                     let rowCompanyStatus: string
                     let rowCompanyName: string
                     let rowCompanyNumber: string
-                    let rowCompanyStart: string
-                    let rowCompanyEnd: string
-                    let rowCompanyLink: string
+                    let rowCompanyStart: Date | undefined;
+                    let rowCompanyEnd: Date | undefined;
                 
                 let name = await person.findElement(this.webdriver.By.xpath('./a')).getText();
                 rowName = name;
@@ -111,19 +106,19 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
                 let startDate = await person.findElements(this.webdriver.By.xpath('.//span[@class="start_date"]'));
                 if(startDate.length > 0){
                     startDate = await person.findElement(this.webdriver.By.xpath('.//span[@class="start_date"]')).getText();
-                    rowCompanyStart = startDate;
+                    rowCompanyStart = new Date(startDate);
                 } else {
-                    startDate = "Not available";
-                    rowCompanyStart = startDate;
+                    rowCompanyStart = undefined;
                 }
+
+
                 
                 let endDate = await person.findElements(this.webdriver.By.xpath('.//span[@class="end_date"]'));
                 if(endDate.length > 0){
                     endDate = await person.findElement(this.webdriver.By.xpath('.//span[@class="end_date"]')).getText();
-                    rowCompanyEnd = endDate;
+                    rowCompanyEnd = new Date(endDate);
                 } else {
-                    endDate = "Not available";
-                    rowCompanyEnd = endDate;
+                    rowCompanyEnd = undefined;
                 }
 
                 let role = await person.getText()
@@ -174,26 +169,22 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
                     role = "Organizer";
                     rowRole = role;
                 } else {
-                    let link = await person.findElement(this.webdriver.By.xpath("./a")).getAttribute('href');
-                    role = `Unknown (${link})`;
+                    role = `Unknown`;
                     rowRole = role;
                 }
 
                 let companyLink = await person.findElement(this.webdriver.By.xpath('./a[3]')).getAttribute('href');
-                rowCompanyLink = companyLink;
 
                 this.table.rows.push({
-                    personName: rowName,
+                    personName: { text: rowName, url: rowPersonLink },
                     personRole: rowRole,
                     roleStatus: rowRoleStatus,
-                    personLink: rowPersonLink,
                     companyJurisdiction: rowCompanyJurisdiction,
                     companyStatus: rowCompanyStatus,
-                    companyName: rowCompanyName,
+                    companyName: { text: rowCompanyName, url: companyLink },
                     companyNumber: rowCompanyNumber,
                     startDate: rowCompanyStart,
-                    endDate: rowCompanyEnd,
-                    companyLink: rowCompanyLink
+                    endDate: rowCompanyEnd
                 });
 
             }
@@ -212,7 +203,21 @@ export class OpenCorporatesOfficerSearch extends OpenCorporatesProcess {
             await this.driver.get(`https://opencorporates.com/officers?jurisdiction_code=&q=${name}&utf8=%E2%9C%93`);
             let people = await this.flipThrough('//li[@class="next next_page "]/a', '//ul[@class="officers unstyled"]/li', this.scrapePeople.bind(this), 25);
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, this.table);
+
+            console.log(this.table);
+
+            let results: ResultData[] = [
+                {
+                    name: "Officers",
+                    type: "Table",
+                    data: this.table
+                }
+            ]
+
+            if(this.table.rows.length === 0) return this.success(`Found no officers matching that name.`, [])
+
+
+            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, results);
 
         } catch(err) {
             return this.error(`(OpenCorporatesScraperStream) Error scraping a company`, err);

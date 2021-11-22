@@ -22,7 +22,7 @@ export class Names192Search extends Names192Process {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         this.setStatus("ACTIVE", `Searching 192 for records with name: ${this.query}...`);
         let result = await this.nameSearch();
         this.setStatus("COMPLETED", `Successfully retrieved records with name: ${this.query}...`);
@@ -156,11 +156,15 @@ export class Names192Search extends Names192Process {
                 data: table
             }
 
-            return this.success(`(Names192Search) Successfully collected people records`, [res]);
+            
+            if(table.rows.length === 0) return this.success(`No records found for that name.`, []);
+
+
+            return this.success(`Successfully collected people records`, [res]);
 
         } catch(err) {
             this.setStatus("ERROR", `Error retrieving records with name: ${this.query}...${err}`);
-            return this.error(`(Names192Search) Error collecting people records`, err)
+            return this.error(`Error collecting people records`, err)
         }
     }
 

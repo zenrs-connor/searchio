@@ -2,25 +2,25 @@
 
     <div class="heading">
         <div class="flex">Filters</div>
-        <div class="button" (click)="_manager.clearFilters()">Clear</div>
+        <div class="button" (click)="_manager.clearFilters()" hovercard message="Clear all filters">Clear</div>
     </div>
     <div class="filters-container">
 
         <div class="filter-head">
             <div class="flex">Sources</div>
-            <div class="button" (click)="_manager.clearDataSourceFilters()">Clear</div>
+            <div class="button" (click)="_manager.clearDataSourceFilters()" hovercard message="Clear source filters">Clear</div>
         </div>
 
         <result-filter *ngFor="let source of _manager.getSources()" 
         (click)="_manager.toggleShowDataSource(source.source)"
         [hidden]="_manager.isHiddenDataSource(source.source)"
-        [icon]="'assets/images/icons/data-sources/' + source.source + '.png'" 
+        [icon]="'assets/images/icons/data-sources/' + source.source + '.png' | encodeUri" 
         [name]="source.source" 
         [count]="source.ids.length"></result-filter>
 
         <div class="filter-head">
             <div class="flex">Data Types</div>
-            <div class="button" (click)="_manager.clearDataTypeFilters()">Clear</div>
+            <div class="button" (click)="_manager.clearDataTypeFilters()" hovercard message="Clear data type filters">Clear</div>
         </div>
         <result-filter *ngFor="let type of _manager.getDataTypes()"
         (click)="_manager.toggleShowDataType(type.type)"

@@ -10,6 +10,7 @@
             
             <div *ngIf="result.type === 'Text'" [innerHTML]="result.data"></div>
             <ng-container *ngIf="result.type === 'Number'">{{ result.data }}</ng-container>
+            <ng-container *ngIf="result.type === 'PhoneNumber'">{{ result.data }}</ng-container>
             <ng-container *ngIf="result.type === 'Date'">{{ result.data | date:'dd/MM/yyyy' }}</ng-container>
         </div>
     </div>

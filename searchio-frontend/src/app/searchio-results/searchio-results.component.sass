@@ -34,9 +34,28 @@
             background: $mid-grey
             color: $light-grey
             border-radius: $margin-s
+            line-height: $button-height
 
             .button
                 margin-left: $margin-s
+
+            .queryStatus
+                margin-left: 0px
+                display: inline-block
+                color: $dark-grey
+                margin-right: $margin-m
+
+                &.dormant
+                    background-color: $dormant-color
+                
+                &.active
+                    background-color: $active-color
+
+                &.completed
+                    background-color: $completed-color
+
+                &.error
+                    background-color: $error-color
 
 
 .searchio-results::-webkit-scrollbar

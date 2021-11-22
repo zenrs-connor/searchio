@@ -163,11 +163,19 @@ export class DataTableComponent implements OnInit, AfterContentInit {
         switch(type) {
 
           case "WebLink":
-            val = row[column].text;
+            val = row[column].text.toLowerCase();
+            break;
+
+          case "Number":
+            val = parseFloat(row[column]);
+            break;
+          
+          case "Date":
+            val = row[column] ? new Date(row[column]) : new Date(0);
             break;
 
           default:
-            val = row[column];
+            val = row[column].toLowerCase();
             break;
 
         }
@@ -181,11 +189,19 @@ export class DataTableComponent implements OnInit, AfterContentInit {
           switch(type) {
 
             case "WebLink":
-              comp = rows[i][column].text;
+              comp = rows[i][column].text.toLowerCase();
+              break;
+            
+            case "Date":
+              comp = rows[i][column] ? new Date(rows[i][column]) : new Date(0);
+              break;
+
+            case "Number":
+              comp = parseFloat(rows[i][column])
               break;
   
             default:
-              comp = rows[i][column];
+              comp = rows[i][column].toLowerCase();
               break;
   
           }

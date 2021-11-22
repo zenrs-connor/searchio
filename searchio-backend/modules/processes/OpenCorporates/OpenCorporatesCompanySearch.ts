@@ -101,9 +101,21 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
     public async scrapeOverview(countryCode: string, companyNumber: string): Promise<SearchioResponse> {
         
         try {
+
+
+
             await this.driver.get(`https://opencorporates.com/companies/${countryCode}/${companyNumber}`);
-            let companyName = await this.driver.findElement(this.webdriver.By.xpath('//h1[@class="wrapping_heading fn org"]')).getText();
+
+            //  Check to see if this is a valid page
+            let name = await this.driver.findElements(this.webdriver.By.xpath('//h1[@class="wrapping_heading fn org"]'));
+
+            if(name.length === 0) return this.success("Compnay not found.", [])
+
+            let companyName = await name[0].getText();
+
             let overview = await this.driver.findElement(this.webdriver.By.xpath('//dl[@class="attributes dl-horizontal"]'));
+
+
 
             let overviewFormat: {   
                 companyNumber: string, 
@@ -344,16 +356,20 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
                 })
             }
 
+
+            //  If there are no statements
+            if(table.rows.length === 0) return this.success(`No statements of control found`, []);
+
             let results: ResultData[] = [{
                 name: "Statements of Control",
                 type: "Table",
                 data: table
             }]
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully collected company statements of control`, results);
+            return this.success(`Successfully collected company statements of control`, results);
 
         } catch(err) {
-            return this.error(`(OpenCorporatesScraperStream) Error collecting company statements of control`, err)
+            return this.error(`Error collecting company statements of control`, err)
         }
     }
 
@@ -394,6 +410,9 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
                 })
             }
 
+
+            //  If no filings are found
+            if(table.rows.length === 0) return this.success("No filings found.", []);
 
 
             let results: ResultData[] = [
@@ -467,6 +486,9 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
 
 
             let results: ResultData[] = []
+
+            console.log(overview.data);
+
 
             results = results.concat(overview.data);
             results = results.concat(statements.data);

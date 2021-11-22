@@ -14,7 +14,7 @@ import { QueryStatus } from "./models/QueryStatus";
 
 
 
-const PORT = 5000;
+const PORT = 3002;
 const APP = express();
 APP.use(cors());
 APP.use(bodyParser.json({}));                            
@@ -23,6 +23,7 @@ APP.use(bodyParser.urlencoded({ extended: true }));
 //  Controller routing
 APP.use('/api/', API);
 
+APP.use('/', express.static(__dirname + '/../searchio-frontend/dist/searchio-frontend'));
 
 //  404 Handling, writing 
 APP.use(function(req: any, res: any, next: any) {

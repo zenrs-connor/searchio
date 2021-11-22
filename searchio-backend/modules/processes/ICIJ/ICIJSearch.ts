@@ -25,7 +25,7 @@ export class ICIJSearch extends ICIJProcess {
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
         
-        await this.initWebdriver(false);
+        await this.initWebdriver();
         let result = await this.search();
         await this.destroyWebdriver();
         return result;

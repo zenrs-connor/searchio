@@ -14,7 +14,7 @@ export class SocketService {
 
     public async init(): Promise<SearchioResponse> {
 
-        this.socket = IO('http://localhost:5000',{ transports: ["websocket"]});
+        this.socket = IO('http://localhost:3002',{ transports: ["websocket"]});
 
         return new Promise((r, e) => {
 

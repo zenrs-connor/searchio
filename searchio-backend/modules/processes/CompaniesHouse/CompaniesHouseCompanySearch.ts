@@ -26,7 +26,7 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
         
-        await this.initWebdriver(false);
+        await this.initWebdriver();
         let result = await this.stripCompanyInformation();
         await this.destroyWebdriver();
         return result;

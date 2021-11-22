@@ -9,7 +9,7 @@ import { ResultData } from "../../../models/ResultData";
 export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseOfficerSearch";           
-    protected name: string = "Officer Check";
+    protected name: string = "Officer Search";
     protected pattern: RegExp = NAMES;
 
     public table = {
@@ -34,11 +34,12 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.nameSearch();
         this.destroyWebdriver();
         return result;
     }
+    
 
 
 
@@ -55,6 +56,8 @@ export class CompaniesHouseOfficerSearch extends CompaniesHouseProcess {
                 data: this.table
             }
 
+
+            if(this.table.rows.length === 0) return this.success(`Found no officers matching that name.`, []);
 
             return this.success(`(CompaniesHouseStream) Successfully performed name search`, [result]);
         } catch(err) {

@@ -1,7 +1,7 @@
 <div class="process-result-container" *ngIf="!hidden()">
 
     <div class="header">
-        <div class="source-icon" [style.background-image]="'url(assets/images/icons/data-sources/' + result.source + '.png)'"></div>
+        <div class="source-icon" [style.background-image]="'url(assets/images/icons/data-sources/' + result.source + '.png)' | encodeUri "></div>
         <b>{{ result.source }}:</b> {{ result.process }}
         <div class="hide" (click)="toggleHidden()">👁</div>
     </div>
