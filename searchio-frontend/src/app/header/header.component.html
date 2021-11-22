@@ -1,10 +1,15 @@
 <div class="header-container">
 
-    <div class="header-logo">LOGO</div>
+    <div class="header-logo"></div>
 
-    <input type="text" class="header-search-bar" placeholder="Start your search here..." value="connor_allen@me.com" #search (keypress)="onKeyPress($event)"/>
+    <input type="text" 
+    class="header-search-bar" 
+    placeholder="Start your search here..." 
+    value="ZENRS" 
+    #search 
+    (keypress)="onKeyPress($event)"
+    />
 
-    <div class="header-search-button" (click)="startSearch()">🔍&#xFE0E;</div>
-
+    <div class="header-search-button" (click)="startSearch()" hovercard message="Click here to start the query" position="left">🔍&#xFE0E;</div>
 
 </div>

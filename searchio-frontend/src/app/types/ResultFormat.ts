@@ -1,0 +1,1 @@
+export type ResultFormat = 'source' | 'process';

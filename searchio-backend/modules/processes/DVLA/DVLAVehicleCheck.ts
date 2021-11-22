@@ -9,7 +9,7 @@ import { DVLAProcess } from "./DVLAProcesss";
 export class DVLAVehicleCheck extends DVLAProcess {
 
     protected id = "DVLAVehicleCheck";           
-    protected name: "Vehicle Check";                 
+    protected name: string = "Vehicle Check";                 
     protected pattern: RegExp = REGISTRATION_PLATE;        
 
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -90,11 +90,14 @@ export class DVLAVehicleCheck extends DVLAProcess {
 
             carFormat.registrationPlate = reg;
 
-
             let vehicleMake = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="make"]/dd'));
             if(vehicleMake.length > 0) {
                 carFormat.vehicleMake = await vehicleMake[0].getText();
-            } else { this.error(`Could not find "vehicle make" element.`) }
+            } else { 
+                return this.success(`Not a valid vehicle.`, []);
+            }
+
+
 
             //
 
@@ -240,6 +243,7 @@ export class DVLAVehicleCheck extends DVLAProcess {
             //  Build the array of Results from the response
             const data: ResultData[] = [];
 
+
             if(carFormat.registrationPlate) data.push({ name: "Registration Plate", type: "Text", data: carFormat.registrationPlate });
             if(carFormat.vehicleMake) data.push({ name: "Vehicle Make", type: "Text", data: carFormat.vehicleMake });
             if(carFormat.taxStatus) data.push({ name: "Tax Status", type: "Text", data: carFormat.taxStatus });
@@ -264,6 +268,7 @@ export class DVLAVehicleCheck extends DVLAProcess {
             this.setStatus("COMPLETED", `Got ${data.length} data.`);
 
             return this.success(`Successfully scraped vehicle details`, data);
+
         } catch(err) {
 
             console.log(err);

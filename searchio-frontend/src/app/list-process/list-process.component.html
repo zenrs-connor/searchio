@@ -1,6 +1,6 @@
 <div *ngIf="process" class="list-process-container">
 
-    <div class="icon"></div>
+    <div class="icon" [style.background-image]="'url(assets/images/icons/data-sources/' + process.source + '.png)'"></div>
 
     <div class="text">
         <div class="name"><b>{{ process.source }}:</b>&nbsp;{{ process.name | capitalify }}</div>
