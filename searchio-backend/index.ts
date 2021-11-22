@@ -11,6 +11,7 @@ import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { ProcessData } from "./models/ProcessData";
 
+
 const PORT = 3002;
 const APP = express();
 APP.use(cors());
