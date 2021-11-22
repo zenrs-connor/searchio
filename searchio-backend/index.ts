@@ -13,7 +13,6 @@ import { ProcessData } from "./models/ProcessData";
 import { QueryStatus } from "./models/QueryStatus";
 
 
-
 const PORT = 3002;
 const APP = express();
 APP.use(cors());
@@ -83,5 +82,4 @@ IO.on("connection", (socket) => {
 
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
-
 });
