@@ -1,14 +1,14 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
-import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { Names192Process } from "./Names192Process";
 import { NAMES } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class Names192Search extends Names192Process {
 
     protected id = "Names192Search";           
-    protected name: "Name Search";
+    protected name: string = "Name Search";
     protected pattern: RegExp = NAMES;
 
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -115,7 +115,7 @@ export class Names192Search extends Names192Process {
                     director = await result.findElement(this.webdriver.By.xpath('.//div[@class="test-director director tick"]')).getText();
                     rowDirector = director;
                 } else {
-                    rowDirector = 'Unknown'
+                    rowDirector = 'Unknown';
                 }
 
                 let partialAddress = await result.findElement(this.webdriver.By.xpath('.//div[@class="results-address"]/div/span[2]')).getText();
@@ -146,13 +146,25 @@ export class Names192Search extends Names192Process {
                     partialAddress: rowPartialAddress,
                     otherOccupants: rowOtherOccupants
                 });
+
+                
             }
             
+            let res: ResultData = {
+                name: `Records`,
+                type: "Table",
+                data: table
+            }
 
-            return this.success(`(Names192Search) Successfully collected people records`, table);
+            
+            if(table.rows.length === 0) return this.success(`No records found for that name.`, []);
+
+
+            return this.success(`Successfully collected people records`, [res]);
+
         } catch(err) {
             this.setStatus("ERROR", `Error retrieving records with name: ${this.query}...${err}`);
-            return this.error(`(Names192Search) Error collecting people records`, err)
+            return this.error(`Error collecting people records`, err)
         }
     }
 

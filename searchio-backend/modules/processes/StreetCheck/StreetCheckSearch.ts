@@ -9,7 +9,7 @@ import { ResultData } from "../../../models/ResultData";
 export class StreetCheckSearch extends StreetCheckProcess {
 
     protected id = "StreetCheckSearch";           
-    protected name: "Property Check";
+    protected name: string = "Property Check";
     protected pattern: RegExp = ADDRESS;
 
     //  Build the array of Results from the response
@@ -45,19 +45,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
 
             if(postcode != null){
                 let inputPostcode = postcode[0]
-                console.log(`Detected Postcode: ${inputPostcode}`);
                 await this.driver.get(`https://www.streetcheck.co.uk/postcode/${inputPostcode}`);
                 
             } else {
-                console.log(`No Postcode Detected, using address: ${address}`);
+
                 await this.driver.get('https://www.streetcheck.co.uk/');
                 await this.waitForElement('//div[@id="searchboxes"]', 20);
                 await this.driver.findElement(this.webdriver.By.xpath('//div[@id="searchboxes"]/div[2]/input')).sendKeys(address);
                 await this.driver.findElement(this.webdriver.By.xpath('//input[@id="searchbutton"]')).click();
                 await this.waitForElement('//p[@id="searchcount"]', 20);
 
+
                 // Collect resulting addresses
                 let addresses = await this.driver.findElements(this.webdriver.By.xpath('//ul[@id="searchresults"]/li/a'));
+
                 // Find the best match
                 let bestMatchIndex = await this.findBestMatch(address, addresses);
                 // Get its href, as clicking it will open ads in an iframe
@@ -88,9 +89,9 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 }
             }
 
-            console.log(`Best match was address at index ${bestMatchIndex} with a score of ${bestMatchScore}`);
+            //console.log(`Best match was address at index ${bestMatchIndex} with a score of ${bestMatchScore}`);
             let y = await elements[bestMatchIndex].getText();
-            console.log(`This address was ${y}`);
+            //console.log(`This address was ${y}`);
             
             
             return this.success(`Successfully found best address match`, bestMatchIndex);
@@ -139,7 +140,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Housing Type", key: "housingType", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -170,7 +171,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Housing Tenure", key: "housingTenure", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -201,7 +202,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Housing Occupancy", key: "housingOccupancy", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -232,7 +233,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Social Grade", key: "socialGrade", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -263,7 +264,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Gender", key: "gender", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -294,7 +295,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Age Group", key: "ageGroup", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -325,7 +326,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Relationship Status", key: "relationshipStatus", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -356,7 +357,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Health", key: "health", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -387,7 +388,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Educations and Qualifications", key: "education", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -418,7 +419,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Welsh Language", key: "welshLanguage", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -449,7 +450,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Ethnic Group", key: "ethnicGroup", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -480,7 +481,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Country of Birth", key: "birthCountry", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -491,7 +492,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    ethnicGroup: type,
+                    birthCountry: type,
                     number: text
                 });
             }
@@ -511,7 +512,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Passport(s) Held", key: "passportsHeld", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -522,7 +523,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    ethnicGroup: type,
+                    passportsHeld: type,
                     number: text
                 });
             }
@@ -542,7 +543,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Religion", key: "religion", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -553,7 +554,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    ethnicGroup: type,
+                    religion: type,
                     number: text
                 });
             }
@@ -573,7 +574,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Economic Activity", key: "economicActivity", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -584,7 +585,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    ethnicGroup: type,
+                    economicActivity: type,
                     number: text
                 });
             }
@@ -597,6 +598,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         }
     }
 
+    public getDistance(str: string) {
+
+        let val = str.split(' ')[0];
+        let unit = str.split(' ')[1];
+
+        if(unit === 'miles') {
+            return parseFloat(val);
+        } else {
+            return parseFloat(val) / 1760
+        }
+
+
+    }
+
     // Function to scrape employment industry table
     public async employmentIndustryTable(employmentTable: any): Promise<SearchioResponse> {
         try {
@@ -604,7 +619,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Employment Industry", key: "employmentIndustry", type: "Text" },
-                    { title: "Number", key: "number", type: "Text" }
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -615,7 +630,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    ethnicGroup: type,
+                    employmentIndustry: type,
                     number: text
                 });
             }
@@ -635,7 +650,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Railway Stations", key: "railwayStation", type: "Text" },
-                    { title: "Distance", key: "distance", type: "Text" }
+                    { title: "Distance (miles)", key: "distance", type: "Number" }
                 ],
                 rows: []
             }
@@ -647,9 +662,11 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
                     railwayStation: type,
-                    distance: text
+                    distance: this.getDistance(text)
                 });
             }
+
+
 
             this.data.push({ name: "Railway Stations", type: "Table", data: table });
             
@@ -666,7 +683,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Primary Schools", key: "primary", type: "Text" },
-                    { title: "Distance", key: "distance", type: "Text" }
+                    { title: "Distance (miles)", key: "distance", type: "Number" }
                 ],
                 rows: []
             }
@@ -678,7 +695,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
                     primary: type,
-                    distance: text
+                    distance: this.getDistance(text)
                 });
             }
 
@@ -697,7 +714,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Secondary Schools", key: "secondary", type: "Text" },
-                    { title: "Distance", key: "distance", type: "Text" }
+                    { title: "Distance (miles)", key: "distance", type: "Number" }
                 ],
                 rows: []
             }
@@ -708,8 +725,8 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    primary: type,
-                    distance: text
+                    secondary: type,
+                    distance: this.getDistance(text)
                 });
             }
 
@@ -728,7 +745,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Doctor Surgeries", key: "doctorSurgeries", type: "Text" },
-                    { title: "Distance", key: "distance", type: "Text" }
+                    { title: "Distance (miles)", key: "distance", type: "Number" }
                 ],
                 rows: []
             }
@@ -739,8 +756,8 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    primary: type,
-                    distance: text
+                    doctorSurgeries: type,
+                    distance: this.getDistance(text)
                 });
             }
 
@@ -759,7 +776,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
             let table = {
                 columns: [
                     { title: "Hospitals", key: "hospitals", type: "Text" },
-                    { title: "Distance", key: "distance", type: "Text" }
+                    { title: "Distance (miles)", key: "distance", type: "Number" }
                 ],
                 rows: []
             }
@@ -770,8 +787,8 @@ export class StreetCheckSearch extends StreetCheckProcess {
                 let type = await tr.findElement(this.webdriver.By.xpath('./td[1]')).getText();
                 let text = await tr.findElement(this.webdriver.By.xpath('./td[2]')).getText();
                 table.rows.push({
-                    primary: type,
-                    distance: text
+                    hospitals: type,
+                    distance: this.getDistance(text)
                 });
             }
 
@@ -858,8 +875,11 @@ export class StreetCheckSearch extends StreetCheckProcess {
     public async stripInfo(): Promise<SearchioResponse> {
 
         try {
+
             // Check the basic information is present
             let check = await this.driver.findElements(this.webdriver.By.xpath('//div[@id="summary"]/div[2]//table[@class="table table-striped table-hover"]'));
+            
+            
             if(check.length > 0) {
 
                 // Get the address
@@ -919,6 +939,9 @@ export class StreetCheckSearch extends StreetCheckProcess {
             }
         
         } catch(err) {
+
+            console.log(err);
+
             return this.error(`Error stripping information`, err)
         }
     }
@@ -927,14 +950,18 @@ export class StreetCheckSearch extends StreetCheckProcess {
     public async stripCrime(): Promise<SearchioResponse> {
 
         try {
+
+            
             let currentURL = await this.driver.getCurrentUrl();
             let newURL = currentURL.replace('postcode', 'crime');
             await this.driver.get(newURL);
 
+
+
             let table = {
                 columns: [
-                    { title: "Crimes", key: "crimes", type: "Text" },
-                    { title: "Number Recroded", key: "number", type: "Text" }
+                    { title: "Crime Type", key: "crimes", type: "Text" },
+                    { title: "Count", key: "number", type: "Number" }
                 ],
                 rows: []
             }
@@ -953,7 +980,17 @@ export class StreetCheckSearch extends StreetCheckProcess {
 
             }
 
-            this.data.push({ name: "Crime Statistics", type: "Table", data: table });
+            let eles = await this.driver.findElements(this.webdriver.By.xpath('//p//strong'));
+            
+            /*let i = 0;
+            for(let e of eles) {
+                console.log(String(i) + " " + await e.getText())
+                i++;
+            }*/
+
+            let date =  await eles[3].getText();
+
+            if(table.rows.length > 0) this.data.push({ name: `Crime Statistics (${date})`, type: "Table", data: table });
 
             return this.success(`Successfully stripped crime stats`);
 
@@ -966,15 +1003,19 @@ export class StreetCheckSearch extends StreetCheckProcess {
     public async search(address: string = this.query): Promise<SearchioResponse> {
 
         try {
+
             // Load the search
             await this.loadSearch(address);
             
+
             // Strip all the tables in Housing, People, Culture and Employment
             await this.stripInfo();
 
+
             // Go to the seperate webpage for crime statistics
             await this.stripCrime();
-         
+    
+
             return this.success(`Successfully completed search for ${this.query}`, this.data);
         
         } catch(err) {

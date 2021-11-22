@@ -38,3 +38,25 @@ input
 
     &:hover 
         background: $light-blue
+        color: $dark-grey !important
+
+
+.hovercard-container
+
+    .hovercard
+        display: none
+        position: absolute
+        padding: $margin-s
+        background: $light-blue
+        color: $dark-grey !important
+        box-shadow: $dark-grey 0 0 5px 2px
+        border-radius: $margin-s
+        z-index: 1000
+        font-size: 16px !important
+        max-width: 200px
+        pointer-events: none
+        line-height: 18px !important
+
+    &:hover
+        .hovercard
+            display: block

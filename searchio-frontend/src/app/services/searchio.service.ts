@@ -15,7 +15,7 @@ export class SearchioService {
   private headers = new HttpHeaders({
     'Content-Type': 'application/json; charset=utf-8',
   });
-  private api = `http://localhost:5000/api`;
+  private api = `http://88.97.13.136:3002/api`;
 
   constructor(private http: HttpClient) { }
 
@@ -73,6 +73,9 @@ export class SearchioService {
   }
 
   public addResult(result: any) {
+
+    console.log(result);
+
     if(this.CONNECTIONS[result.query]) {
       const identifier = `${result.source}:${result.process_id}`;
 
@@ -124,7 +127,7 @@ export class SearchioService {
 
   private initConnection(query: string, socketID: string) {
 
-    const socket = IO("http://localhost:5000", { transports: ["websocket"]});
+    const socket = IO("http://88.97.13.136:3002", { transports: ["websocket"]});
 
         socket.on("connect", () => {
 

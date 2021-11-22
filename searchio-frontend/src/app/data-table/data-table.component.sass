@@ -1,39 +1,79 @@
 @import "../../utilities/variables"
 
+
+.expand
+    font-weight: 600
+    cursor: pointer        
+
 .table-container
 
     box-sizing: border-box
     border: 1px solid $mid-grey
     border-radius: $margin-s
     overflow: hidden
+    display: block
+    width: 100% !important
+
+    .title
+        padding: $margin-s
+        background: $mid-grey
+        color: #FFF
+        font-weight: 600
+        line-height: $button-height
+
+        .button
+            float: right
+            font-weight: 300
+            margin-left: $margin-s
 
     .headers
         display: flex
         flex-direction: row
         color: #FFF
+        user-select: none
+        cursor: pointer
+        background: $light-grey
+
 
         .header
-            background: $light-grey
             padding-left: $margin-s
-            flex: 1
             border-right: 1px solid $mid-grey
+            box-sizing: border-box
+            word-wrap: break-word
             color: $dark-grey
             font-weight: 600
 
             &:last-child
                 border: none
 
+            &:hover
+                background: $light-blue
+                color: $dark-grey
+
+    .footer
+        background: $mid-grey
+        line-height: $button-height
+        border-top: 1px solid $mid-grey
+        padding: $margin-s
+        text-align: right
+
+        .button
+            display: inline-block
 
     .row
         border-top: 1px solid $mid-grey
         display: flex
         flex-direction: row
 
+        &:nth-child(even)
+            background: $v-light-grey
+            
+
         .column
-            flex: 1
             border-right: 1px solid $mid-grey
-            word-wrap: break-word
             padding-left: $margin-s
+            word-wrap: break-word
+            box-sizing: border-box
 
             &.image
                 background: $dark-grey
@@ -48,4 +88,3 @@ img
     width: 90%
     height: auto
     display: block
-    flex: 0

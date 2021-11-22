@@ -12,7 +12,7 @@ export class HunterDomainSearch extends HunterProcess {
     
     
     protected id = "HunterDomainSearch";           
-    protected name: "Domain Check";
+    protected name: string = "Domain Check";
     protected pattern: RegExp = DOMAIN;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -55,22 +55,26 @@ export class HunterDomainSearch extends HunterProcess {
 
                     columns: [
                         { title: "Email", key: "email", type: "Text" },
-                        { title: "Type", key: "type", type: "Text" },
-                        { title: "Confidence Score", key: "score", type: "Number" },
+                        { title: "Type", key: "type", type: "Text", width: '100px' },
+                        /*{ title: "Confidence Score", key: "score", type: "Number" },*/
                         { title: "First Name", key: "firstName", type: "Text" },
                         { title: "Last Name", key: "lastName", type: "Text" },
-                        { title: "Position", key: "position", type: "Text" },
+                        /*{ title: "Position", key: "position", type: "Text" },
                         { title: "Seniority", key: "seniority", type: "Text" },
-                        { title: "Department", key: "department", type: "Text" },
-                        { title: "LinkedIn", key: "linkedin", type: "Text" },
-                        { title: "Twitter", key: "twitter", type: "Text" },
+                        { title: "Department", key: "department", type: "Text" },*/
+                        /*{ title: "LinkedIn", key: "linkedin", type: "Text" },
+                        { title: "Twitter", key: "twitter", type: "Text" },*/
                         { title: "Phone Number", key: "phoneNumber", type: "Text" },
-                        { title: "Verified Date", key: "verifiedDate", type: "Text" },
-                        { title: "Status", key: "status", type: "Text" },
+                        { title: "Verified", key: "verifiedDate", type: "Text", width: '100px' },
+                        { title: "Status", key: "status", type: "Text", width: '100px' },
                         { title: "Sources", key: "sources", type: "Text" }
                     ],
                     rows: []
                 }
+
+
+                if(!response.data.domain) return this.success(`No matching domain.`, [])
+
     
                 for(let email of response.data.emails) {
     
@@ -94,13 +98,22 @@ export class HunterDomainSearch extends HunterProcess {
     
                 }
 
+
+
                 //  Build the array of Results from the response
                 const data: ResultData[] = [
                     { name: "Domain", type: "Text", data: response.data.domain },
-                    { name: "Disposable", type: "Boolean", data: response.data.disposable },
+
+
+                    //  I have ommitted some of this data because it does not seem entirely relevant
+                    //  We can always re-implement it if needed in future
+
+                    /*{ name: "Disposable", type: "Boolean", data: response.data.disposable },
                     { name: "Webmail", type: "Boolean", data: response.data.webmail },
                     { name: "Accepts All", type: "Boolean", data: response.data.accept_all },
-                    { name: "Pattern", type: "Text", data: response.data.pattern },
+                    { name: "Pattern", type: "Text", data: response.data.pattern },*/
+
+
                     { name: "Organisation", type: "Text", data: response.data.organization },
                     { name: "Country", type: "Text", data: response.data.country },
                     { name: "State", type: "Text", data: response.data.state },

@@ -3,12 +3,13 @@ import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseCompaniesSearch";           
-    protected name: "Companies Search";
+    protected name: string = "Companies Search";
     protected pattern: RegExp = BUSINESS;
 
 
@@ -43,16 +44,21 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
 
             //let companies = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripCompaniesPage.bind(this), 1);
             let companies = await this.driver.findElements(this.webdriver.By.xpath('//ul[@id="results"]/li'));
-            let table = await this.stripCompaniesPage(companies);
+            let results = await this.stripCompaniesPage(companies);
 
-            if(table.success) {
-                return this.success(`(CompaniesHouseCompaniesSearch) Successfully performed companies search`, table.data);
+            if(results.data.length === 0) return this.success(`No matching companies found.`)
+
+
+            if(results.success) {
+                return this.success(`Successfully performed companies search`, results.data);
             } else {
-                return table;
+                return results;
             }
             
         } catch(err) {
-            return this.error(`(CompaniesHouseCompaniesSearch) Error performing companies search`, err)
+
+            console.log(err);
+            return this.error(`Error performing companies search`, err)
         }
     }
 
@@ -131,9 +137,21 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
                 });
             }
 
-            return this.success(`(CompaniesHouseCompaniesSearch) Successfully performed companies search`, table);
+            if(table.rows.length === 0) return this.success(`Found no matching companies.`, []);
+
+
+            let result: ResultData = {
+                name: "Companies",
+                type: "Table",
+                data: table
+            }
+
+            return this.success(`Successfully performed companies search`, [result]);
         } catch(err) {
-            return this.error(`(CompaniesHouseCompaniesSearch) Error performing companies search`, err)
+
+            console.log(err);
+
+            return this.error(`Error performing companies search`, err)
         }
     }
    

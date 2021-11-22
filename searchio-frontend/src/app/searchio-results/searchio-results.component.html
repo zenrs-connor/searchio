@@ -10,13 +10,21 @@
             </ng-container>
 
 
-            <div class="flex">
+            <ng-container *ngIf="_manager.getQueryStatus() && _manager.getQueryStatus() !== {}">
 
-                <ng-container *ngIf="_manager.getQueryStatus() && _manager.getQueryStatus() !== {}">
-                    Status: {{ _manager.getQueryStatus().status }} - {{ _manager.getQueryStatus().message }}
-                </ng-container>
+                <div class="button queryStatus" [ngClass]="{ 
+                    dormant: _manager.getQueryStatus().status === 'DORMANT',
+                    active: _manager.getQueryStatus().status === 'ACTIVE',
+                    completed: _manager.getQueryStatus().status === 'COMPLETED',
+                    error: _manager.getQueryStatus().status === 'ERROR'
+                }" hovercard>
+                    {{ _manager.getQueryStatus().status }}
+                </div>
 
-            </div>
+                {{ _manager.getQueryStatus().message }}
+            </ng-container>
+
+            <div class="flex"></div>
 
             <div class="button" (click)="_manager.showResults()">Show All</div>
             <div class="button" (click)="_manager.hideResults()">Hide All</div>

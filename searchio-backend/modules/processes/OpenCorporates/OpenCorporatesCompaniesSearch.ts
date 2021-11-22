@@ -2,6 +2,7 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { OpenCorporatesProcess } from "./OpenCorporatesProcess";
 import { SocketService } from "../../SocketService";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 const request = require('request');
@@ -9,7 +10,7 @@ const request = require('request');
 export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
     
     protected id = "OpenCorporatesCompaniesSearch";           
-    protected name: "Companies Search";
+    protected name: string = "Companies Search";
     protected pattern: RegExp = BUSINESS;
     
     
@@ -43,13 +44,14 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
 
             let table = await this.stripInfo(companies);
 
-
-            return this.success(`(OpenCorporatesCompaniesSearch) Successfully scraped companies`, table.data);
+            return this.success(`Completed`, table.data);
 
         } catch(err) {
-            return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
+            return this.error(`Error scraping companies`, err)
         }
     }
+
+    
 
     public async stripInfo(companies): Promise<SearchioResponse> {
         try{
@@ -130,9 +132,16 @@ export class OpenCorporatesCompaniesSearch extends OpenCorporatesProcess {
                 });
             }
 
-            return this.success(`(OpenCorporatesCompaniesSearch) Successfully performed companies search`, table);
+            if(table.rows.length === 0) return this.success(`No results found`, []);
+
+
+            const results: ResultData[] = [
+                { name: "Companies", type: "Table", data: table }
+            ]
+
+            return this.success(`Successfully performed companies search`, results);
         } catch(err) {
-            return this.error(`(OpenCorporatesCompaniesSearch) Error scraping companies`, err)
+            return this.error(`Error scraping companies`, err)
         }
     }
 

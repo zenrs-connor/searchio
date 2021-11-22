@@ -3,13 +3,15 @@ import { WebElement } from "selenium-webdriver";
 import { SocketService } from "../../SocketService";
 import { CompaniesHouseProcess } from "./CompaniesHouseProcess";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
 
     protected id = "CompaniesHouseCompanySearch";           
-    protected name: "Company Check";
+    protected name: string = "Company Check";
     protected pattern: RegExp = BUSINESS;
+
 
 
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -72,16 +74,21 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
             let companyAccounts = await this.driver.findElement(this.webdriver.By.xpath("//div[@id='content-container']/div[5]/div/p")).getText();
             let companyStatement = await this.driver.findElement(this.webdriver.By.xpath("//div[@id='content-container']/div[5]/div[2]/p")).getText();
             
-            let naturesOfBusinessList: any[] = [];
+
+
+            let naturesOfBusinessStr = ''
             let naturesOfBusiness = await this.driver.findElements(this.webdriver.By.xpath("//div[@id='content-container']/ul/li"));
             for (let natureOfBusiness of naturesOfBusiness) {
-
                 let nature = await natureOfBusiness.findElement(this.webdriver.By.xpath("./span")).getText();
-                naturesOfBusinessList.push(nature);
+                naturesOfBusinessStr += nature + ', ';
+            }
+
+            if(naturesOfBusinessStr.length > 0) {
+                naturesOfBusinessStr = naturesOfBusinessStr.substr(0, naturesOfBusinessStr.length - 2);
             }
 
             
-            let previousNamesList: any[] = [];
+            let previousNamesStr: string = '';
             let previousNames = await this.driver.findElements(this.webdriver.By.xpath("//table[@id='previousNameTable']/tbody/tr"));
             if(previousNames.length > 0) {
                 previousNames.shift();
@@ -97,38 +104,29 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
                     previousNamesFormat.name = name;
                     previousNamesFormat.period = period;
 
-                    previousNamesList.push(previousNamesFormat);
+                    previousNamesStr += `${name} (${period}), `
                 }
             }
 
-            let overviewFormat: {   
-                companyNumber: number, 
-                companyName: string,
-                companyAddress?: string, 
-                status?: string,
-                companyType?: string,
-                creationDate?: Date,
-                companyAccounts?: string,
-                companyStatement?: string,
-                naturesOfBusiness?: any[],
-                previousNames?: any[]
-            } = {
-                companyNumber: undefined,
-                companyName: undefined
-            };
+            if(previousNamesStr.length > 0) {
+                previousNamesStr = previousNamesStr.substr(0, previousNamesStr.length - 2);
+            }
+    
 
-            overviewFormat.companyNumber = companyNumber;
-            overviewFormat.companyName = companyName;
-            overviewFormat.companyAddress = companyAddress;
-            overviewFormat.status = status;
-            overviewFormat.companyType = companyType;
-            overviewFormat.creationDate = new Date(creationDate);
-            overviewFormat.companyAccounts = companyAccounts.replace(/\n/g, " ");
-            overviewFormat.companyStatement = companyStatement.replace(/\n/g, " ");
-            overviewFormat.naturesOfBusiness = naturesOfBusinessList;
-            overviewFormat.previousNames = previousNamesList;
+            let results: ResultData[] = [];
 
-            return this.success(`(CompaniesHouseScraperStream) Successfully collected company overview`, overviewFormat);
+            results.push({ name: 'Company Name', type: 'Text', data: companyName })
+            results.push({ name: 'Company Number', type: 'Number', data: companyNumber })
+            results.push({ name: 'Company Address', type: 'Text', data: companyAddress })
+            results.push({ name: 'Company Status', type: 'Text', data: status })
+            results.push({ name: 'Company Type', type: 'Text', data: companyType })
+            results.push({ name: 'Creation Date', type: 'Date', data: new Date(creationDate) })
+            results.push({ name: 'Company Accounts', type: 'Text', data: companyAccounts.replace(/\n/g, " ") })
+            results.push({ name: 'Company Statments', type: 'Text', data: companyStatement.replace(/\n/g, " ") })
+            results.push({ name: 'Natures of Business', type: 'Text', data: naturesOfBusinessStr })
+            results.push({ name: 'Previous Names', type: 'Text', data: previousNamesStr })
+
+            return this.success(`(CompaniesHouseScraperStream) Successfully collected company overview`, results);
         } catch(err) {
             return this.error(`(CompaniesHouseScraperStream) Error collecting company overview`, err)
         }
@@ -143,28 +141,38 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
             let filings = await this.driver.findElements(this.webdriver.By.xpath("//table[@id='fhTable']/tbody/tr"));
             filings.shift();
 
+            const table = {
+                columns: [
+                    { key: "date", title: "Date Filed", type: "Date", width: '100px'},
+                    { key: "description", title: "Description", type: "Text"},
+                    { key: "documents", title: "Documents", type: "Text"},
+                ],
+                rows: []
+            }
+
+
             for(let filing of filings) {
                 
-                let filingFormat: {date: Date, desc?: string, docs?:string} = {
-                    date: undefined
-                };
-
                 let date = await filing.findElement(this.webdriver.By.xpath(".//td[@class='nowrap']")).getText();
                 let desc = await filing.findElement(this.webdriver.By.xpath(".//td[not(@id) and not(@class)]")).getText();
                 let docs = await filing.findElement(this.webdriver.By.xpath(".//a[@class='download']")).getAttribute("href");
                 
-                
-                filingFormat.date = new Date(date) ;
-                filingFormat.desc = desc;
-                filingFormat.docs = docs;
-
-                // DATES NEED TO BE ALTERED BY TIMZONE
-
-                companyFilings.push(filingFormat);
+            
+                table.rows.push({
+                    date: date,
+                    description: desc,
+                    documents: docs
+                })
 
             }
 
-            return this.success(`(CompaniesHouseScraperStream) Successfully collected company filings`, companyFilings);
+            const result: ResultData = {
+                name: 'Company Filings',
+                type: 'Table',
+                data: table
+            }
+
+            return this.success(`(CompaniesHouseScraperStream) Successfully collected company filings`, [result]);
 
         } catch(err) {
             return this.error(`(CompaniesHouseScraperStream) Error collecting company filings`, err);
@@ -175,6 +183,23 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
     public async stripCompanyPeople(): Promise<SearchioResponse> {
         
         let companyPeople: any[] = []; 
+
+        const table: any = {
+            columns: [
+                { title: "Name", key: "name", type: "Text"},
+                { title: "Address", key: "address", type: "Text"},
+                { title: "Role", key: "role", type: "Text"},
+                { title: "Role Status", key: "roleStatus", type: "Text"},
+                { title: "Date of Birth", key: "dob", type: "Date", width: "100px"},
+                { title: "Date Appointed", key: "appointed", type: "Date", width: "100px"},
+                { title: "Date Resigned", key: "resigned", type: "Date", width: "100px"},
+                { title: "Nationality", key: "nationality", type: "Text"},
+                { title: "Residence", key: "residence", type: "Text"},
+                { title: "Occupation", key: "occupation", type: "Text"},
+            ],
+            rows: []
+        }
+
 
         try {
             let appointments = await this.driver.findElements(this.webdriver.By.xpath("//div[@class='appointments-list']/div"));
@@ -246,17 +271,31 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
                     }
                 }
 
-                // DATES NEED TO BE ALTERED BY TIMEZONE
 
-                console.log(peopleFormat);
-                companyPeople.push(peopleFormat);
+                table.rows.push({
+                    name: name,
+                    address: address,
+                    role: peopleFormat.role,
+                    roleStatus: peopleFormat.roleStatus,
+                    dob: peopleFormat.DOB,
+                    appointed: peopleFormat.appointedDate,
+                    resigned: peopleFormat.resignedDate,
+                    nationality: peopleFormat.nationality,
+                    residence: peopleFormat.residence,
+                    occupation: peopleFormat.occupation
+                });
 
             }
 
-            return this.success(`(CompaniesHouseScraperStream) Successfully collected company people`, companyPeople);
+            let result: ResultData = {
+                name: 'People',
+                type: "Table",
+                data: table
+            }
+
+            return this.success(`(CompaniesHouseScraperStream) Successfully collected company people`, [result]);
         
         } catch(err) {
-            console.log(err);
             return this.error(`(CompaniesHouseScraperStream) Error collecting company people`, err);
         }
     }
@@ -357,22 +396,28 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
     public async stripCompanyCharges(): Promise<SearchioResponse> {
         let companyChargesList: any[] = [];
         
+
+
         try {
             let charges = await this.driver.findElements(this.webdriver.By.xpath("//div[@id='mortgage-content']/div/h2/a"));
 
             let result  = await this.openKillTab(charges, this.stripCompanyCharge.bind(this));
+
+            console.log(result);
             companyChargesList = result.data;
 
-            return this.success(`(CompaniesHouseScraperStream) Successfully stripped all company charges`, companyChargesList);
+            return this.success(`(CompaniesHouseScraperStream) Successfully stripped all company charges`, []);
         } catch(err) {
-            console.log(err)
             return this.error(`(CompaniesHouseScraperStream) Error stripping company charges`, err);
         }
     }
 
     // Function to determine current tab and strip information
     public async stripCompanyInformation(companyIdentifier: string = this.query): Promise<SearchioResponse> {
-        let companyInformation: any[] = [];
+
+        
+        let results: ResultData[] = [];
+
         
         try {
             await this.driver.get(`https://find-and-update.company-information.service.gov.uk/company/${companyIdentifier}`);
@@ -382,7 +427,7 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
                 "Company": this.stripCompanyOverview.bind(this),
                 "Filing history": this.stripCompanyFilings.bind(this),
                 "People": this.stripCompanyPeople.bind(this),
-                "Charges": this.stripCompanyCharges.bind(this)
+                //"Charges": this.stripCompanyCharges.bind(this)
             }
 
             // Collect the links of tabs
@@ -395,23 +440,29 @@ export class CompaniesHouseCompanySearch extends CompaniesHouseProcess {
 
                 // Check that we have made a function to handle it
                 if(tabFunctions[text]) {
-                    console.log(text);
+
                     link = await link.findElement(this.webdriver.By.xpath('./h1/a | ./a'));
                     // Open the link in a new tab
                     let res = await this.openKillTab([link], tabFunctions[text]);
-                    console.log(`CH result`);
-                    console.log(res.data[0]);
-                    companyInformation.push(res.data[0]);
+
+                    if(res.success) {
+
+                        for(let r of res.data) {
+                            results = results.concat(r);
+                        }
+
+                    }
+
                     
                 } else {
                     console.log(` (CompaniesHouseStream) Do not currently have ability to handle information on ${text} tab`);
                 }
             }
-            
-            return this.success(`(CompaniesHouseStream) Successfully stripped company information`, companyInformation);
+        
+
+            return this.success(`(CompaniesHouseStream) Successfully stripped company information`, results);
 
         } catch(err) {
-            console.log(err);
             return this.error(`(CompaniesHouseStream) Could not strip company information`, err);
         }
     }

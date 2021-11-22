@@ -18,6 +18,9 @@ import { ListProcessComponent } from './list-process/list-process.component';
 import { CondensedSourcesComponent } from './condensed-sources/condensed-sources.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { ProcessResultComponent } from './process-result/process-result.component';
+import { EncodeUriPipe } from './pipes/encode-uri.pipe';
+import { HovercardDirective } from './directives/hovercard.directive';
+
 
 @NgModule({
   declarations: [
@@ -35,7 +38,9 @@ import { ProcessResultComponent } from './process-result/process-result.componen
     ListProcessComponent,
     CondensedSourcesComponent,
     DataTableComponent,
-    ProcessResultComponent
+    ProcessResultComponent,
+    EncodeUriPipe,
+    HovercardDirective
   ],
   imports: [
     BrowserModule,
