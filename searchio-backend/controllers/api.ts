@@ -15,3 +15,6 @@ router.get('/query/get/:query', async (req: Request, res: Response) => { return 
 
 //  Instruct the QueryManager to kill an active Query
 router.get('/query/kill/:query', async (req: Request, res: Response) => { return res.status(200).json(await QM.kill(req.params.query)); })
+
+//  Instruct the QueryManager to kill all active Queries
+router.get('/query/kill/', async (req: Request, res: Response) => { return res.status(200).json(await QM.killAll()); })

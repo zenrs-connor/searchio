@@ -8,18 +8,3 @@ import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
 import { SocketService } from "./modules/SocketService";
-import { GoogleSearch } from "./modules/processes/Google/GoogleSearch";
-
-
-export async function run() {
-    
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new GoogleSearch(socket, "tom jones");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
-
-}

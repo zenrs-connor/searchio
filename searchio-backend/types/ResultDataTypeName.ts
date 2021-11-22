@@ -1,1 +1,1 @@
-export type ResultDataTypeName = "WebLink" | "Location" | "PhoneNumber" | "Boolean" | "Text" | "Date" | "Table";
+export type ResultDataTypeName = "WebLink" | "Location" | "PhoneNumber" | "Boolean" | "Text" | "Number" | "Date" | "Table" | "HTML" ;
