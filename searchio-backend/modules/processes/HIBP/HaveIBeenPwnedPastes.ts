@@ -1,9 +1,7 @@
 import { EMAIL_ADDRESS } from "../../../assets/RegexPatterns";
 import { ResultData } from "../../../models/ResultData";
 import { SearchioResponse } from "../../../models/SearchioResponse";
-import { DataSourceName } from "../../../types/DataSourceName";
 import { SocketService } from "../../SocketService";
-import { Process } from "../Process";
 import { HaveIBeenPwnedProcess } from "./HaveIBeenPwnedProcess";
 const request = require('request');
 
@@ -12,7 +10,6 @@ const request = require('request');
     Each process performs only one function, which should be contained in process() 
 */
 
-
 const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
 
 
@@ -20,8 +17,8 @@ const HIBP_API_KEY = 'a3727b5d96f94cd4bcb190899befca19';
 export class HaveIBeenPwnedPastes extends HaveIBeenPwnedProcess {
 
 
-    protected id = "HIBPBreaches";                   //  The ID of a Process should be the same as the class name
-    protected name: "Pastes";                         //  Provide a user-readble name for this process.
+    protected id = "HIBPPastes";                   //  The ID of a Process should be the same as the class name
+    protected name: string = "Pastes";                         //  Provide a user-readble name for this process.
     protected pattern: RegExp = EMAIL_ADDRESS;                   //  Assign a valid regex pattern to match against potential queries
 
     //  Process extends the ResponseEmitter class, so bve sure to include an argument for the socket

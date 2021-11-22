@@ -15,7 +15,7 @@ const NUMVERIFY_API_KEY = 'c69d685d3534f116078b3386efae3eee';
 export class NumverifyValidate extends NumverifyProcess {
 
     protected id = "NumverifyValidate";
-    protected name: "Validate Number";
+    protected name: string = "Validate Number";
     protected pattern: RegExp = PHONE_NUMBER;
 
     constructor(socket: SocketService, query: string) {
@@ -49,6 +49,8 @@ export class NumverifyValidate extends NumverifyProcess {
             });
         });
 
+
+        console.log(response)
 
         //  Check that no error has occurred
         if(!response.error) {

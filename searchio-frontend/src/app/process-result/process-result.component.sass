@@ -1,0 +1,36 @@
+@import "../../utilities/variables"
+
+.process-result-container 
+    background: #fff
+
+
+    .header
+        background: $dark-grey
+        color: #FFF
+        line-height: 30px
+        padding: $margin-s
+
+        *
+            display: inline-block
+
+        .source-icon
+            float: left
+            height: 30px
+            width: 30px
+            background-size: cover
+            border-radius: $margin-s
+            margin-right: $margin-m
+
+        .hide
+            float: right
+            display: block
+            background: $mid-grey
+            font-size: 26px
+            height: 30px
+            width: 30px
+            border-radius: $margin-s
+            cursor: pointer
+            user-select: none
+
+            &:hover
+                background: $light-blue

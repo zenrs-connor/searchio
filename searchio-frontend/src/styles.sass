@@ -22,3 +22,41 @@ input
 
     *
         display: block
+
+
+.button
+    display: block
+    height: $button-height
+    line-height: $button-height
+    background: $mid-grey
+    color: #FFF
+    border-radius: $margin-s
+    cursor: pointer
+    padding-left: $margin-s
+    padding-right: $margin-s
+    text-align: center
+
+    &:hover 
+        background: $light-blue
+        color: $dark-grey !important
+
+
+.hovercard-container
+
+    .hovercard
+        display: none
+        position: absolute
+        padding: $margin-s
+        background: $light-blue
+        color: $dark-grey !important
+        box-shadow: $dark-grey 0 0 5px 2px
+        border-radius: $margin-s
+        z-index: 1000
+        font-size: 16px !important
+        max-width: 200px
+        pointer-events: none
+        line-height: 18px !important
+
+    &:hover
+        .hovercard
+            display: block

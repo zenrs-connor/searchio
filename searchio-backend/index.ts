@@ -10,10 +10,8 @@ import { Server } from "socket.io";
 import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { ProcessData } from "./models/ProcessData";
-import { run } from "./tom-sandbox";
 
-
-const PORT = 5000;
+const PORT = 3002;
 const APP = express();
 APP.use(cors());
 APP.use(bodyParser.json({}));                            
@@ -22,6 +20,7 @@ APP.use(bodyParser.urlencoded({ extended: true }));
 //  Controller routing
 APP.use('/api/', API);
 
+APP.use('/', express.static(__dirname + '/../searchio-frontend/dist/searchio-frontend'));
 
 //  404 Handling, writing 
 APP.use(function(req: any, res: any, next: any) {
@@ -66,6 +65,13 @@ IO.on("connection", (socket) => {
         IO.to(socket.id).emit("process-result", result);
     });
 
+    
+    //  Event called when a Query's status is updated
+    socket.on("query-update", (update: QueryStatus) => {
+        console.log(`(IO) Got query update from ${socket.id}`);
+        IO.to(socket.id).emit("query-update", update);
+    });
+
 });
 
 /*IO.of("/").adapter.on("create-room", (room) => {
@@ -75,6 +81,3 @@ IO.on("connection", (socket) => {
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
-
-
-run();

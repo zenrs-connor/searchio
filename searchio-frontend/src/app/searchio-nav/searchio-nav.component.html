@@ -13,7 +13,7 @@
         *ngFor="let query of _manager.getQueryTabs()" 
         [ngClass]="{ selected: _manager.getActiveQuery() === query}"
         (click)="onButtonClick($event, query)">
-            <div class="name">{{ query }}</div>
+            <div class="name">{{ query }} ({{ _manager.getResults(query).length }})</div>
             <div class="close">🗙</div>
         </div>
     </div>
