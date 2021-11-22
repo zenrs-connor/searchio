@@ -10,16 +10,3 @@ import { Process } from "./modules/processes/Process";
 import { OpenGazettesSearch } from "./modules/processes/OpenGazettes/OpenGazettesSearch";
 import { SocketService } from "./modules/SocketService";
 
-
-export async function run() {
-    
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new OpenGazettesSearch(socket, "Michael John Jenkins");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y);
-
-}
