@@ -10,7 +10,7 @@ export class HunterEmailSearch extends HunterProcess {
     
     
     protected id = "HunterEmailSearch";           
-    protected name: "Email Check";
+    protected name: string = "Email Check";
     protected pattern: RegExp = EMAIL_ADDRESS;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
@@ -19,14 +19,11 @@ export class HunterEmailSearch extends HunterProcess {
         super(socket, query);
     }
 
-
     //  Overwrite of the abstract function held in Process.ts
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
-        this.initWebdriver();
         let result = await this.emailFinder();
-        this.destroyWebdriver();
         return result;
     }
 

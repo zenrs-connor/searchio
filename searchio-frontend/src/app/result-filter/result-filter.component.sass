@@ -6,19 +6,33 @@ $filter-height: 50px
     border-radius: $margin-s
     height: $filter-height
     width: 100%
-    background: $light-grey
+    background: #FFF
     padding: $margin-s
     box-sizing: border-box
     cursor: pointer
+    line-height: $filter-height - (2 * $margin-s)
+    display: flex
+    flex-direction: row
+    font-weight: 500
+    user-select: none
 
-    *
-        display: inline-block
+    &.faded
+        opacity: 0.5
+
 
     .icon
         height: $filter-height - (2 * $margin-s)
         width: $filter-height - (2 * $margin-s)
         border-radius: $margin-s
-        background: white
+        background-color: $mid-grey
+        background-size: cover
+
+
+    .name
+        flex: 1
+        margin-left: $margin-s
+        margin-right: $margin-s
+
 
     .count
         height: $filter-height - (2 * $margin-s)
@@ -26,6 +40,11 @@ $filter-height: 50px
         border-radius: 100%
         background: white
         float: right
+        text-align: center
+        line-height: $filter-height - (2 * $margin-s)
+        font-weight: 600
+        color: #FFF
+        background: $mid-grey
 
     .hover-card
         display: none

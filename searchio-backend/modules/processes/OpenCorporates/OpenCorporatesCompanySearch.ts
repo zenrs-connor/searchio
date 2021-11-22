@@ -1,9 +1,8 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
-import { Console } from "console";
-import { copyFile } from "fs";
 import { OpenCorporatesProcess } from "./OpenCorporatesProcess";
 import { SocketService } from "../../SocketService";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 const request = require('request');
@@ -11,7 +10,7 @@ const request = require('request');
 export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
     
     protected id = "OpenCorporatesCompanySearch";           
-    protected name: "Company Check";
+    protected name: string = "Company Check";
     protected pattern: RegExp = BUSINESS;
     
     
@@ -48,7 +47,7 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
 
         await new Promise((resolve) => {
 
-            this.reformat(companyName).then(companyName => {
+            /*this.reformat(companyName).then(companyName => {
                 let url = `https://api.opencorporates.com/v0.4/companies/search?q=${companyName}`;
 
                 request(url, async (err, res, body) => {
@@ -61,7 +60,7 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
                     }
                     resolve(undefined);
                 });
-            });
+            });*/
         });
 
         return response;
@@ -76,8 +75,6 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
 
             request(url, async (err, res, body) => {
 
-                console.log(JSON.parse(body).results.company);
-                console.log(JSON.parse(body).results.company.filings);
                 response = body;
 
                 if(err) {
@@ -104,9 +101,21 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
     public async scrapeOverview(countryCode: string, companyNumber: string): Promise<SearchioResponse> {
         
         try {
+
+
+
             await this.driver.get(`https://opencorporates.com/companies/${countryCode}/${companyNumber}`);
-            let companyName = await this.driver.findElement(this.webdriver.By.xpath('//h1[@class="wrapping_heading fn org"]')).getText();
+
+            //  Check to see if this is a valid page
+            let name = await this.driver.findElements(this.webdriver.By.xpath('//h1[@class="wrapping_heading fn org"]'));
+
+            if(name.length === 0) return this.success("Compnay not found.", [])
+
+            let companyName = await name[0].getText();
+
             let overview = await this.driver.findElement(this.webdriver.By.xpath('//dl[@class="attributes dl-horizontal"]'));
+
+
 
             let overviewFormat: {   
                 companyNumber: string, 
@@ -227,7 +236,39 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
             let registryPage = await overview.findElement(this.webdriver.By.xpath('.//dd[@class="registry_page"]/a')).getAttribute('href');
             overviewFormat.registryPage = registryPage;
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully collected company overview`, overviewFormat);
+
+            let ownersStr = "";
+            for(let o of overviewFormat.owners) {
+                ownersStr += o + '<br>';
+            }
+
+            let industryCodesStr = "";
+            for(let o of overviewFormat.industryCodes) {
+                industryCodesStr += o + '<br>';
+            }
+
+            let activeOfficersStr = "";
+            for(let o of overviewFormat.activeDirectorsOfficers) {
+                activeOfficersStr += o + '<br>';
+            }
+
+
+            let results: ResultData[] = [
+                { name: "Company Name", type: "Text", data: overviewFormat.companyName },
+                { name: "Company Number", type: "Number", data: overviewFormat.companyNumber },
+                { name: "Status", type: "Text", data: overviewFormat.status },
+                { name: "Creation Date", type: "Date", data: overviewFormat.creationDate },
+                { name: "Company Type", type: "Text", data: overviewFormat.companyType },
+                { name: "Jurisdiction", type: "Text", data: overviewFormat.jurisdiction },
+                { name: "Owners", type: "Text", data: ownersStr },
+                { name: "Company Address", type: "Text", data: overviewFormat.companyAddress },
+                { name: "Industry Codes", type: "Text", data: industryCodesStr },
+                { name: "Latest Accounts", type: "Date", data: overviewFormat.latestAccounts },
+                { name: "Latest Annual Return", type: "Date", data: overviewFormat.latestAnnualReturn },
+                { name: "Active Officers", type: "Text", data: activeOfficersStr },
+            ]
+
+            return this.success(`(OpenCorporatesScraperStream) Successfully collected company overview`, results);
 
         } catch(err) {
             return this.error(`(OpenCorporatesScraperStream) Error collecting company overview`, err)
@@ -295,10 +336,40 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
                 statementsArray.push(statementFormat);
             }
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully collected company statements of control`, statementsArray);
+
+            let table = {
+                columns: [
+                    { title: "Date", type: "Date", key: "date", width: '100px' },
+                    { title: "Description", type: "Text", key: "description" },
+                    { title: "Mechanisms", type: "Text", key: "mechanisms" },
+                    { title: "Details", type: "WebLink", key: "details", width: "100px" },
+                ],
+                rows: []
+            }
+
+            for(let obj of statementsArray) {
+                table.rows.push({
+                    date: obj.date,
+                    description: obj.desc,
+                    mechanisms: obj.mechanisms,
+                    details: { text: "Link", url: obj.details }
+                })
+            }
+
+
+            //  If there are no statements
+            if(table.rows.length === 0) return this.success(`No statements of control found`, []);
+
+            let results: ResultData[] = [{
+                name: "Statements of Control",
+                type: "Table",
+                data: table
+            }]
+
+            return this.success(`Successfully collected company statements of control`, results);
 
         } catch(err) {
-            return this.error(`(OpenCorporatesScraperStream) Error collecting company statements of control`, err)
+            return this.error(`Error collecting company statements of control`, err)
         }
     }
 
@@ -318,7 +389,41 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
             let filings = await this.flipThrough('//li[@class="next next_page "]/a', '//div[@id="data-table-filing_delegate"]/div/table/tbody/tr', this.scrapeFilingsPage.bind(this), 25);
             let filingsArray = filings.data;
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully collected company filings`, filingsArray);
+            console.log(filingsArray);
+
+            const table = {
+                columns: [
+                    { title: "Date", type: "Date", key: "date", width: "100px" },
+                    { title: "Title", type: "Text", key: "title", width: "350px" },
+                    { title: "Description", type: "Text", key: "description" },
+                    { title: "Details", type: "WebLink", key: "details", width: '100px' },
+                ],
+                rows: []
+            }
+
+            for(let obj of filingsArray) {
+                table.rows.push({
+                    title: obj.title,
+                    date: obj.date,
+                    description: obj.desc,
+                    details: { text: 'Link', url: obj.details }
+                })
+            }
+
+
+            //  If no filings are found
+            if(table.rows.length === 0) return this.success("No filings found.", []);
+
+
+            let results: ResultData[] = [
+                {
+                    name: "Company Filings",
+                    type: "Table",
+                    data: table
+                }
+            ]
+
+            return this.success(`(OpenCorporatesScraperStream) Successfully collected company filings`, results);
 
         } catch(err) {
             return this.error(`(OpenCorporatesScraperStream) Error collecting company filings`, err)
@@ -376,19 +481,23 @@ export class OpenCorporatesCompanySearch extends OpenCorporatesProcess {
             };
 
             let overview = await this.scrapeOverview(countryCode, companyNumber);
-
             let statements = await this.scrapeStatementsOfControl(countryCode, companyNumber);
-
             let filings = await this.scrapeFilings(countryCode, companyNumber);
 
-            company.overview = overview.data;
-            company.statements = statements.data;
-            company.filings = filings.data
 
-            return this.success(`(OpenCorporatesScraperStream) Successfully scraped a company`, company);
+            let results: ResultData[] = []
+
+            console.log(overview.data);
+
+
+            results = results.concat(overview.data);
+            results = results.concat(statements.data);
+            results = results.concat(filings.data);
+
+            return this.success(`Successfully scraped a company`, results);
 
         } catch(err) {
-            return this.error(`(OpenCorporatesScraperStream) Error scraping a company`, err)
+            return this.error(`Error scraping a company`, err)
         }
     }
 
