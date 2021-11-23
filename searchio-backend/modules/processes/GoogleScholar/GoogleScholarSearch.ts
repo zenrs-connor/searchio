@@ -112,6 +112,7 @@ export class GoogleScholarSearch extends GoogleScholarProcess {
     public async search(searchTerm: string = this.query): Promise<SearchioResponse> {
         try{
             // This script behaves differently dependant on whether or not the window is full screen
+            // Class names and other identifiers change
             await this.loadSearch(searchTerm);
 
             await this.scrapePages();
