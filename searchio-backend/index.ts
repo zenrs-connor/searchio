@@ -11,6 +11,8 @@ import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { ProcessData } from "./models/ProcessData";
 import { QueryStatus } from "./models/QueryStatus";
+import { runMain } from "module";
+import { run } from "./tom-sandbox";
 
 const PORT = 3002;
 const APP = express();
@@ -82,3 +84,5 @@ IO.on("connection", (socket) => {
 HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
+
+run();
