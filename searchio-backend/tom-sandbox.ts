@@ -15,7 +15,11 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new CharityCommissionSearch(socket, "117287566");
+    //let x = new CharityCommissionSearch(socket, "1172875"); //EAP
+    //let x = new CharityCommissionSearch(socket, "221219"); //JEW
+    //let x = new CharityCommissionSearch(socket, "1137163"); //CSU
+    let x = new CharityCommissionSearch(socket, "1196556"); //LIC
+    
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")
