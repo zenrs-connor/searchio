@@ -7,4 +7,18 @@ import { HunterEmailSearch } from "./modules/processes/Hunter/HunterEmailSearch"
 import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
+import { SocketService } from "./modules/SocketService";
+import { EmailRepSearch } from "./modules/processes/EmailRep/EmailRepSearch";
 
+export async function run() {
+    
+    let socket = new SocketService();
+    await socket.init();
+
+    let x = new EmailRepSearch(socket, "Elljp33@gmail.com");
+    
+    let y = await x.process();
+
+    console.log("\n\nBack to sandbox")
+    console.log(y.data);
+}
