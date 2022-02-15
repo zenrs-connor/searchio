@@ -86,7 +86,7 @@ export class EmailRepSearch extends EmailRepProcess {
 
             let scrape = await this.scrapeResult();
 
-            await this.pause(15000);
+            await this.pause(5000);
 
             return this.success(`Successfully performed search on EmailRep`, scrape.data);
 

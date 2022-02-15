@@ -15,7 +15,7 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new EmailRepSearch(socket, "Elljp33@gmail.com");
+    let x = new EmailRepSearch(socket, "tomd@gmail.com");
     
     let y = await x.process();
 
