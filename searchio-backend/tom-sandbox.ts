@@ -7,4 +7,18 @@ import { HunterEmailSearch } from "./modules/processes/Hunter/HunterEmailSearch"
 import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
+import { SocketService } from "./modules/SocketService";
+import { EpieosSkypeSearch } from "./modules/processes/EpieosSkype/EpieosSkypeSearch";
 
+export async function run() {
+    
+    let socket = new SocketService();
+    await socket.init();
+
+    let x = new EpieosSkypeSearch(socket, "Elljp33@gmail.com");
+    
+    let y = await x.process();
+
+    console.log("\n\nBack to sandbox")
+    console.log(y.data);
+}
