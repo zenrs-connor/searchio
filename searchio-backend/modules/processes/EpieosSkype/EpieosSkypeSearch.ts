@@ -75,12 +75,8 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
                 let liveID = await result.findElement(this.webdriver.By.xpath('./p[3]')).getText();
                 let image = await result.findElement(this.webdriver.By.xpath('./p/img')).getAttribute('src');
 
-                console.log('\n')
-                name = name.replace('Name : ', '')
-                console.log(name)
-                liveID = liveID.replace('Skype Id : ', '')
-                console.log(liveID)
-                console.log(image)
+                name = name.replace('Name : ', '');
+                liveID = liveID.replace('Skype Id : ', '');
 
                 this.table.rows.push({
                     name: name,
@@ -102,8 +98,7 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
         try{
             await this.loadSearch(searchTerm);
 
-            let x = await this.scrapeResults();
-            console.log(x)
+            await this.scrapeResults();
 
             await this.pause(5000);
 
