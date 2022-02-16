@@ -15,7 +15,7 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new EpieosSkypeSearch(socket, "Elljp33@gmail.com");
+    let x = new EpieosSkypeSearch(socket, "TomD");
     
     let y = await x.process();
 

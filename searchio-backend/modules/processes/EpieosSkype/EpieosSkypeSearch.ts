@@ -1,6 +1,6 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
-import { EMAIL_ADDRESS } from "../../../assets/RegexPatterns";
+import { ANY } from "../../../assets/RegexPatterns";
 import { EpieosSkypeProcess } from "./EpieosSkypeProcess";
 
 
@@ -8,7 +8,7 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
     
     protected id = "EpieosSkypeSearch";
     protected name: "EpieosSkype Search";
-    protected pattern: RegExp = EMAIL_ADDRESS;
+    protected pattern: RegExp = ANY;
 
     public table = {
 
@@ -65,15 +65,22 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
         try {
 
             // Wait for result to load in
-            await this.waitForElement('//div[@id="result"]', 15)
-
+            await this.waitForElement('//div[@class="col-md-4 offset-md-4 mt-5 pt-3"]', 15)
             
-            let results = await this.driver.findElements(this.webdriver.By.xpath());
+            let results = await this.driver.findElements(this.webdriver.By.xpath('//div[@class="col-md-4 offset-md-4 mt-5 pt-3 border"]'));
 
             for (let result of results) {
-                let name = result.findElement(this.webdriver.By.xpath()).getText();
-                let liveID = result.findElement(this.webdriver.By.xpath()).getText();
-                let image = result.findElement(this.webdriver.By.xpath()).getAttribute('src');
+                
+                let name = await result.findElement(this.webdriver.By.xpath('./p[2]')).getText();
+                let liveID = await result.findElement(this.webdriver.By.xpath('./p[3]')).getText();
+                let image = await result.findElement(this.webdriver.By.xpath('./p/img')).getAttribute('src');
+
+                console.log('\n')
+                name = name.replace('Name : ', '')
+                console.log(name)
+                liveID = liveID.replace('Skype Id : ', '')
+                console.log(liveID)
+                console.log(image)
 
                 this.table.rows.push({
                     name: name,
@@ -95,7 +102,8 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
         try{
             await this.loadSearch(searchTerm);
 
-            await this.scrapeResults();
+            let x = await this.scrapeResults();
+            console.log(x)
 
             await this.pause(5000);
 
