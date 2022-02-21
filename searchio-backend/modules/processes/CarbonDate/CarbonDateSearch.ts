@@ -24,7 +24,7 @@ export class CarbonDateSearch extends CarbonDateProcess {
     public async process(): Promise<SearchioResponse> {
         this.initWebdriver(false);
         let result = await this.search();
-        this.destroyWebdriver();
+        //this.destroyWebdriver();
         return result;
     }
 
@@ -37,7 +37,8 @@ export class CarbonDateSearch extends CarbonDateProcess {
             await this.waitForElement('//input[@id="input"]', 15);
             
             // Input the search term
-            await this.driver.findElement(this.webdriver.By.xpath('//input[@id="input"]')).sendKeys(searchTerm);
+            let input = await this.driver.findElement(this.webdriver.By.xpath('//input[@id="input"]'));
+            this.driver.executeScript("arguments[0].setAttribute('value', arguments[1])", input, searchTerm);
             
             // Click search
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="submit"]')).click();
@@ -53,10 +54,37 @@ export class CarbonDateSearch extends CarbonDateProcess {
     public async scrapeResult(): Promise<SearchioResponse> {
 
         try {
+            // Wait for result to load in
+            await this.waitForElement('/html/body/div/div[2]/pre', 60);
+            
+            // Check result element is present
+            let result = await this.driver.findElements(this.webdriver.By.xpath('/html/body/div/div[2]/pre'));
+            
+            // If it is present, get the results
+            if (result.length > 0) {
+                
+                result = await result[0].getText();
+                result = JSON.parse(result);
+                return this.success(`Successfully retrieved carbon date results`, result);
 
-            
-            
-            return this.success(`Successfully retrieved carbon date results`);
+            // Else check if an error occured and what type of error
+            } else {
+
+                let errorCheck = await this.driver.findElement(this.webdriver.By.xpath('/html/body/div/div[2]')).getText();
+
+                if(errorCheck == 'REQUEST ERROR') {
+                    
+                    return this.error(`Request error when trying to carbon date`);
+                
+                } else if(errorCheck == 'Loading please wait...') {
+                    
+                    return this.error(`Request timed out when trying to carbon date`);
+                
+                } else {
+                    
+                    return this.error(`Unknown error when trying to carbon date`);
+                }
+            }
 
         } catch(err) {
             return this.error(`Error scraping carbon date results`, err);
@@ -68,11 +96,11 @@ export class CarbonDateSearch extends CarbonDateProcess {
         try{
             await this.loadSearch(searchTerm);
 
-            await this.scrapeResult();
+            let scrape = await this.scrapeResult();
 
             await this.pause(5000);
 
-            return this.success(`Successfully performed search on CarbonDate`);
+            return this.success(`Successfully performed search on CarbonDate`, scrape.data);
 
         } catch(err) {
             return this.error(`Error searching CarbonDate`, err);

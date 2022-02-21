@@ -15,7 +15,7 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new CarbonDateSearch(socket, "tomd@gmail.com");
+    let x = new CarbonDateSearch(socket, "https://www.cardiff.ac.uk/");
     
     let y = await x.process();
 
