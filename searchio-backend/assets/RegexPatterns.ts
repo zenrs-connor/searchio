@@ -30,3 +30,7 @@ export const POSTCODE = /^[A-Z a-z]{1,2}[0-9]{1,2}[\s]*[0-9][A-Z a-z]{1,2}$/;
 
 export const ANY = /^[\w\W]*$/
 
+export const BITCOIN_ADDRESS = /^[13][a-zA-Z0-9]{27,34}$/
+
+export const ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
+
