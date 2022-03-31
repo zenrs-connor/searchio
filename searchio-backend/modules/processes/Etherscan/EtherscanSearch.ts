@@ -24,7 +24,7 @@ export class EtherscanSearch extends EtherscanProcess {
     public async process(): Promise<SearchioResponse> {
         this.initWebdriver(false);
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
@@ -49,16 +49,8 @@ export class EtherscanSearch extends EtherscanProcess {
             await this.pause(5000);
 
             // Check if we have a result or not
-
-            let check = await this.driver.findElement(this.webdriver.By.xpath("//div[@class='container py-3']/div/div/h1")).getText();
-            console.log(`Check text = ${check}`)
-
-            check = await this.driver.findElements(this.webdriver.By.xpath("//span[contains(text(), 'please check')]"));
-            console.log(`We have ${check.length} hits on the note`)
-
-            check = await this.driver.findElements(this.webdriver.By.xpath("//h1[contains(., 'Invalid Address')]"));
-            console.log(`We have ${check.length} hits on the check`)
-
+            // We have replaced the usual text() parameter with a . as technically the text is a child of the h1 element and not a property
+            let check = await this.driver.findElements(this.webdriver.By.xpath("//h1[contains(., 'Invalid Address')]"));
 
             if (check.length > 0) {
                 return this.error(`Invalid wallet address`, 'Invalid wallet address');
