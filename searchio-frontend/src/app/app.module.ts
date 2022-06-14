@@ -20,6 +20,7 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { ProcessResultComponent } from './process-result/process-result.component';
 import { EncodeUriPipe } from './pipes/encode-uri.pipe';
 import { HovercardDirective } from './directives/hovercard.directive';
+import { FilterTermPipe } from './pipes/filter-term.pipe';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { HovercardDirective } from './directives/hovercard.directive';
     DataTableComponent,
     ProcessResultComponent,
     EncodeUriPipe,
-    HovercardDirective
+    HovercardDirective,
+    FilterTermPipe
   ],
   imports: [
     BrowserModule,
