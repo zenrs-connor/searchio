@@ -6,6 +6,8 @@
     </div>
     <div class="filters-container">
 
+        <input type="text" placeholder="Filter by text..." (input)="_manager.setFilterTerm($event.target.value)"/>
+
         <div class="filter-head">
             <div class="flex">Sources</div>
             <div class="button" (click)="_manager.clearDataSourceFilters()" hovercard message="Clear source filters">Clear</div>

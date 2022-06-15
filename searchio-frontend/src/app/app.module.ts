@@ -21,6 +21,7 @@ import { ProcessResultComponent } from './process-result/process-result.componen
 import { EncodeUriPipe } from './pipes/encode-uri.pipe';
 import { HovercardDirective } from './directives/hovercard.directive';
 import { MapComponent } from './map/map.component';
+import { FilterTermPipe } from './pipes/filter-term.pipe';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { MapComponent } from './map/map.component';
     EncodeUriPipe,
     HovercardDirective,
     MapComponent
+    FilterTermPipe
   ],
   imports: [
     BrowserModule,
