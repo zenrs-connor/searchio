@@ -5,10 +5,13 @@
         <div class="name">{{ result.name }}</div>
         <div class="data">
 
+            <map *ngIf="result.type === 'Map'" [coordinates]="result.data"></map>
+
             <a *ngIf="result.type ==='WebLink'" [href]="result.data.url" target="_blank">{{ result.data.text }}</a>
             <ng-container *ngIf="result.type === 'Boolean'">{{ result.data ? 'Yes' : 'No' }}</ng-container>
-            
+          
             <div *ngIf="result.type === 'Text'" [innerHTML]="(result.data | filterTerm:_manager.getFilterTerm())"></div>
+          
             <ng-container *ngIf="result.type === 'Number'">{{ result.data }}</ng-container>
             <ng-container *ngIf="result.type === 'PhoneNumber'">{{ result.data }}</ng-container>
             <ng-container *ngIf="result.type === 'Date'">{{ result.data | date:'dd/MM/yyyy' }}</ng-container>
