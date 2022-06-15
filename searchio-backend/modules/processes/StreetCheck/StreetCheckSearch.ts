@@ -138,6 +138,11 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graph: {
+                    type: "Bar",
+                    x_axis: "housingType",
+                    y_axis: "number"
+                },
                 columns: [
                     { title: "Housing Type", key: "housingType", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
