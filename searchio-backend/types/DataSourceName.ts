@@ -14,4 +14,7 @@ export type DataSourceName =
 "RapidCarCheck" | 
 "HM Land Registry" | 
 "StreetCheck" | 
-"ICIJ";
+"ICIJ" | 
+"Positionstack"
+;
+

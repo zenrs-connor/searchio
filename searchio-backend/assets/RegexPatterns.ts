@@ -28,5 +28,7 @@ export const IPV6 = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4
 
 export const POSTCODE = /^[A-Z a-z]{1,2}[0-9]{1,2}[\s]*[0-9][A-Z a-z]{1,2}$/;
 
+export const COORDINATES = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
 export const ANY = /^[\w\W]*$/
 
