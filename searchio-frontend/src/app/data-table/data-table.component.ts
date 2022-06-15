@@ -1,5 +1,7 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 
+import * as Chart from "node_modules/chart.js/dist/chart.js";
+
 @Component({
   selector: 'data-table',
   templateUrl: './data-table.component.html',
@@ -22,11 +24,18 @@ export class DataTableComponent implements OnInit, AfterContentInit {
     rows: [],
   }
 
+  public view: 'TABLE' | 'GRAPH' = 'TABLE';
+
   public expanded: boolean = true;
   public LIMIT_INCREMENT: number = 5;
   public limit: number = 3;
   public sortField: string = '';
   public sortAsc: boolean = false;
+  public containerID = String(Math.round(Math.random() * 0xFFFFFF));
+  public canvasID = String(Math.round(Math.random() * 0xFFFFFF));
+  private canvas: HTMLCanvasElement | undefined;
+  private ctx: any;
+  private chart: any;
 
   public flexWidth: string = '1000px';
   public widthChecked: boolean = false;
@@ -49,6 +58,72 @@ export class DataTableComponent implements OnInit, AfterContentInit {
       this.widthChecked = true;
     }, 0)
     
+  }
+
+  public setView(view: 'TABLE' | 'GRAPH') {
+    this.view = view;
+
+    if(view === "GRAPH") {
+
+
+    }
+  }
+
+  private initGraph() {
+
+    let container = document.getElementById(this.containerID);
+    if(container) {
+      container.innerHTML = '';
+      let canvas = document.createElement('canvas');
+      canvas.id = this.canvasID;
+      container.appendChild(canvas);
+      this.canvas = <HTMLCanvasElement> document.getElementById(this.canvasID);
+      this.ctx = this.canvas.getContext('2d');
+
+      let data = [];
+      let labels = [];
+      let backgrounds = [];
+      let borders = [];
+      let total = 0;
+
+      for(let d of this.data) {
+
+        data.push(d[this.data.graph.y_axis]);
+        labels.push(d[this.data.graph.x_axis]);
+        backgrounds.push('#FF0000');
+
+      } 
+
+      this.chart = new Chart(this.ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            barPercentage: 1,
+            data: data,
+            backgroundColor: backgrounds,
+            hoverBackgroundColor: '#00FF00'
+          }]
+        },
+
+        options: {
+          legend: {
+            display: false
+          },
+          scales: {
+            yAxes: [{
+              ticks: { beginAtZero: true }
+            }],
+            xAxes: [{
+                ticks: {display: false}
+            }]
+          }
+        }
+
+      })
+
+    }
+
   }
 
   public getFlexWidth(): string {
