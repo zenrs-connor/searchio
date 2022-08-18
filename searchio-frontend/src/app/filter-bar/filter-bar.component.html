@@ -27,6 +27,7 @@
         <result-filter *ngFor="let type of _manager.getDataTypes()"
         (click)="_manager.toggleShowDataType(type.type)"
         [name]="type.type"
+        [icon]="'assets/images/icons/data-types/' + type.type + '.png' | encodeUri" 
         [hidden]="_manager.isHiddenDataType(type.type)"
         [count]="type.ids.length"></result-filter>
 
