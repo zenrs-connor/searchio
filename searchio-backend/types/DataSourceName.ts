@@ -12,7 +12,7 @@ export type DataSourceName =
 "192" | 
 "PhoneInfoga" | 
 "RapidCarCheck" | 
-"HM Land Registry" | 
+"HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
 "Barred Police List";

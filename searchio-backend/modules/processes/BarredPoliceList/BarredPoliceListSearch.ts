@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { NAMES } from "../../../assets/RegexPatterns";
 import { BarredPoliceListProcess } from "./BarredPoliceListProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class BarredPoliceListSearch extends BarredPoliceListProcess {
     
     protected id = "BarredPoliceListSearch";
-    protected name: "Barred Police List Search";
+    protected name: string = "Officer Search";
     protected pattern: RegExp = NAMES;
 
     public table = {
@@ -24,19 +25,17 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
         rows: []
     }
     
-    
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
     //  Processes also take a query on creation
     constructor(socket: SocketService, query: string) {
         super(socket, query);
     }
 
-
     //  Overwrite of the abstract function held in Process.ts
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -67,8 +66,11 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
     public async scrapeTable(): Promise<SearchioResponse> {
 
         try {
+
             // Check if there are any results
             let tableRows = await this.driver.findElements(this.webdriver.By.xpath('//div[@class="view-content"]/table/tbody/tr'));
+
+
             
             // If we have more than one result
             if(tableRows.length > 1) {
@@ -91,10 +93,13 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
                 let name = await this.driver.findElement(this.webdriver.By.xpath('//div[@class="view-content"]/table/tbody/tr/td')).getText();
                 let link = await this.driver.findElement(this.webdriver.By.xpath('//div[@class="view-content"]/table/tbody/tr/td/a')).getAttribute('href');
                 
+                console.log(name, link);
+
                 // Click the one result so that we can get more info
                 await this.driver.findElement(this.webdriver.By.xpath('//div[@class="view-content"]/table/tbody/tr/td/a')).click();
+                this.pause(3000);
                 await this.waitForElement('//article[@class="node node--type-dismissal node--view-mode-full"]', 15);
-                
+            
                 // Get the extra details
                 let force = await this.driver.findElement(this.webdriver.By.xpath('//article[@class="node node--type-dismissal node--view-mode-full"]/div[@class="col10"]/table/tbody/tr[4]/td')).getText();
                 let type = await this.driver.findElement(this.webdriver.By.xpath('//article[@class="node node--type-dismissal node--view-mode-full"]/div[@class="col10"]/table/tbody/tr[5]/td')).getText();
@@ -112,6 +117,8 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
                     link: link
                 });
                 
+                console.log(this.table);
+
                 return this.success(`Successfully scraped the only result in detail`);
 
             // Else something has gone wrong
@@ -132,10 +139,12 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
             
             // Check if there are any results
             let check = await this.driver.findElements(this.webdriver.By.xpath('//div[@class="view-empty"]'));
+
             if(check.length > 0){
                 return this.success(`There were no results matching the search term`);
             } else {
                 await this.scrapeTable();
+
                 return this.success(`Successfully scraped the results`);
             }
 
@@ -151,9 +160,16 @@ export class BarredPoliceListSearch extends BarredPoliceListProcess {
 
             await this.scrapeResults();
 
+            console.log("TABLE");
+            console.log(this.table);
+
+            let results: ResultData[] = [
+                { name: "Results", type: "Table", data: this.table }
+            ]
+
             await this.pause(15000);
 
-            return this.success(`Successfully performed search on Barred Police List`, this.table);
+            return this.success(`Successfully performed search on Barred Police List`, results);
 
         } catch(err) {
             return this.error(`Error searching Barred Police List`, err);
