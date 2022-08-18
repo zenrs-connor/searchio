@@ -55,7 +55,7 @@ export class IPAPISearch extends IPAPIProcess {
                 { name: "Region", type: "Text", data: response.region_name },
                 { name: "City", type: "Text", data: response.city },
                 { name: "Postcode", type: "Text", data: response.zip },
-                { name: "Location", type: "WebLink", data: { text: "Google Maps", url: `https://www.google.com/maps/@${response.latitude},${response.longitude},10.5z` } }
+                { name: "Map", type: "Map", data: [response.latitude, response.longitude] }
             ];
 
 

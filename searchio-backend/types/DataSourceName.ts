@@ -15,4 +15,6 @@ export type DataSourceName =
 "HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
-"Barred Police List";
+"Barred Police List"
+"Blockchain" |
+"Positionstack";

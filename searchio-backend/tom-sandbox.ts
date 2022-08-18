@@ -8,14 +8,14 @@ import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
 import { SocketService } from "./modules/SocketService";
-import { BarredPoliceListSearch } from "./modules/processes/BarredPoliceList/BarredPoliceListSearch";
+
 
 export async function run() {
     
     let socket = new SocketService();
     await socket.init();
 
-    let x = new BarredPoliceListSearch(socket, "Ryan Connolly");
+
     
     let y = await x.process();
 

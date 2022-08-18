@@ -17,6 +17,7 @@ export class PageManagerService {
   private QUERIES: any = {};
 
   private hiddenResults: any = {};
+  private filterTerm: string = '';
 
   constructor(private searchio: SearchioService) {
     this.fetchLoop();
@@ -55,13 +56,19 @@ export class PageManagerService {
     return undefined;
   }
 
-  
-
   /* OVERALL FILTER FUNCTIONS */
 
   public clearFilters() {
     this.clearDataSourceFilters();
     this.clearDataTypeFilters();
+  }
+
+  public setFilterTerm(term: string) {
+    this.filterTerm = term.toLowerCase();
+  }
+
+  public getFilterTerm(): string {
+    return this.filterTerm;
   }
 
   /* DATA SOURCE FILTER FUNCTIONS */
