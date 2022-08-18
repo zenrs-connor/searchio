@@ -43,7 +43,7 @@ import { FilterTermPipe } from './pipes/filter-term.pipe';
     ProcessResultComponent,
     EncodeUriPipe,
     HovercardDirective,
-    MapComponent
+    MapComponent,
     FilterTermPipe
   ],
   imports: [

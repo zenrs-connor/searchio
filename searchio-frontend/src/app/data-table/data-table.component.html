@@ -8,7 +8,7 @@
         <ng-container *ngIf="view === 'TABLE'">
             <div class="button" (click)="limit = 3">Collapse</div>
             <div class="button" (click)="limit = data.rows.length">Expand</div>
-            <div class="button" *ngIf="data.graph" (click)="setView('GRAPH')">Graph View</div>
+            <div class="button" *ngIf="data.graphs" (click)="setView('GRAPH')">Graph View</div>
         </ng-container>
         
         <ng-container *ngIf="view === 'GRAPH'">
@@ -18,14 +18,8 @@
 
     </div>
 
-
-    <div class="graph-container" [id]="containerID">
+    <div class="chart-container" [id]="containerID" *ngIf="view === 'GRAPH'">
     </div>
-
-    <ng-container *ngIf="view === 'GRAPH'">
-        <canvas class="graph-canvas" [id]="canvasID"></canvas>
-    </ng-container>
-
 
     <ng-container *ngIf="view === 'TABLE'">
 
