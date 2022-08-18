@@ -32,3 +32,7 @@ export const COORDINATES = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+
 
 export const ANY = /^[\w\W]*$/
 
+export const BITCOIN_ADDRESS = /^[13][a-zA-Z0-9]{27,34}$/
+
+export const ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
+
