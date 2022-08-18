@@ -2,12 +2,12 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { BITCOIN_ADDRESS } from "../../../assets/RegexPatterns";
 import { BlockchainProcess } from "./BlockchainProcess";
-
+import { ResultData } from "../../../models/ResultData";
 
 export class BlockchainSearch extends BlockchainProcess {
     
     protected id = "BlockchainSearch";
-    protected name: "Blockchain Search";
+    protected name: string = "Address Search";
     protected pattern: RegExp = BITCOIN_ADDRESS;
     
     
@@ -22,7 +22,7 @@ export class BlockchainSearch extends BlockchainProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -76,8 +76,18 @@ export class BlockchainSearch extends BlockchainProcess {
                 walletFormat.recieved = recieved;
                 walletFormat.sent = sent;
                 walletFormat.balance = balance;
+
+                let results: ResultData[] = [
+                    { name: "Address", type: "Text", data: walletFormat.address }
+                ]
+
+                if(walletFormat.transactions) results.push({ name: "Transactions", type: "Number", data: walletFormat.transactions });
+                if(walletFormat.recieved) results.push({ name: "Recieved", type: "Text", data: walletFormat.recieved });
+                if(walletFormat.sent) results.push({ name: "Sent", type: "Text", data: walletFormat.sent });
+                if(walletFormat.balance) results.push({ name: "Balance", type: "Text", data: walletFormat.balance });
+            
     
-                return this.success(`Successfully scraped wallet`, walletFormat);
+                return this.success(`Successfully scraped wallet`, results);
             }
 
         } catch(err) {
@@ -91,6 +101,8 @@ export class BlockchainSearch extends BlockchainProcess {
             await this.loadSearch(searchTerm);
 
             let wallet = await this.scrapeResult();
+
+            console.log(wallet);
 
             await this.pause(5000);
 
