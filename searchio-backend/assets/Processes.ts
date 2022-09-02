@@ -21,6 +21,7 @@ import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates
 
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -30,53 +31,57 @@ import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckS
 export const PROCESSES: any = [
 
     //  Numverify Processes
-    NumverifyValidate,
+    // NumverifyValidate,
 
-    //  DVLA Processes
-    DVLAVehicleCheck,
+    // //  DVLA Processes
+    // DVLAVehicleCheck,
 
-    // HaveIBeenPwned Processes
-    HaveIBeenPwnedBreaches,
-    HaveIBeenPwnedPastes,
+    // // HaveIBeenPwned Processes
+    // HaveIBeenPwnedBreaches,
+    // HaveIBeenPwnedPastes,
 
-    //  192
-    Names192Search,
+    // //  192
+    // Names192Search,
 
-    //  Companies House
-    CompaniesHouseCompaniesSearch,
-    CompaniesHouseCompanySearch,
-    CompaniesHouseOfficerSearch,
+    // //  Companies House
+    // CompaniesHouseCompaniesSearch,
+    // CompaniesHouseCompanySearch,
+    // CompaniesHouseOfficerSearch,
 
-    // Hunter
-    HunterDomainSearch,
+    // // Hunter
+    // HunterDomainSearch,
 
-    //  HM Land Registry
-    //HMLandRegistryDomestic,
+    // //  HM Land Registry
+    // //HMLandRegistryDomestic,
 
-    //  ICIJ
-    ICIJSearch,
+    // //  ICIJ
+    // ICIJSearch,
 
-    // IPAPI
-    IPAPISearch,
+    // // IPAPI
+    // IPAPISearch,
 
-    //  IPStack
-    IPStackSearch,
-
-
-    //  MailBoxLayer
-    MailBoxLayerSearch,
+    // //  IPStack
+    // IPStackSearch,
 
 
-    // OpenCorprates
-    OpenCorporatesCompanySearch,
-    OpenCorporatesCompaniesSearch,
-    OpenCorporatesOfficerSearch,
+    // //  MailBoxLayer
+    // MailBoxLayerSearch,
 
 
-    // PhoneInfoga
-    //PhoneInfogaSearch,
+    // // OpenCorprates
+    // OpenCorporatesCompanySearch,
+    // OpenCorporatesCompaniesSearch,
+    // OpenCorporatesOfficerSearch,
 
-    //  StreetCheck
-    StreetCheckSearch,
+
+    // // PhoneInfoga
+    // //PhoneInfogaSearch,
+
+    // //  StreetCheck
+    // StreetCheckSearch,
+
+
+    // CheckUsername
+    CheckUsernamesSearch
 
 ]

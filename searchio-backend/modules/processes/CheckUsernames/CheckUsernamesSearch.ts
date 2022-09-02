@@ -2,19 +2,21 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { NAMES } from "../../../assets/RegexPatterns";
 import { CheckUsernamesProcess } from "./CheckUsernamesProcess";
+import { ResultData } from "../../../models/ResultData";
+import { WebLink } from "../../../models/WebLink";
 
 
 export class CheckUsernamesSearch extends CheckUsernamesProcess {
     
     protected id = "CheckUsernamesSearch";
-    protected name: "CheckUsernames Search";
+    protected name: string =  "Search";
     protected pattern: RegExp = NAMES;
 
     public table = {
 
         columns: [
             { title: "Website", key: "website", type: "Text" },
-            { title: "Link", key: "link", type: "Text" }
+            { title: "Link", key: "link", type: "WebLink" }
         ],
         rows: []
     }
@@ -31,7 +33,7 @@ export class CheckUsernamesSearch extends CheckUsernamesProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -81,6 +83,7 @@ export class CheckUsernamesSearch extends CheckUsernamesProcess {
                         return this.success(`Successfully waited and recieved all results of resources`);
                     }
 
+
                     if(iterations >= seconds) {
                         clearInterval(interval);
                         resolve(undefined);
@@ -120,8 +123,9 @@ export class CheckUsernamesSearch extends CheckUsernamesProcess {
 
                     this.table.rows.push({
                         website: site,
-                        link: link
+                        link: { text: link, url: link } as WebLink
                     });
+
 
                 // Error has occured
                 } else if(status == "error") {
@@ -131,6 +135,8 @@ export class CheckUsernamesSearch extends CheckUsernamesProcess {
                 }
             }
             
+
+
             return this.success(`Successfully waited and recieved all results of resources`);
 
         } catch(err) {
@@ -147,7 +153,15 @@ export class CheckUsernamesSearch extends CheckUsernamesProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed search on WhatsMyName`, this.table);
+            let results: ResultData[] = [{
+                name: `Instances of Username ${ this.query }`,
+                type: "Table",
+                data: this.table
+            }];
+
+            
+
+            return this.success(`Successfully performed search on WhatsMyName`, results);
 
         } catch(err) {
             return this.error(`Error searching WhatsMyName`, err);
