@@ -8,18 +8,3 @@ import { IPAPISearch } from "./modules/processes/IPAPI/IPAPISearch";
 import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLayerSearch";
 import { Process } from "./modules/processes/Process";
 import { SocketService } from "./modules/SocketService";
-import { CheckUsernamesSearch } from "./modules/processes/CheckUsernames/CheckUsernamesSearch";
-
-
-export async function run() {
-    
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new CheckUsernamesSearch(socket, "Elljp33");
-    
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
-}
