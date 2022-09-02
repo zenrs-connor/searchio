@@ -21,8 +21,10 @@ import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates
 
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
 import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
 import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -31,7 +33,7 @@ import { PositionstackReverse } from "../modules/processes/Positionstack/Positio
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
+    // Numverify Processes
     NumverifyValidate,
 
     //  DVLA Processes
@@ -81,6 +83,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    // CheckUsername
+    CheckUsernamesSearch,
+    
     //  Positionstack
     PositionstackForward,
     PositionstackReverse
