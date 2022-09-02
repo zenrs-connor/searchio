@@ -30,55 +30,55 @@ import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckU
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
-    // NumverifyValidate,
+    // Numverify Processes
+    NumverifyValidate,
 
-    // //  DVLA Processes
-    // DVLAVehicleCheck,
+    //  DVLA Processes
+    DVLAVehicleCheck,
 
-    // // HaveIBeenPwned Processes
-    // HaveIBeenPwnedBreaches,
-    // HaveIBeenPwnedPastes,
+    // HaveIBeenPwned Processes
+    HaveIBeenPwnedBreaches,
+    HaveIBeenPwnedPastes,
 
-    // //  192
-    // Names192Search,
+    //  192
+    Names192Search,
 
-    // //  Companies House
-    // CompaniesHouseCompaniesSearch,
-    // CompaniesHouseCompanySearch,
-    // CompaniesHouseOfficerSearch,
+    //  Companies House
+    CompaniesHouseCompaniesSearch,
+    CompaniesHouseCompanySearch,
+    CompaniesHouseOfficerSearch,
 
-    // // Hunter
-    // HunterDomainSearch,
+    // Hunter
+    HunterDomainSearch,
 
-    // //  HM Land Registry
-    // //HMLandRegistryDomestic,
+    //  HM Land Registry
+    //HMLandRegistryDomestic,
 
-    // //  ICIJ
-    // ICIJSearch,
+    //  ICIJ
+    ICIJSearch,
 
-    // // IPAPI
-    // IPAPISearch,
+    // IPAPI
+    IPAPISearch,
 
-    // //  IPStack
-    // IPStackSearch,
-
-
-    // //  MailBoxLayer
-    // MailBoxLayerSearch,
+    //  IPStack
+    IPStackSearch,
 
 
-    // // OpenCorprates
-    // OpenCorporatesCompanySearch,
-    // OpenCorporatesCompaniesSearch,
-    // OpenCorporatesOfficerSearch,
+    //  MailBoxLayer
+    MailBoxLayerSearch,
 
 
-    // // PhoneInfoga
-    // //PhoneInfogaSearch,
+    // OpenCorprates
+    OpenCorporatesCompanySearch,
+    OpenCorporatesCompaniesSearch,
+    OpenCorporatesOfficerSearch,
 
-    // //  StreetCheck
-    // StreetCheckSearch,
+
+    // PhoneInfoga
+    //PhoneInfogaSearch,
+
+    //  StreetCheck
+    StreetCheckSearch,
 
 
     // CheckUsername
