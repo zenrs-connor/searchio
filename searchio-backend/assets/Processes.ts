@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
 import { SteamSearch } from "../modules/processes/Steam/SteamSearch";
 import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
 import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
@@ -28,6 +29,7 @@ import { PositionstackForward } from "../modules/processes/Positionstack/Positio
 import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
 import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
 import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -87,6 +89,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    // Blog Search Engine 
+    BlogSearchEngineSearch,
+    
     // Steam
     SteamSearch,
 
