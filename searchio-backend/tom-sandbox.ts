@@ -1,16 +1,8 @@
 
 import { SocketService } from "./modules/SocketService";
 import { eToolsSearch } from "./modules/processes/eTools/eToolsSearch";
+import { DuckDuckGoSearch } from "./modules/processes/DuckDuckGo/DuckDuckGoSearch";
 
-
-export async function run() {
+export function run() {
     
-    let socket = new SocketService();
-    await socket.init();
-
-    let x = new eToolsSearch(socket, "tom jones");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
 }

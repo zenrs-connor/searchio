@@ -23,4 +23,5 @@ export type DataSourceName =
 "Blockchain" |
 "Positionstack" |
 "Gigablast" |
-"eTools";
+"eTools" |
+"DuckDuckGo";

@@ -28,6 +28,7 @@ import { PositionstackForward } from "../modules/processes/Positionstack/Positio
 import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
 import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
 import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
+import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -36,69 +37,71 @@ import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
 
 export const PROCESSES: any = [
 
-    // Numverify Processes
-    NumverifyValidate,
+    // // Numverify Processes
+    // NumverifyValidate,
 
-    //  DVLA Processes
-    DVLAVehicleCheck,
+    // //  DVLA Processes
+    // DVLAVehicleCheck,
 
-    // HaveIBeenPwned Processes
-    HaveIBeenPwnedBreaches,
-    HaveIBeenPwnedPastes,
+    // // HaveIBeenPwned Processes
+    // HaveIBeenPwnedBreaches,
+    // HaveIBeenPwnedPastes,
 
-    //  192
-    Names192Search,
+    // //  192
+    // Names192Search,
 
-    //  Companies House
-    CompaniesHouseCompaniesSearch,
-    CompaniesHouseCompanySearch,
-    CompaniesHouseOfficerSearch,
+    // //  Companies House
+    // CompaniesHouseCompaniesSearch,
+    // CompaniesHouseCompanySearch,
+    // CompaniesHouseOfficerSearch,
 
-    // Hunter
-    HunterDomainSearch,
+    // // Hunter
+    // HunterDomainSearch,
 
-    //  HM Land Registry
-    //HMLandRegistryDomestic,
+    // //  HM Land Registry
+    // //HMLandRegistryDomestic,
 
-    //  ICIJ
-    ICIJSearch,
+    // //  ICIJ
+    // ICIJSearch,
 
-    // IPAPI
-    IPAPISearch,
+    // // IPAPI
+    // IPAPISearch,
 
-    //  IPStack
-    IPStackSearch,
+    // //  IPStack
+    // IPStackSearch,
 
-    //  MailBoxLayer
-    MailBoxLayerSearch,
+    // //  MailBoxLayer
+    // MailBoxLayerSearch,
 
-    // OpenCorprates
-    OpenCorporatesCompanySearch,
-    OpenCorporatesCompaniesSearch,
-    OpenCorporatesOfficerSearch,
+    // // OpenCorprates
+    // OpenCorporatesCompanySearch,
+    // OpenCorporatesCompaniesSearch,
+    // OpenCorporatesOfficerSearch,
 
-    // CheckUsername
-    CheckUsernamesSearch,
+    // // CheckUsername
+    // CheckUsernamesSearch,
     
-    //  Positionstack
-    PositionstackForward,
-    PositionstackReverse,
+    // //  Positionstack
+    // PositionstackForward,
+    // PositionstackReverse,
     
-    //  StreetCheck
-    StreetCheckSearch,
+    // //  StreetCheck
+    // StreetCheckSearch,
 
-    // Steam
-    SteamSearch,
+    // // Steam
+    // SteamSearch,
 
-    //  WhatsMyName
-    WhatsMyNameSearch,
+    // //  WhatsMyName
+    // WhatsMyNameSearch,
 
-    //  Gigablast
-    GigablastSearch,
+    // //  Gigablast
+    // GigablastSearch,
 
-    // eTools
-    eToolsSearch,
+    // // eTools
+    // eToolsSearch,
 
+    //  DuckDuckGo
+    DuckDuckGoSearch,
 
     /*
         BACKBURNER
