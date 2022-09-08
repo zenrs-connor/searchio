@@ -18,9 +18,9 @@ import { MailBoxLayerSearch } from "../modules/processes/MailBoxLayer/MailBoxLay
 import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompanySearch";
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
-
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
 import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
 import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
 import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
@@ -67,10 +67,8 @@ export const PROCESSES: any = [
     //  IPStack
     IPStackSearch,
 
-
     //  MailBoxLayer
     MailBoxLayerSearch,
-
 
     // OpenCorprates
     OpenCorporatesCompanySearch,
@@ -84,9 +82,11 @@ export const PROCESSES: any = [
     PositionstackForward,
     PositionstackReverse
     
-
     //  StreetCheck
     StreetCheckSearch,
+
+    //  WhatsMyName
+    WhatsMyNameSearch,
 
 
     /*
