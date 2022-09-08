@@ -22,4 +22,5 @@ export type DataSourceName =
 "Barred Police List" |
 "Blockchain" |
 "Positionstack" |
-"Gigablast";
+"Gigablast" |
+"eTools";

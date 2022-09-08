@@ -27,6 +27,7 @@ import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckU
 import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
 import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
 import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
+import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -94,6 +95,10 @@ export const PROCESSES: any = [
 
     //  Gigablast
     GigablastSearch,
+
+    // eTools
+    eToolsSearch,
+
 
     /*
         BACKBURNER
