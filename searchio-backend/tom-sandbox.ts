@@ -12,13 +12,14 @@ import { WhatsMyNameSearch } from "./modules/processes/WhatsMyName/WhatsMyNameSe
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new WhatsMyNameSearch(socket, "Elljp33");
+    // let x = new WhatsMyNameSearch(socket, "Elljp33");
     
-    let y = await x.process();
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
+
 }

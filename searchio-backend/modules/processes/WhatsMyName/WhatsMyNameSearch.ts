@@ -1,20 +1,21 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
-import { NAMES } from "../../../assets/RegexPatterns";
+import { NAMES, USERNAME } from "../../../assets/RegexPatterns";
 import { WhatsMyNameProcess } from "./WhatsMyNameProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class WhatsMyNameSearch extends WhatsMyNameProcess {
     
     protected id = "WhatsMyNameSearch";
-    protected name: "WhatsMyName Search";
-    protected pattern: RegExp = NAMES;
+    protected name: string = "Search";
+    protected pattern: RegExp = USERNAME;
 
     public table = {
 
         columns: [
             { title: "Website", key: "website", type: "Text" },
-            { title: "Link", key: "link", type: "Text" }
+            { title: "Link", key: "link", type: "WebLink" }
         ],
         rows: []
     }
@@ -31,7 +32,8 @@ export class WhatsMyNameSearch extends WhatsMyNameProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -112,11 +114,12 @@ export class WhatsMyNameSearch extends WhatsMyNameProcess {
 
                 this.table.rows.push({
                     website: site,
-                    link: link
+                    link: { text: link, url: link }
                 });
 
+
             }
-            
+
             return this.success(`Successfully waited and recieved all results of resources`);
 
         } catch(err) {
@@ -133,7 +136,14 @@ export class WhatsMyNameSearch extends WhatsMyNameProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed search on WhatsMyName`, this.table);
+            let results: ResultData[] = [{
+                name: `Instances of Username ${ this.query }`,
+                type: "Table",
+                data: this.table
+            }];
+
+
+            return this.success(`Successfully performed search on WhatsMyName`, results);
 
         } catch(err) {
             return this.error(`Error searching WhatsMyName`, err);
