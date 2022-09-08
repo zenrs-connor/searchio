@@ -14,6 +14,8 @@ export type DataSourceName =
 "RapidCarCheck" | 
 "HM Land Registry" |
 "StreetCheck" | 
+"ICIJ" | 
+"Etherscan" |
 "ICIJ" |
 "BlogSearchEngine" |
 "Steam" |

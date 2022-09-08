@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { EtherscanSearch } from "../modules/processes/Etherscan/EtherscanSearch";
 import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
 import { SteamSearch } from "../modules/processes/Steam/SteamSearch";
 import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
@@ -90,6 +91,8 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  Etherscan
+    EtherscanSearch,
     // Steam
     SteamSearch,
 
