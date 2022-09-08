@@ -23,10 +23,23 @@ export class DVLAVehicleCheck extends DVLAProcess {
     //  It returns a SearchioResponse containing any success or error data
     protected async process(): Promise<SearchioResponse> {
         this.initWebdriver();
-        await this.loadVehicleDetails();
-        let result = await this.scrapeVehicleDetails();
-        this.destroyWebdriver();
-        return result;
+        let loaded = await this.loadVehicleDetails();
+
+        if(loaded.success) {
+
+            let result = await this.scrapeVehicleDetails();
+            
+            
+
+            this.destroyWebdriver();
+            return result;
+        } else {
+
+            this.destroyWebdriver();
+            return this.success("Invalid vehicle registration provided.", [])
+        }
+
+
     }
 
     /*
@@ -37,11 +50,17 @@ export class DVLAVehicleCheck extends DVLAProcess {
 
     public async loadVehicleDetails(reg: string = this.query): Promise<SearchioResponse> {
         try {
+
             await this.driver.get('https://vehicleenquiry.service.gov.uk/');
             await this.waitForElement('//div[@class="govuk-form-group"]/input', 20);
             await this.driver.findElement(this.webdriver.By.xpath('//div[@class="govuk-form-group"]/input')).sendKeys(reg);
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="submit_vrn_button"]')).click();
+
             await this.waitForElement('//input[@id="yes-vehicle-confirm"]', 20);
+
+            if(!this.driver.findElement(this.webdriver.By.className('govuk-error-summary'))) return this.error(`Invalid vehicle registration.`)
+
+
             await this.driver.findElement(this.webdriver.By.xpath('//input[@id="yes-vehicle-confirm"]')).click();
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="capture_confirm_button"]')).click();
             return this.success(`Successfully entered vehicle details`);

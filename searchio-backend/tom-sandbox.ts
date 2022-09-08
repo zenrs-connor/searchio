@@ -12,5 +12,4 @@ import { EtherscanSearch } from "./modules/processes/Etherscan/EtherscanSearch";
 
 export async function run() {
     
-
 }
