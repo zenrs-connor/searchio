@@ -152,6 +152,8 @@ export class SearchioService {
 
           socket.on('process-update', (process) => {
 
+            console.log(process);
+
             //  Check that the query made by this process has a valid connection
             if(this.CONNECTIONS[process.query]) {
 
@@ -170,6 +172,8 @@ export class SearchioService {
 
           //  Event fired when a Stream emits a new result
           socket.on('process-result', (result) => {
+
+            console.log(result);
             this.addResult(result);
 
           });

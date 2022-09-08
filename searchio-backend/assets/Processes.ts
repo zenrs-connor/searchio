@@ -18,10 +18,21 @@ import { MailBoxLayerSearch } from "../modules/processes/MailBoxLayer/MailBoxLay
 import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompanySearch";
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
-
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
 import { CarbonDateSearch } from "../modules/processes/CarbonDate/CarbonDateSearch";
+import { EtherscanSearch } from "../modules/processes/Etherscan/EtherscanSearch";
+import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
+import { SteamSearch } from "../modules/processes/Steam/SteamSearch";
+import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
+import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
+import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
+import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
+import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
+import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
+import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
+import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -30,7 +41,7 @@ import { CarbonDateSearch } from "../modules/processes/CarbonDate/CarbonDateSear
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
+    // Numverify Processes
     NumverifyValidate,
 
     //  DVLA Processes
@@ -63,24 +74,56 @@ export const PROCESSES: any = [
     //  IPStack
     IPStackSearch,
 
-
     //  MailBoxLayer
     MailBoxLayerSearch,
-
 
     // OpenCorprates
     OpenCorporatesCompanySearch,
     OpenCorporatesCompaniesSearch,
     OpenCorporatesOfficerSearch,
 
-
-    // PhoneInfoga
-    //PhoneInfogaSearch,
-
+    // CheckUsername
+    CheckUsernamesSearch,
+    
+    //  Positionstack
+    PositionstackForward,
+    PositionstackReverse,
+    
     //  StreetCheck
     StreetCheckSearch,
 
     // CarbonDate
     CarbonDateSearch
+    
+    //  Etherscan
+    EtherscanSearch,
+    // Steam
+    SteamSearch,
+
+    // Blog Search Engine 
+    BlogSearchEngineSearch,
+    
+    // Steam
+    SteamSearch,
+
+    //  WhatsMyName
+    WhatsMyNameSearch,
+
+    //  Gigablast
+    GigablastSearch,
+
+    // eTools
+    eToolsSearch,
+
+    //  DuckDuckGo
+    DuckDuckGoSearch,
+
+    /*
+        BACKBURNER
+    */
+
+    //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
+    //  PhoneInfogaSearch,
+
 
 ]
