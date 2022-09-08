@@ -12,13 +12,5 @@ import { EtherscanSearch } from "./modules/processes/Etherscan/EtherscanSearch";
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
 
-    let x = new EtherscanSearch(socket, "0x263A1C688C4426Eede9B57E741fFb2B9CAdcCA9");
-    
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
 }

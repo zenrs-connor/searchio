@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { ETHEREUM_ADDRESS } from "../../../assets/RegexPatterns";
 import { EtherscanProcess } from "./EtherscanProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class EtherscanSearch extends EtherscanProcess {
     
     protected id = "EtherscanSearch";
-    protected name: "Etherscan Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ETHEREUM_ADDRESS;
     
     
@@ -93,7 +94,18 @@ export class EtherscanSearch extends EtherscanProcess {
 
             await this.pause(5000);
 
-            return this.success(`Successfully preformed search on Ethereum wallet`, wallet.data);
+
+            console.log(wallet.data);
+
+            let results: ResultData[] = [
+                { name: "Address", type: "Text", data: wallet.data.address },
+                { name: "Transactions Link", type: "WebLink", data: { text: 'Link', url: wallet.data.transactionsLink } },
+                { name: "Balance", type: "Text", data: wallet.data.balance },
+                { name: "Value", type: "Text", data: wallet.data.value },
+            ]
+
+            
+            return this.success(`Successfully preformed search on Ethereum wallet`, results);
 
         } catch(err) {
             return this.error(`Error preforming search on Ethereum wallet`, err);
