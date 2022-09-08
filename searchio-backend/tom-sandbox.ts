@@ -12,12 +12,5 @@ import { BlogSearchEngineSearch } from "./modules/processes/BlogSearchEngine/Blo
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
 
-    let x = new BlogSearchEngineSearch(socket, "Elliot Phillips");
-    let y = await x.process();
-
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
 }

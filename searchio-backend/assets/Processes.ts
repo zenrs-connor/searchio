@@ -21,6 +21,7 @@ import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates
 
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -29,7 +30,7 @@ import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckS
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
+    // Numverify Processes
     NumverifyValidate,
 
     //  DVLA Processes
@@ -78,5 +79,7 @@ export const PROCESSES: any = [
 
     //  StreetCheck
     StreetCheckSearch,
+
+    BlogSearchEngineSearch,
 
 ]

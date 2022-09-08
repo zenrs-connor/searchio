@@ -3,20 +3,20 @@ import { BlogSearchEngineProcess } from "./BlogSearchEngineProcess";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { WebLink } from "../../../models/WebLink";
+import { ResultData } from "../../../models/ResultData";
 
 export class BlogSearchEngineSearch extends BlogSearchEngineProcess {
     
     protected id = "BlogSearchEngineSearch";           
-    protected name: "BlogSearchEngine Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
 
     public table = {
 
         columns: [
-            { title: "Type", key: "type", type: "Text" },
             { title: "Title", key: "title", type: "Text" },
             { title: "Snippet", key: "snippet", type: "Text" },
-            { title: "Link", key: "link", type: "WebPage" }
+            { title: "Link", key: "link", type: "WebLink" }
         ],
         rows: []
     }
@@ -33,7 +33,7 @@ export class BlogSearchEngineSearch extends BlogSearchEngineProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -85,7 +85,6 @@ export class BlogSearchEngineSearch extends BlogSearchEngineProcess {
                 
 
                 this.table.rows.push({
-                    type: type,
                     title: title,
                     link:  { text: title, url: link } as WebLink,
                     snippet: snippet 
@@ -159,7 +158,6 @@ export class BlogSearchEngineSearch extends BlogSearchEngineProcess {
             await this.waitForElement('//div[@id="cse-search-results"]', 20);
 
             let x = await this.flipThrough('', '//div[@class="gsc-webResult gsc-result"]', this.scrapePage.bind(this), 2);
-            console.log(x);
 
             return this.success(`Successfully scraped all pages`);
 
@@ -174,11 +172,21 @@ export class BlogSearchEngineSearch extends BlogSearchEngineProcess {
             await this.loadSearch(searchTerm);
 
             let x = await this.scrapePages();
-            console.log(x)
 
             await this.pause(10000);
 
-            return this.success(`Successfully scraped BlogSearchEngine for ${this.query}`, this.table);
+            let results: ResultData[] = [];
+
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+
+            return this.success(`Successfully scraped BlogSearchEngine for ${this.query}`, results);
 
         } catch(err) {
             return this.error(`Error searching BlogSearchEngine`, err);
