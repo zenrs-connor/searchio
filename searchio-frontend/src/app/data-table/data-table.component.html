@@ -3,72 +3,89 @@
 <div class="table-container" [style.opacity]="widthChecked ? 1 : 0"  #container>
 
     <div class="title">
-        
         {{ title }} - {{ data.rows.length }} row(s)
 
-        <div class="button" (click)="limit = 3">Collapse</div>
-        <div class="button" (click)="limit = data.rows.length">Expand</div>
-    </div>
-
-    <div class="headers">
-        <div class="header" 
-        *ngFor="let column of data.columns" 
-        [style.width]="column.width ? column.width : flexWidth" 
-        (click)="sortColumn(column.key)">
-            {{ column.title }}
-            {{ (sortField === column.key) ? (sortAsc) ? '⯅' : '⯆' : '' }}
-        </div>
-    </div>
-
-    <div class="rows">
-
-        <ng-container *ngFor="let row of data.rows; let i = index">
-
-            <div class="row" *ngIf="i < limit">
-
-                <div class="column" *ngFor="let column of data.columns" 
-                [ngClass]="{ 
-                    image: column.type === 'Image',
-                    html: column.type === 'Html'
-                }"
-                
-                [style.width]="column.width ? column.width : flexWidth" >
-    
-                    <ng-container *ngIf="column.type === 'Image'" >
-                        <div class="flex"></div>
-                        <img [src]="row[column.key]"/>
-                        <div class="flex"></div>
-                    </ng-container>
-
-                    <ng-container *ngIf="column.type === 'Text'">{{ row[column.key] }}</ng-container>
-                    <ng-container *ngIf="column.type === 'Number'">{{ row[column.key] | number:'1.0':'en-US' }}</ng-container>
-                    <div *ngIf="column.type === 'Html'" [innerHTML]="row[column.key]"></div>
-
-
-                    <ng-container *ngIf="column.type === 'Date'">
-
-                        <ng-container *ngIf="row[column.key]">{{ row[column.key] | date:"dd/MM/yyyy" }}</ng-container>
-                        <ng-container *ngIf="!row[column.key]">N/A</ng-container>
-
-                    </ng-container>
-
-                    <a *ngIf="column.type === 'WebLink'" [href]="row[column.key].url" target="_blank">{{ row[column.key].text }} </a>
-
-
-                </div>
-    
-            </div>
-
+        <ng-container *ngIf="view === 'TABLE'">
+            <div class="button" (click)="limit = 3">Collapse</div>
+            <div class="button" (click)="limit = data.rows.length">Expand</div>
+            <div class="button" *ngIf="data.graphs" (click)="setView('GRAPH')">Graph View</div>
+        </ng-container>
+        
+        <ng-container *ngIf="view === 'GRAPH'">
+            <div class="button" (click)="setView('TABLE')">Table View</div>
         </ng-container>
 
-        <div class="footer">
-            <div class="button" *ngIf="data.rows.length > limit" (click)="limit = limit + LIMIT_INCREMENT">Show more results ({{ limit }} of {{ data.rows.length }} currently visible)</div>
-          
-        </div>
-
-        
 
     </div>
+
+    <div class="chart-container" [id]="containerID" *ngIf="view === 'GRAPH'">
+    </div>
+
+    <ng-container *ngIf="view === 'TABLE'">
+
+        <div class="headers">
+            <div class="header" 
+            *ngFor="let column of data.columns" 
+            [style.width]="column.width ? column.width : flexWidth" 
+            (click)="sortColumn(column.key)">
+                {{ column.title }}
+                {{ (sortField === column.key) ? (sortAsc) ? '⯅' : '⯆' : '' }}
+            </div>
+        </div>
+    
+        <div class="rows">
+    
+            <ng-container *ngFor="let row of data.rows; let i = index">
+    
+                <div class="row" *ngIf="i < limit">
+    
+                    <div class="column" *ngFor="let column of data.columns" 
+                    [ngClass]="{ 
+                        image: column.type === 'Image',
+                        html: column.type === 'Html'
+                    }"
+                    
+                    [style.width]="column.width ? column.width : flexWidth" >
+        
+                        <ng-container *ngIf="column.type === 'Image'" >
+                            <div class="flex"></div>
+                            <img [src]="row[column.key]"/>
+                            <div class="flex"></div>
+                        </ng-container>
+    
+                        <ng-container *ngIf="column.type === 'Text'">{{ row[column.key] }}</ng-container>
+                        <ng-container *ngIf="column.type === 'Number'">{{ row[column.key] | number:'1.0':'en-US' }}</ng-container>
+                        <div *ngIf="column.type === 'Html'" [innerHTML]="row[column.key]"></div>
+    
+    
+                        <ng-container *ngIf="column.type === 'Date'">
+    
+                            <ng-container *ngIf="row[column.key]">{{ row[column.key] | date:"dd/MM/yyyy" }}</ng-container>
+                            <ng-container *ngIf="!row[column.key]">N/A</ng-container>
+    
+                        </ng-container>
+    
+                        <a *ngIf="column.type === 'WebLink'" [href]="row[column.key].url" target="_blank">{{ row[column.key].text }} </a>
+    
+    
+                    </div>
+        
+                </div>
+    
+            </ng-container>
+    
+            <div class="footer">
+                <div class="button" *ngIf="data.rows.length > limit" (click)="limit = limit + LIMIT_INCREMENT">Show more results ({{ limit }} of {{ data.rows.length }} currently visible)</div>
+              
+            </div>
+    
+            
+    
+        </div>
+
+    </ng-container>
+
+    
 
 
 
