@@ -1,15 +1,15 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
-import { EMAIL_ADDRESS } from "../../../assets/RegexPatterns";
+import { DOMAIN, EMAIL_ADDRESS } from "../../../assets/RegexPatterns";
 import { CarbonDateProcess } from "./CarbonDateProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class CarbonDateSearch extends CarbonDateProcess {
     
     protected id = "CarbonDateSearch";
-    protected name: "Carbon Date Search";
-    protected pattern: RegExp = EMAIL_ADDRESS;
-    
+    protected name: string = "Search";
+    protected pattern: RegExp = DOMAIN;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
     //  Processes also take a query on creation
@@ -22,9 +22,9 @@ export class CarbonDateSearch extends CarbonDateProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
@@ -100,7 +100,45 @@ export class CarbonDateSearch extends CarbonDateProcess {
 
             await this.pause(5000);
 
-            return this.success(`Successfully performed search on CarbonDate`, scrape.data);
+            let results: ResultData[] = [];
+
+            console.log(scrape.data);
+
+            results.push({
+                name: "Estimated Creation Date",
+                type: "Date",
+                data: scrape.data['estimated-creation-date']
+            });
+
+            const table = {
+                columns: [
+                    { title: 'Source', key: 'source', type: "Text" },
+                    { title: 'Link', key: 'link', type: "WebLink" },
+                    { title: 'Earliest', key: 'earliest', type: "Date" },
+                ],
+                rows: []
+            }
+
+            let obj;
+            for(let key of Object.keys(scrape.data.sources)) {
+
+                obj = scrape.data.sources[key];
+
+                table.rows.push({
+                    source: key,
+                    link: { text: "Link", url: obj['uri-m'] },
+                    earliest: obj.earliest
+                })
+            }
+
+            results.push({
+                name: "Sources",
+                type: "Table",
+                data: table
+            });
+
+
+            return this.success(`Successfully performed search on CarbonDate`, results);
 
         } catch(err) {
             return this.error(`Error searching CarbonDate`, err);

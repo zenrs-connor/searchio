@@ -18,7 +18,7 @@ export const USERNAME = /^[A-Za-z0-9]+([ _-]*[A-Za-z0-9]+)*$/;
 
 export const REGISTRATION_PLATE = /^[A-Z0-9\s]{2,8}$/;
 
-export const DOMAIN = /^(https:\/\/)?[a-zA-Z0-9-.]{1,61}(\/)?$/;
+export const DOMAIN = /^(https?:\/\/)?[a-zA-Z0-9-.]{1,61}(\/)?$/;
 
 export const BUSINESS = /^(?!\s)(?!.*\s$)(?=.*[a-zA-Z0-9])[a-zA-Z0-9 '~?!.&]{2,}$/;
 

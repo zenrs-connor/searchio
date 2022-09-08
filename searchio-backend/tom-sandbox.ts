@@ -12,7 +12,7 @@ import { CarbonDateSearch } from "./modules/processes/CarbonDate/CarbonDateSearc
 
 export async function run() {
     
-    let socket = new SocketService();
+    /*let socket = new SocketService();
     await socket.init();
 
     let x = new CarbonDateSearch(socket, "https://www.cardiff.ac.uk/");
@@ -20,5 +20,6 @@ export async function run() {
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    console.log(y.data);*/
+    
 }
