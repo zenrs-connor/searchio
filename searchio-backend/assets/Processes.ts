@@ -35,62 +35,62 @@ import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch"
 
 export const PROCESSES: any = [
 
-    // // Numverify Processes
-    // NumverifyValidate,
+    // Numverify Processes
+    NumverifyValidate,
 
-    // //  DVLA Processes
-    // DVLAVehicleCheck,
+    //  DVLA Processes
+    DVLAVehicleCheck,
 
-    // // HaveIBeenPwned Processes
-    // HaveIBeenPwnedBreaches,
-    // HaveIBeenPwnedPastes,
+    // HaveIBeenPwned Processes
+    HaveIBeenPwnedBreaches,
+    HaveIBeenPwnedPastes,
 
-    // //  192
-    // Names192Search,
+    //  192
+    Names192Search,
 
-    // //  Companies House
-    // CompaniesHouseCompaniesSearch,
-    // CompaniesHouseCompanySearch,
-    // CompaniesHouseOfficerSearch,
+    //  Companies House
+    CompaniesHouseCompaniesSearch,
+    CompaniesHouseCompanySearch,
+    CompaniesHouseOfficerSearch,
 
-    // // Hunter
-    // HunterDomainSearch,
+    // Hunter
+    HunterDomainSearch,
 
-    // //  HM Land Registry
-    // //HMLandRegistryDomestic,
+    //  HM Land Registry
+    //HMLandRegistryDomestic,
 
-    // //  ICIJ
-    // ICIJSearch,
+    //  ICIJ
+    ICIJSearch,
 
-    // // IPAPI
-    // IPAPISearch,
+    // IPAPI
+    IPAPISearch,
 
-    // //  IPStack
-    // IPStackSearch,
+    //  IPStack
+    IPStackSearch,
 
-    // //  MailBoxLayer
-    // MailBoxLayerSearch,
+    //  MailBoxLayer
+    MailBoxLayerSearch,
 
-    // // OpenCorprates
-    // OpenCorporatesCompanySearch,
-    // OpenCorporatesCompaniesSearch,
-    // OpenCorporatesOfficerSearch,
+    // OpenCorprates
+    OpenCorporatesCompanySearch,
+    OpenCorporatesCompaniesSearch,
+    OpenCorporatesOfficerSearch,
 
-    // // CheckUsername
-    // CheckUsernamesSearch,
+    // CheckUsername
+    CheckUsernamesSearch,
     
-    // //  Positionstack
-    // PositionstackForward,
-    // PositionstackReverse,
+    //  Positionstack
+    PositionstackForward,
+    PositionstackReverse,
     
-    // //  StreetCheck
-    // StreetCheckSearch,
+    //  StreetCheck
+    StreetCheckSearch,
 
-    // // Steam
-    // SteamSearch,
+    // Steam
+    SteamSearch,
 
-    // //  WhatsMyName
-    // WhatsMyNameSearch,
+    //  WhatsMyName
+    WhatsMyNameSearch,
 
     //  Gigablast
     GigablastSearch,
