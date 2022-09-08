@@ -11,7 +11,6 @@ import { router as API } from './controllers/api';
 import { ProcessResult } from "./models/ProcessResult";
 import { ProcessData } from "./models/ProcessData";
 import { QueryStatus } from "./models/QueryStatus";
-import { runMain } from "module";
 import { run } from "./tom-sandbox";
 
 const PORT = 3002;

@@ -155,9 +155,10 @@ export class Process extends ResponseEmitter {
                 //  Build a formatted result to be emitted and cached
                 const result = this.buildResult(response.data);
 
+                console.log(response);
 
                 //  If there has been data returned by this process
-                if(response.data.length > 0) {
+                if(response.data && response.data.length > 0) {
                     //  Emit the result of this process
                     this.socket.result(result as ProcessResult);
 
@@ -169,11 +170,15 @@ export class Process extends ResponseEmitter {
 
 
             } else {
+
+                console.log("ERROR ON FAILURE")
                 //  If an error has occured as a result of the process, update the status to Error
                 this.setStatus("ERROR", response.message);
             }
         } catch(err) {
 
+            console.log("UNSPECIFIED ERROR");
+            console.log(err);
             //  In the case of an uncaught process error, update the status to Error
             this.setStatus("ERROR", JSON.stringify(err))
         }

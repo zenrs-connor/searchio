@@ -44,10 +44,10 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
 
             //let companies = await this.flipThrough('//a[@id="next-page"]', '//ul[@id="results"]/li/h3/a', this.stripCompaniesPage.bind(this), 1);
             let companies = await this.driver.findElements(this.webdriver.By.xpath('//ul[@id="results"]/li'));
+            
+            if(companies.length === 0) return this.success(`No matching companies found.`)
+
             let results = await this.stripCompaniesPage(companies);
-
-            if(results.data.length === 0) return this.success(`No matching companies found.`)
-
 
             if(results.success) {
                 return this.success(`Successfully performed companies search`, results.data);
@@ -56,8 +56,6 @@ export class CompaniesHouseCompaniesSearch extends CompaniesHouseProcess {
             }
             
         } catch(err) {
-
-            console.log(err);
             return this.error(`Error performing companies search`, err)
         }
     }
