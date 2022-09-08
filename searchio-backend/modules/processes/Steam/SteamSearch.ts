@@ -3,14 +3,26 @@ import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { SteamProcess } from "./SteamProcess";
 import { WebElement } from "selenium-webdriver";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class SteamSearch extends SteamProcess {
     
     protected id = "SteamSearch";
-    protected name: "Steam Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
     
+    public table = {
+
+        columns: [
+            { title: "Name", key: "name", type: "Text" },
+            { title: "Image", key: "image", type: "Image" },
+            { title: "Link", key: "link", type: "WebLink" },
+            { title: "Description", key: "description", type: "Text" },
+            { title: "Other", key: "other", type: "Text" },
+        ],
+        rows: []
+    }
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
     //  Processes also take a query on creation
@@ -23,9 +35,9 @@ export class SteamSearch extends SteamProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
@@ -52,13 +64,16 @@ export class SteamSearch extends SteamProcess {
 
                 let SteamResult: {   
                     name: string,
-                    img?: string,
-                    link?: string,
-                    desc?: string,
-                    other?: string
-
+                    image: string,
+                    link: any,
+                    description: string,
+                    other: string
                 } = {
-                    name: undefined
+                    name: '',
+                    image: '',
+                    link: { text: '', url: '' },
+                    description: '',
+                    other: ''
                 };
 
                 let name = await element.findElement(t.webdriver.By.xpath('.//div[@class="searchPersonaInfo"]/a[@class="searchPersonaName"]')).getText();
@@ -67,17 +82,19 @@ export class SteamSearch extends SteamProcess {
                 let desc = await element.findElement(t.webdriver.By.xpath('.//div[@class="searchPersonaInfo"]')).getText();
                 let other = await element.findElements(t.webdriver.By.xpath('.//div[@class="search_match_info"]'));
 
-                SteamResult.name = name;
-                SteamResult.img = img;
-                SteamResult.link = link;
-                SteamResult.desc = desc;
+                if(name) SteamResult.name = name;
+                if(img) SteamResult.image = img;
+                if(link) SteamResult.link = { text: link, url: link };
+                if(desc) SteamResult.description = desc;
+
+
 
                 if(other.length > 0){
                     other = await element.findElement(t.webdriver.By.xpath('.//div[@class="search_match_info"]')).getText();
-                    SteamResult.other = other;
+                    if(other) SteamResult.other = other;
                 }
 
-                results.push(SteamResult);
+                this.table.rows.push(SteamResult as any);
 
             }
     
@@ -165,19 +182,24 @@ export class SteamSearch extends SteamProcess {
         try{
             await this.loadSearch(searchTerm);
 
-            let results = await this.scrapeResult();
+            await this.scrapeResult();
 
             await this.pause(5000);
 
-            if(results.success == false) {
-                return this.error(`Error preforming search on Steam`, results.message);
-            } else {
-                return this.success(`Successfully preformed search on Steam`, results.data);
+            let results: ResultData[] = [];
+
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: `Steam Accounts Matching "${ this.query }"`,
+                    type: "Table",
+                    data: this.table
+                }];
             }
 
+            return this.success(`Successfully preformed search on Steam`, results);
 
         } catch(err) {
-            return this.error(`Error preforming search on Steam`, err);
+            return this.error(`Error performing search on Steam`, err);
         }
     }
 

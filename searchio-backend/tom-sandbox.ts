@@ -16,11 +16,11 @@ export async function run() {
     let socket = new SocketService();
     await socket.init();
 
-    let x = new SteamSearch(socket, "Aaronxoas");
-    
-    let y = await x.process();
+    //let x = new SteamSearch(socket, "Leroythechicken");
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.message)
-    console.log(y.data);
+    // let y = await x.process();
+
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.message)
+    // console.log(y.data);
 }
