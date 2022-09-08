@@ -81,6 +81,8 @@ export class URLScanSearch extends URLScanProcess {
 
             await this.pause(5000);
 
+            console.log(scrape.data);
+
             return this.success(`Successfully performed search on URL Scan`, scrape.data);
 
         } catch(err) {

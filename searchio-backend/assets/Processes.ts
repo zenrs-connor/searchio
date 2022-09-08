@@ -21,6 +21,7 @@ import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates
 
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -73,10 +74,18 @@ export const PROCESSES: any = [
     OpenCorporatesOfficerSearch,
 
 
-    // PhoneInfoga
-    //PhoneInfogaSearch,
+    
 
     //  StreetCheck
     StreetCheckSearch,
+
+
+
+    /*
+        BACKBURNER
+    */
+
+    //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
+    //  PhoneInfogaSearch,
 
 ]
