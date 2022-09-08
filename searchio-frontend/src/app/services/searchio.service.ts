@@ -22,7 +22,7 @@ export class SearchioService {
   public async addQuery(query: string) {
 
     return await new Promise((resolve) => {
-      this.http.get<SearchioResponse>(`${this.api}/query/add/${query}`, { headers: this.headers }).subscribe((res: SearchioResponse) => {
+      this.http.get<SearchioResponse>(`${this.api}/query/add/${ encodeURIComponent(query) }`, { headers: this.headers }).subscribe((res: SearchioResponse) => {
 
         if(res.success) {
 
