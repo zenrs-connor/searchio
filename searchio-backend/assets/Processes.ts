@@ -18,10 +18,14 @@ import { MailBoxLayerSearch } from "../modules/processes/MailBoxLayer/MailBoxLay
 import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompanySearch";
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
-
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
 import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
+import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
+import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
+import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
+import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -30,7 +34,7 @@ import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameS
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
+    // Numverify Processes
     NumverifyValidate,
 
     //  DVLA Processes
@@ -63,7 +67,6 @@ export const PROCESSES: any = [
     //  IPStack
     IPStackSearch,
 
-
     //  MailBoxLayer
     MailBoxLayerSearch,
 
@@ -72,14 +75,26 @@ export const PROCESSES: any = [
     OpenCorporatesCompaniesSearch,
     OpenCorporatesOfficerSearch,
 
-
-    // PhoneInfoga
-    //PhoneInfogaSearch,
-
+    // CheckUsername
+    CheckUsernamesSearch,
+    
+    //  Positionstack
+    PositionstackForward,
+    PositionstackReverse
+    
     //  StreetCheck
     StreetCheckSearch,
 
     //  WhatsMyName
     WhatsMyNameSearch,
+
+
+    /*
+        BACKBURNER
+    */
+
+    //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
+    //  PhoneInfogaSearch,
+
 
 ]

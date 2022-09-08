@@ -12,7 +12,9 @@ export class IPStackSearch extends IPStackProcess {
     
     protected id = "IPStackSearch";           
     protected name: "IP Search";
-    protected pattern: RegExp = IPV4;
+
+    //  Custon RegEx pattern for Lat/Lng and IPV4
+    protected pattern: RegExp = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
     
     //  Process extends the ResponseEmitter class, so be sure to include an argument for the socket
     //  Processes also take a query on creation
@@ -57,6 +59,7 @@ export class IPStackSearch extends IPStackProcess {
                 { name: "Postcode", type: "Text", data: response.zip },
                 { name: "Location", type: "WebLink", data: { text: "Google Maps", url: `https://www.google.com/maps/@${response.latitude},${response.longitude},10.5z` } }
             ];
+
 
             return this.success(`(IPStackSearch) Successfully performed ip lookup`, results);
 
