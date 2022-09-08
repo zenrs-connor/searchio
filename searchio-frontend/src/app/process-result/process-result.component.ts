@@ -28,13 +28,19 @@ export class ProcessResultComponent extends ServiceInjectedComponent {
 
     if(this._manager.isHiddenDataSource(this.result.source)) return true;
 
-    for(let d of this.result.data) {
+    let stringified = JSON.stringify(this.result.data).toLowerCase();
 
+    if(stringified.indexOf(this._manager.getFilterTerm()) < 0) {
+      return true;
+    }
+
+
+    for(let d of this.result.data) {
       if(!this._manager.isHiddenDataType(d.type)) {
         return false;
       }
-
     }
+
 
 
     return true;
