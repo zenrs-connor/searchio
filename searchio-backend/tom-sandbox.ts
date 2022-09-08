@@ -9,3 +9,6 @@ import { MailBoxLayerSearch } from "./modules/processes/MailBoxLayer/MailBoxLaye
 import { Process } from "./modules/processes/Process";
 import { SocketService } from "./modules/SocketService";
 
+export function run() {
+    
+}

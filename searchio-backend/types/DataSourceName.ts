@@ -21,4 +21,5 @@ export type DataSourceName =
 "CheckUsernames" |
 "Barred Police List" |
 "Blockchain" |
-"Positionstack";
+"Positionstack" |
+"Gigablast";
