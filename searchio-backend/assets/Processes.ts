@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { DOAJSearch } from "../modules/processes/DOAJ/DOAJSearch";
 import { CarbonDateSearch } from "../modules/processes/CarbonDate/CarbonDateSearch";
 import { EtherscanSearch } from "../modules/processes/Etherscan/EtherscanSearch";
 import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
@@ -33,7 +34,6 @@ import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch"
 import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
 import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
 
-
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
 *   As more data sources are added to the list
@@ -44,36 +44,9 @@ export const PROCESSES: any = [
     // Numverify Processes
     NumverifyValidate,
 
-    //  DVLA Processes
-    DVLAVehicleCheck,
-
-    // HaveIBeenPwned Processes
-    HaveIBeenPwnedBreaches,
-    HaveIBeenPwnedPastes,
-
-    //  192
-    Names192Search,
-
-    //  Companies House
-    CompaniesHouseCompaniesSearch,
-    CompaniesHouseCompanySearch,
-    CompaniesHouseOfficerSearch,
-
-    // Hunter
-    HunterDomainSearch,
-
-    //  HM Land Registry
-    //HMLandRegistryDomestic,
-
-    //  ICIJ
-    ICIJSearch,
-
-    // IPAPI
-    IPAPISearch,
-
-    //  IPStack
-    IPStackSearch,
-
+    //  DOAJ
+    DOAJSearch,
+  
     //  MailBoxLayer
     MailBoxLayerSearch,
 
@@ -124,6 +97,5 @@ export const PROCESSES: any = [
 
     //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
     //  PhoneInfogaSearch,
-
 
 ]

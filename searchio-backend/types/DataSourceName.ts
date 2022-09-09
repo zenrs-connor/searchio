@@ -15,6 +15,7 @@ export type DataSourceName =
 "HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
+"DOAJ" |
 "Carbon Date" |
 "ICIJ" | 
 "Etherscan" |
