@@ -28,7 +28,7 @@ export class StreetCheckSearch extends StreetCheckProcess {
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
         
-        await this.initWebdriver();
+        await this.initWebdriver(false);
         let result = await this.search();
         await this.destroyWebdriver();
         return result;
@@ -138,6 +138,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "housingType", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "housingType", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Housing Type", key: "housingType", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -169,6 +183,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "housingTenure", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "housingTenure", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Housing Tenure", key: "housingTenure", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -200,6 +228,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "housingOccupancy", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "housingOccupancy", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Housing Occupancy", key: "housingOccupancy", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -231,6 +273,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "socialGrade", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "socialGrade", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Social Grade", key: "socialGrade", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -262,6 +318,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "gender", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "gender", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Gender", key: "gender", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -293,6 +363,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "ageGroup", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "ageGroup", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Age Group", key: "ageGroup", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -324,6 +408,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "relationshipStatus", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "relationshipStatus", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Relationship Status", key: "relationshipStatus", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -355,6 +453,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "health", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "health", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Health", key: "health", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -386,6 +498,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "education", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "education", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Educations and Qualifications", key: "education", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -417,6 +543,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "welshLanguage", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "welshLanguage", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Welsh Language", key: "welshLanguage", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -448,6 +588,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "ethnicGroup", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "ethnicGroup", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Ethnic Group", key: "ethnicGroup", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -479,6 +633,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "birthCountry", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "birthCountry", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Country of Birth", key: "birthCountry", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -510,6 +678,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "passportsHeld", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "passportsHeld", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Passport(s) Held", key: "passportsHeld", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -541,6 +723,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "religion", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "religion", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Religion", key: "religion", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -572,6 +768,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "economicActivity", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "economicActivity", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Economic Activity", key: "economicActivity", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -617,6 +827,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
         try {
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "employmentIndustry", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "employmentIndustry", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Employment Industry", key: "employmentIndustry", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
@@ -959,6 +1183,20 @@ export class StreetCheckSearch extends StreetCheckProcess {
 
 
             let table = {
+                graphs: [
+                    {
+                        type: "bar",
+                        series: [
+                            { labelsKey: "crimes", dataKey: 'number' }
+                        ] 
+                    },
+                    {
+                        type: "pie",
+                        series: [
+                            { labelsKey: "crimes", dataKey: 'number' }
+                        ]
+                    }
+                ],
                 columns: [
                     { title: "Crime Type", key: "crimes", type: "Text" },
                     { title: "Count", key: "number", type: "Number" }
