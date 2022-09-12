@@ -15,6 +15,7 @@ export type DataSourceName =
 "HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
+"Google Translate" |
 "FCA" |
 "EmailRep" |
 "ERIC" |
