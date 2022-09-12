@@ -24,7 +24,7 @@ export class EmailRepSearch extends EmailRepProcess {
     public async process(): Promise<SearchioResponse> {
         this.initWebdriver(false);
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
