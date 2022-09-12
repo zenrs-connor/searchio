@@ -12,7 +12,7 @@ import { InsolvencyServiceSearchFirms } from "./modules/processes/InsolvencyServ
 
 export async function run() {
     
-    let socket = new SocketService();
+    /*let socket = new SocketService();
     await socket.init();
 
     let x = new InsolvencyServiceSearchFirms(socket, "T");
@@ -20,5 +20,5 @@ export async function run() {
     let y = await x.process();
 
     console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    console.log(y.data);*/
 }

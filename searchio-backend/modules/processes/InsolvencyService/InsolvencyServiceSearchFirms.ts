@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { InsolvencyServiceProcess } from "./InsolvencyServiceProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class InsolvencyServiceSearchFirms extends InsolvencyServiceProcess {
     
     protected id = "InsolvencyServiceSearchFirms";           
-    protected name: "Insolvency Service Search Firms";
+    protected name: string = "Trading Name Search";
     protected pattern: RegExp = ANY;
 
     public table = {
@@ -21,7 +22,7 @@ export class InsolvencyServiceSearchFirms extends InsolvencyServiceProcess {
             { title: "Number", key: "number", type: "Text" },
             { title: "Start Date", key: "startDate", type: "Text" },
             { title: "Type", key: "type", type: "Text" },
-            { title: "Link", key: "link", type: "Text" }
+            { title: "Link", key: "link", type: "WebLink" }
         ],
         rows: []
     }
@@ -38,7 +39,7 @@ export class InsolvencyServiceSearchFirms extends InsolvencyServiceProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -102,7 +103,7 @@ export class InsolvencyServiceSearchFirms extends InsolvencyServiceProcess {
                     number: number,
                     startDate: startDate,
                     type: type,
-                    link: link
+                    link: { text: "Link", url: link }
                 });
                 
                 
@@ -167,7 +168,16 @@ export class InsolvencyServiceSearchFirms extends InsolvencyServiceProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed Insolvency Service search`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully performed Insolvency Service search`, results);
 
         } catch(err) {
             return this.error(`Error searching Insolvency Service`, err);
