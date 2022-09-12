@@ -65,7 +65,6 @@ export class Process extends ResponseEmitter {
     }
 
     public async takeScreenshot() {
-        console.log("TAKING SCREENSHOT")
         if(this.driver) console.log("data:image/png;base64," + (await this.driver.takeScreenshot()));
     }
 
@@ -267,17 +266,12 @@ export class Process extends ResponseEmitter {
             return new Promise(resolve => {
                 const interval = setInterval( async () => {
                     let prevH =  await this.driver.executeScript('return document.documentElement.scrollTop;');
-                    console.log('\n\nCURRENT SCROLL HEIGHT:', prevH);
                     this.driver.executeScript('window.scrollTo(0, document.body.scrollHeight)');
                     iterations +=1; 
                     let newH = await this.driver.executeScript('return document.documentElement.scrollTop;');
-                    console.log('NEW SCROLL HEIGHT:', newH);
-
-                    console.log(`Scroll ${iterations}/${scrollLimit}`);
                     
                     if (prevH == newH) {
                         noChange += 1;
-                        console.log(`\nNo change in height: count ${noChange}`);
                     }
 
                     if(iterations >= scrollLimit || noChange >= 3) {
@@ -309,6 +303,8 @@ export class Process extends ResponseEmitter {
 
             let eles = await t.driver.findElements(t.webdriver.By.xpath(collectElements));
 
+
+
             let proc = await process(eles);
             results = results.concat(proc.data);
 
@@ -316,7 +312,9 @@ export class Process extends ResponseEmitter {
                 return;
             }
 
+
             let button = await t.driver.findElements(t.webdriver.By.xpath(nextXPath));
+
     
             if(button.length > 0) {
                 await t.driver.findElement(t.webdriver.By.xpath(nextXPath)).click();

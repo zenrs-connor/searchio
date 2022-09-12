@@ -12,12 +12,13 @@ import { WorldCatSearch } from "./modules/processes/WorldCat/WorldCatSearch";
 
 export async function run() {
     
-    let socket = new SocketService();
+    /*let socket = new SocketService();
     await socket.init();
 
     let x = new WorldCatSearch(socket, "Tom Jones");
     let y = await x.process();
 
+    
     console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    console.log(y.data);*/
 }

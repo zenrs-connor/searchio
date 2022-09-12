@@ -35,7 +35,7 @@ export class WorldCatSearch extends WorldCatProcess {
     public async process(): Promise<SearchioResponse> {
         this.initWebdriver(false);
         let result = await this.search();
-        this.destroyWebdriver();
+        //this.destroyWebdriver();
         return result;
     }
 
@@ -52,16 +52,16 @@ export class WorldCatSearch extends WorldCatProcess {
             await this.driver.findElement(this.webdriver.By.xpath('//button[@id="onetrust-accept-btn-handler"]')).click();
 
             // Wait for input to load
-            await this.waitForElement('//input[@class="homesrch ui-autocomplete-input"]', 20);
+            await this.waitForElement('//input[@class="MuiInputBase-input MuiOutlinedInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInputBase-inputAdornedEnd MuiOutlinedInput-inputAdornedEnd"]', 20);
 
             // Input search term
-            await this.driver.findElement(this.webdriver.By.xpath('//input[@class="homesrch ui-autocomplete-input"]')).sendKeys(searchTerm);
+            await this.driver.findElement(this.webdriver.By.xpath('//input[@class="MuiInputBase-input MuiOutlinedInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInputBase-inputAdornedEnd MuiOutlinedInput-inputAdornedEnd"]')).sendKeys(searchTerm);
 
             // Wait for search button
             await this.pause(1500);
 
             // Click search button
-            await this.driver.findElement(this.webdriver.By.xpath('//input[@value="Search everything"]')).click();
+            await this.driver.findElement(this.webdriver.By.xpath('//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained jss76 MuiButton-containedPrimary"]')).click();
 
             return this.success(`Successfully loaded search`);
 
@@ -71,9 +71,14 @@ export class WorldCatSearch extends WorldCatProcess {
     }
 
     // Scrape a page of results
-    public async scrapePage(results):Promise<SearchioResponse> {
+    public async scrapePage():Promise<SearchioResponse> {
+
+        console.log("SCRAPING PAGE");
 
         try{
+
+            let results = [];
+
             for(let result of results) {
                 let type = '';
                 let title = '';
@@ -107,7 +112,7 @@ export class WorldCatSearch extends WorldCatProcess {
             // Wait for results to completely load in
             await this.waitForElement('//table[@class="table-results"]', 20);
 
-            await this.flipThrough('//a[contains(text(), "Next")]', '//table[@class="table-results"]/tbody/tr[@class="menuElem"]', this.scrapePage.bind(this), 2);
+            await this.flipThrough('//button[@class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-textPrimary" and last()]', '//table[@class="table-results"]/tbody/tr[@class="menuElem"]', this.scrapePage.bind(this), 2);
 
             return this.success(`Successfully scraped all pages`);
 
