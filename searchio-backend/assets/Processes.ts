@@ -20,6 +20,8 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { FCAIndividualSearch } from "../modules/processes/FCA/FCAIndividualSearch";
+import { FCAFirmSearch } from "../modules/processes/FCA/FCAFirmSearch";
 import { EmailRepSearch } from "../modules/processes/EmailRep/EmailRepSearch";
 import { ERICSearch } from "../modules/processes/ERIC/ERICSearch";
 import { WorldCatSearch } from "../modules/processes/WorldCat/WorldCatSearch";
@@ -69,6 +71,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  FCA
+    FCAIndividualSearch,
+    FCAFirmSearch,
 
     // CarbonDate
     CarbonDateSearch
