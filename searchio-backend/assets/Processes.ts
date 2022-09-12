@@ -18,11 +18,30 @@ import { MailBoxLayerSearch } from "../modules/processes/MailBoxLayer/MailBoxLay
 import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompanySearch";
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
-
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
 import { InsolvencyServiceSearchFirms } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchFirms";
 import { InsolvencyServiceSearchIndividuals } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchIndividuals";
+import { GoogleTranslateSearch } from "../modules/processes/GoogleTranslate/GoogleTranslateSearch";
+import { FCAIndividualSearch } from "../modules/processes/FCA/FCAIndividualSearch";
+import { FCAFirmSearch } from "../modules/processes/FCA/FCAFirmSearch";
+import { EmailRepSearch } from "../modules/processes/EmailRep/EmailRepSearch";
+import { ERICSearch } from "../modules/processes/ERIC/ERICSearch";
+import { WorldCatSearch } from "../modules/processes/WorldCat/WorldCatSearch";
+import { DOAJSearch } from "../modules/processes/DOAJ/DOAJSearch";
+import { CarbonDateSearch } from "../modules/processes/CarbonDate/CarbonDateSearch";
+import { EtherscanSearch } from "../modules/processes/Etherscan/EtherscanSearch";
+import { BlogSearchEngineSearch } from "../modules/processes/BlogSearchEngine/BlogSearchEngineSearch";
+import { SteamSearch } from "../modules/processes/Steam/SteamSearch";
+import { WhatsMyNameSearch } from "../modules/processes/WhatsMyName/WhatsMyNameSearch";
+import { URLScanSearch } from "../modules/processes/URLScan/URLScanSearch";
+import { CheckUsernamesSearch } from "../modules/processes/CheckUsernames/CheckUsernamesSearch";
+import { PositionstackForward } from "../modules/processes/Positionstack/PositionstackForward";
+import { PositionstackReverse } from "../modules/processes/Positionstack/PositionstackReverse";
+import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
+import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
+import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -31,57 +50,77 @@ import { InsolvencyServiceSearchIndividuals } from "../modules/processes/Insolve
 
 export const PROCESSES: any = [
 
-    //  Numverify Processes
+    // Numverify Processes
     NumverifyValidate,
 
-    //  DVLA Processes
-    DVLAVehicleCheck,
-
-    // HaveIBeenPwned Processes
-    HaveIBeenPwnedBreaches,
-    HaveIBeenPwnedPastes,
-
-    //  192
-    Names192Search,
-
-    //  Companies House
-    CompaniesHouseCompaniesSearch,
-    CompaniesHouseCompanySearch,
-    CompaniesHouseOfficerSearch,
-
-    // Hunter
-    HunterDomainSearch,
-
-    //  HM Land Registry
-    //HMLandRegistryDomestic,
-
-    //  ICIJ
-    ICIJSearch,
-
-    // IPAPI
-    IPAPISearch,
-
-    //  IPStack
-    IPStackSearch,
-
-
+    //  DOAJ
+    DOAJSearch,
+  
     //  MailBoxLayer
     MailBoxLayerSearch,
-
 
     // OpenCorprates
     OpenCorporatesCompanySearch,
     OpenCorporatesCompaniesSearch,
     OpenCorporatesOfficerSearch,
 
-
-    // PhoneInfoga
-    //PhoneInfogaSearch,
-
+    // CheckUsername
+    CheckUsernamesSearch,
+    
+    //  Positionstack
+    PositionstackForward,
+    PositionstackReverse,
+    
     //  StreetCheck
     StreetCheckSearch,
 
     //  Insolveny Service
     InsolvencyServiceSearchFirms,
     InsolvencyServiceSearchIndividuals,
+    
+    //  Google
+    GoogleTranslateSearch,
+    
+    //  FCA
+    FCAIndividualSearch,
+    FCAFirmSearch,
+
+    // CarbonDate
+    CarbonDateSearch
+    
+    //  Etherscan
+    EtherscanSearch,
+    // Steam
+    SteamSearch,
+
+    // Blog Search Engine 
+    BlogSearchEngineSearch,
+    
+    // Steam
+    SteamSearch,
+
+    //  WhatsMyName
+    WhatsMyNameSearch,
+
+    //  Gigablast
+    GigablastSearch,
+
+    // eTools
+    eToolsSearch,
+
+    //  DuckDuckGo
+    DuckDuckGoSearch,
+    
+    // ERIC
+    ERICSearch,
+    
+    /*
+        BACKBURNER
+    */
+
+    //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
+    //  PhoneInfogaSearch,
+    //  WorldCatSearch,                 //  Problem flipping through pages
+    //  EmailRepSearch,                 //  Very small API rate limit
+
 ]
