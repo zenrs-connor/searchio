@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { EmailRepSearch } from "../modules/processes/EmailRep/EmailRepSearch";
 import { ERICSearch } from "../modules/processes/ERIC/ERICSearch";
 import { WorldCatSearch } from "../modules/processes/WorldCat/WorldCatSearch";
 import { DOAJSearch } from "../modules/processes/DOAJ/DOAJSearch";
@@ -35,6 +36,7 @@ import { PositionstackReverse } from "../modules/processes/Positionstack/Positio
 import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
 import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
 import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
+
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -104,7 +106,6 @@ export const PROCESSES: any = [
     //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
     //  PhoneInfogaSearch,
     //  WorldCatSearch,                 //  Problem flipping through pages
-
-
+    //  EmailRepSearch,                 //  Very small API rate limit
 
 ]
