@@ -84,4 +84,3 @@ HTTP_SERVER.listen(PORT, () => {
     console.log(`SEARCHIO server is running on port ${PORT}`);
 });
 
-run();

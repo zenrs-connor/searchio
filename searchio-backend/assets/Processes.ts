@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { GoogleScholarSearch } from "../modules/processes/GoogleScholar/GoogleScholarSearch";
 import { InsolvencyServiceSearchFirms } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchFirms";
 import { InsolvencyServiceSearchIndividuals } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchIndividuals";
 import { GoogleTranslateSearch } from "../modules/processes/GoogleTranslate/GoogleTranslateSearch";
@@ -41,7 +42,6 @@ import { PositionstackReverse } from "../modules/processes/Positionstack/Positio
 import { GigablastSearch } from "../modules/processes/Gigablast/GigablastSearch";
 import { eToolsSearch } from "../modules/processes/eTools/eToolsSearch";
 import { DuckDuckGoSearch } from "../modules/processes/DuckDuckGo/DuckDuckGoSearch";
-
 
 /*
 *   This array contains prototypes of the processes that will be checked on each query.
@@ -74,6 +74,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  Google Scholar
+    GoogleScholarSearch
+    
     //  Insolveny Service
     InsolvencyServiceSearchFirms,
     InsolvencyServiceSearchIndividuals,
