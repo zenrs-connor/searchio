@@ -3,21 +3,20 @@ import { GoogleScholarProcess } from "./GoogleScholarProcess";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { WebLink } from "../../../models/WebLink";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class GoogleScholarSearch extends GoogleScholarProcess {
     
     protected id = "GoogleScholarSearch";           
-    protected name: "GoogleScholar Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
 
     public table = {
 
         columns: [
-            { title: "Type", key: "type", type: "Text" },
-            { title: "Title", key: "title", type: "Text" },
+            { title: "Title", key: "title", type: "WebLink" },
             { title: "Snippet", key: "snippet", type: "Text" },
-            { title: "Link", key: "link", type: "WebPage" }
         ],
         rows: []
     }
@@ -34,7 +33,7 @@ export class GoogleScholarSearch extends GoogleScholarProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -79,9 +78,7 @@ export class GoogleScholarSearch extends GoogleScholarProcess {
                 snippet = await result.findElement(this.webdriver.By.xpath('.//div[@class="gs_rs"]')).getText();
 
                 this.table.rows.push({
-                    type: "Webpage",
-                    title: title,
-                    link:  { text: title, url: link } as WebLink,
+                    title:  { text: title, url: link } as WebLink,
                     snippet: snippet 
                 });
             }
@@ -117,7 +114,16 @@ export class GoogleScholarSearch extends GoogleScholarProcess {
 
             await this.scrapePages();
 
-            return this.success(`Successfully scraped GoogleScholar for ${this.query}`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully scraped GoogleScholar for ${this.query}`, results);
 
         } catch(err) {
             return this.error(`Error scraping GoogleScholar`, err);
