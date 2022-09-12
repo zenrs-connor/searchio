@@ -20,6 +20,8 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { InsolvencyServiceSearchFirms } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchFirms";
+import { InsolvencyServiceSearchIndividuals } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchIndividuals";
 import { GoogleTranslateSearch } from "../modules/processes/GoogleTranslate/GoogleTranslateSearch";
 import { FCAIndividualSearch } from "../modules/processes/FCA/FCAIndividualSearch";
 import { FCAFirmSearch } from "../modules/processes/FCA/FCAFirmSearch";
@@ -72,6 +74,10 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  Insolveny Service
+    InsolvencyServiceSearchFirms,
+    InsolvencyServiceSearchIndividuals,
+    
     //  Google
     GoogleTranslateSearch,
     
