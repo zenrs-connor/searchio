@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { WorldCatSearch } from "../modules/processes/WorldCat/WorldCatSearch";
 import { DOAJSearch } from "../modules/processes/DOAJ/DOAJSearch";
 import { CarbonDateSearch } from "../modules/processes/CarbonDate/CarbonDateSearch";
 import { EtherscanSearch } from "../modules/processes/Etherscan/EtherscanSearch";
@@ -65,6 +66,7 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+
     // CarbonDate
     CarbonDateSearch
     
@@ -97,5 +99,7 @@ export const PROCESSES: any = [
 
     //  URLScanSearch,                  //  CAPTCHA getting in the way of scraping
     //  PhoneInfogaSearch,
+    //  WorldCatSearch,                 //  Problem flipping through pages
+
 
 ]
