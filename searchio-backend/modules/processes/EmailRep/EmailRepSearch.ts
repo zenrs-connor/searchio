@@ -24,7 +24,7 @@ export class EmailRepSearch extends EmailRepProcess {
     public async process(): Promise<SearchioResponse> {
         this.initWebdriver(false);
         let result = await this.search();
-        this.destroyWebdriver();
+        //this.destroyWebdriver();
         return result;
     }
 
@@ -87,6 +87,8 @@ export class EmailRepSearch extends EmailRepProcess {
             let scrape = await this.scrapeResult();
 
             await this.pause(5000);
+
+            console.log(scrape);
 
             return this.success(`Successfully performed search on EmailRep`, scrape.data);
 
