@@ -13,7 +13,7 @@ import { ERICSearch } from "./modules/processes/ERIC/ERICSearch";
 
 export async function run() {
     
-    let socket = new SocketService();
+   /* let socket = new SocketService();
     await socket.init();
 
     let x = new ERICSearch(socket, "CPR");
@@ -21,5 +21,5 @@ export async function run() {
 
     console.log("\n\nBack to sandbox")
     console.log(y.data);
-
+*/
 }
