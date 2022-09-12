@@ -3,11 +3,12 @@ import { GoogleTranslateProcess } from "./GoogleTranslateProcess";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { WebLink } from "../../../models/WebLink";
+import { ResultData } from "../../../models/ResultData";
 
 export class GoogleTranslateSearch extends GoogleTranslateProcess {
     
     protected id = "GoogleTranslateSearch";           
-    protected name: "Google Translate Search";
+    protected name: string = "Translate";
     protected pattern: RegExp = ANY;
 
     public table = {
@@ -33,7 +34,7 @@ export class GoogleTranslateSearch extends GoogleTranslateProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -46,10 +47,12 @@ export class GoogleTranslateSearch extends GoogleTranslateProcess {
             await this.driver.get(`https://translate.google.co.uk/`);
 
             // Wait for cookies to load
-            await this.waitForElement('//div[@class="AIC7ge"]/form/div[@class="lssxud"]/div[@class="VfPpkd-dgl2Hf-ppHlrf-sM5MNb"]/button[@class="VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc"]', 20);
+            await this.waitForElement("//button/span[contains(text(), 'Accept all')]", 20);
+
+            console.log("CLICKING");
 
             // Accept cookies
-            await this.driver.findElement(this.webdriver.By.xpath('//div[@class="AIC7ge"]/form/div[@class="lssxud"]/div[@class="VfPpkd-dgl2Hf-ppHlrf-sM5MNb"]/button[@class="VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc"]')).click();
+            await this.driver.findElement(this.webdriver.By.xpath("//button/span[contains(text(), 'Accept all')]")).click();
 
             // Wait for page to load
             await this.waitForElement('//div[@class="WFnNle"]', 20);
@@ -100,7 +103,14 @@ export class GoogleTranslateSearch extends GoogleTranslateProcess {
 
             let result = await this.translate();
 
-            return this.success(`Successfully translated ${this.query} using Google translate`, result.data);
+
+            let results: ResultData[] = [
+                { name: "Input", type: "Text", data: result.data.input},
+                { name: "Language Detected", type: "Text", data: result.data.languageDetected },
+                { name: "Output", type: "Text", data: result.data.output },
+            ]
+
+            return this.success(`Successfully translated ${this.query} using Google translate`, results);
 
         } catch(err) {
             return this.error(`Error translating using Google`, err);
