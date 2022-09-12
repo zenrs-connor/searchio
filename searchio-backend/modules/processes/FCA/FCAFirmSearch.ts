@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { FCAProcess } from "./FCAProcess";
 import { SocketService } from "../../SocketService";
 import { BUSINESS } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class FCAFirmSearch extends FCAProcess {
     
     protected id = "FCAFirmSearch";           
-    protected name: "FCA Firm Search";
+    protected name: string = "Firm Search";
     protected pattern: RegExp = BUSINESS;
 
     public table = {
@@ -33,7 +34,7 @@ export class FCAFirmSearch extends FCAProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -61,7 +62,6 @@ export class FCAFirmSearch extends FCAProcess {
 
         try {
             
-            console.log(`We have ${firms.length} firms on this page`);
             for(let firm of firms){
                 let firmName = await firm.findElement(t.webdriver.By.xpath('.//h2[@class="text-display-1 text--bold"]/a')).getText();
                 let refNumber = await firm.findElement(t.webdriver.By.xpath('.//div[@class="text-medium slds-text-color_weak"]')).getText();
@@ -169,7 +169,16 @@ export class FCAFirmSearch extends FCAProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed FCA firm search`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully performed FCA firm search`, results);
 
         } catch(err) {
             return this.error(`Error searching FCA`, err);

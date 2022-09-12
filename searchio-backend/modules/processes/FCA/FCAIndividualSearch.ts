@@ -1,14 +1,15 @@
 import { SearchioResponse } from "../../../models/SearchioResponse";
 import { FCAProcess } from "./FCAProcess";
 import { SocketService } from "../../SocketService";
-import { BUSINESS } from "../../../assets/RegexPatterns";
+import { BUSINESS, NAMES } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class FCAIndividualSearch extends FCAProcess {
     
     protected id = "FCAIndividualSearch";           
-    protected name: "FCA Individual Search";
-    protected pattern: RegExp = BUSINESS;
+    protected name: string = "Individual Search";
+    protected pattern: RegExp = NAMES;
 
     public table = {
 
@@ -34,7 +35,7 @@ export class FCAIndividualSearch extends FCAProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -102,7 +103,6 @@ export class FCAIndividualSearch extends FCAProcess {
                 
             }
             
-
             return this.success(`Successfully scraped companies`);
 
         } catch(err) {
@@ -186,7 +186,16 @@ export class FCAIndividualSearch extends FCAProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed FCA individual search`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully performed FCA individual search`, results);
 
         } catch(err) {
             return this.error(`Error searching FCA for individuals`, err);

@@ -14,13 +14,13 @@ import { FCAIndividualSearch } from "./modules/processes/FCA/FCAIndividualSearch
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new FCAIndividualSearch(socket, "James Smith");
+    // let x = new FCAFirmSearch(socket, "Zen");
     
-    let y = await x.process();
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
 }
