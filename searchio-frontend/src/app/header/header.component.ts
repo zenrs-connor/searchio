@@ -1,5 +1,8 @@
-import { Component, ElementRef, Injector, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, Injector, OnInit, ViewChild } from '@angular/core';
 import { ServiceInjectedComponent } from '../service-injected/service-injected.component';
+
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
 
 @Component({
   selector: 'searchio-header',
