@@ -6,6 +6,8 @@
     </div>
     <div class="filters-container">
 
+        <input type="text" placeholder="Filter by text..." (input)="_manager.setFilterTerm($event.target.value)"/>
+
         <div class="filter-head">
             <div class="flex">Sources</div>
             <div class="button" (click)="_manager.clearDataSourceFilters()" hovercard message="Clear source filters">Clear</div>
@@ -25,6 +27,7 @@
         <result-filter *ngFor="let type of _manager.getDataTypes()"
         (click)="_manager.toggleShowDataType(type.type)"
         [name]="type.type"
+        [icon]="'assets/images/icons/data-types/' + type.type + '.png' | encodeUri" 
         [hidden]="_manager.isHiddenDataType(type.type)"
         [count]="type.ids.length"></result-filter>
 
