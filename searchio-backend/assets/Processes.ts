@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { UKTradeInfoSearch } from "../modules/processes/UKTradeInfo/UKTradeInfoSearch";
 import { TwitterAuditSearch } from "../modules/processes/TwitterAudit/TwitterAuditSearch";
 import { PSNProfilesSearch } from "../modules/processes/PSNProfiles/PSNProfilesSearch";
 import { XboxGamertagSearch } from "../modules/processes/XboxGamertag/XboxGamertagSearch";
@@ -135,5 +136,6 @@ export const PROCESSES: any = [
     //  WorldCatSearch,                 //  Problem flipping through pages
     //  EmailRepSearch,                 //  Very small API rate limit
     //  TwitterAuditSearch              //  User protections in place
-
+    //  UKTradeInfoSearch,              //  Website Error
+    
 ]
