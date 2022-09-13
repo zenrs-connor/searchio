@@ -1,4 +1,8 @@
+import { style } from '@angular/animations';
+import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { AfterContentInit, AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+
+import * as ApexCharts from 'apexcharts';
 
 @Component({
   selector: 'data-table',
@@ -22,11 +26,20 @@ export class DataTableComponent implements OnInit, AfterContentInit {
     rows: [],
   }
 
+  public view: 'TABLE' | 'GRAPH' = 'TABLE';
+
   public expanded: boolean = true;
   public LIMIT_INCREMENT: number = 5;
   public limit: number = 3;
   public sortField: string = '';
   public sortAsc: boolean = false;
+
+  public containerID = this.generateUID();
+  public chartIDs: any = {};
+
+  private canvas: HTMLCanvasElement | undefined;
+  private ctx: any;
+  private chart: any;
 
   public flexWidth: string = '1000px';
   public widthChecked: boolean = false;
@@ -34,13 +47,15 @@ export class DataTableComponent implements OnInit, AfterContentInit {
   constructor() { }
 
   ngOnInit(): void {
-
     if(this.data.columns.length > 0) {
-
       this.sortColumn(this.data.columns[0].key);
-
-
     }
+
+    console.log(this.data);
+  }
+
+  private generateUID(): string {
+    return String(Math.round(Math.random() * 0xFFFFFFFFFFF));
   }
 
   async ngAfterContentInit() {
@@ -48,6 +63,112 @@ export class DataTableComponent implements OnInit, AfterContentInit {
       this.flexWidth = this.getFlexWidth();
       this.widthChecked = true;
     }, 0)
+    
+  }
+
+  public setView(view: 'TABLE' | 'GRAPH') {
+    this.view = view;
+
+    console.log(this.data);
+
+    if(view === "GRAPH") {
+      setTimeout(() => {
+        this.initGraphs();
+      }, 1)
+
+    }
+  }
+
+  private initGraphs() {
+
+    const container = <HTMLDivElement> document.getElementById(this.containerID);
+    container.innerHTML = "";
+
+
+    let uid;
+
+    for(let graph of this.data.graphs) {
+
+      uid = this.generateUID();
+      let elem = <HTMLDivElement> document.createElement('div');
+      elem.id = uid;
+      elem.className = "chart-element";
+
+
+      //  Styles
+      elem.style.flex = "1";
+      elem.style.height = '300px';
+
+      this.chartIDs[graph.type] = uid;
+      container.appendChild(elem);
+  
+      let data = [], labels = [];
+
+      let opts;
+
+      switch(graph.type) {
+        case "bar":
+
+          for(let d of this.data.rows) {
+            data.push(parseInt(d[graph.series[0].dataKey]));
+            labels.push(d[graph.series[0].labelsKey]);
+          } 
+
+          opts = {
+            chart: {
+              height: 300,
+              width: "100%",
+              type: "bar"
+            },
+            series: [{ name: '#', data: data }],
+            plotOptions: {
+              bar: {
+                horizontal: true,
+                borderRadius: 5
+              }
+            },
+            xaxis: {
+              categories: labels
+            }
+          }
+
+
+
+          break;
+        case "pie":
+
+
+          for(let d of this.data.rows) {
+            data.push(parseInt(d[graph.series[0].dataKey]));
+            labels.push(d[graph.series[0].labelsKey]);
+          } 
+
+          opts = {
+            chart: {
+              type: "pie",
+              height: '100%',
+              width: "100%"
+            },
+            series: data,
+            labels: labels
+          }
+
+          break;
+        default:
+          break;
+      }
+
+
+      const chart = new ApexCharts(elem, opts);
+      chart.render();
+
+      
+
+
+    }
+
+
+    
     
   }
 
