@@ -102,6 +102,8 @@ export class EpieosSkypeSearch extends EpieosSkypeProcess {
 
             await this.pause(5000);
 
+            console.log(this.table);
+
             return this.success(`Successfully performed search on Epieos Skype`, this.table);
 
         } catch(err) {
