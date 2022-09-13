@@ -15,6 +15,7 @@ export type DataSourceName =
 "HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
+"Charity Commission" |
 "Wayback Machine" |
 "Employment Tribunals" |
 "BizNar" |
