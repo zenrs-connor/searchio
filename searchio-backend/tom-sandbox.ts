@@ -13,13 +13,13 @@ import { BizNarSearch } from "./modules/processes/BizNar/BizNarSearch";
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new BizNarSearch(socket, "Pen y dre");
-    let y = await x.process();
+    // let x = new BizNarSearch(socket, "Pen y dre");
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
-    console.log(y.data.rows.length);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
+    // console.log(y.data.rows.length);
 }
