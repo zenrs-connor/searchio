@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { PSNProfilesSearch } from "../modules/processes/PSNProfiles/PSNProfilesSearch";
 import { XboxGamertagSearch } from "../modules/processes/XboxGamertag/XboxGamertagSearch";
 import { GoogleScholarSearch } from "../modules/processes/GoogleScholar/GoogleScholarSearch";
 import { InsolvencyServiceSearchFirms } from "../modules/processes/InsolvencyService/InsolvencyServiceSearchFirms";
@@ -75,6 +76,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  PSN
+    PSNProfilesSearch,
+    
     //  XBOX
     XboxGamertagSearch
     
