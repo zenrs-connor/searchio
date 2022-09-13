@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { PSNProfilesProcess } from "./PSNProfilesProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class PSNProfilesSearch extends PSNProfilesProcess {
     
     protected id = "PSNProfilesSearch";
-    protected name: "PSN Profiles Search";
+    protected name: string = "Profiles Search";
     protected pattern: RegExp = ANY;
     
     
@@ -22,7 +23,7 @@ export class PSNProfilesSearch extends PSNProfilesProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -32,13 +33,14 @@ export class PSNProfilesSearch extends PSNProfilesProcess {
     public async loadSearch(searchTerm: string = this.query): Promise<SearchioResponse> {
         try {
             await this.driver.get(`https://psnprofiles.com/${searchTerm}`);
-            
+
             return this.success(`Successfully loaded search`);
 
         } catch(err) {
             return this.error(`Error loading search`, err);
         }
     }
+
 
 
     // Function to look at results
@@ -118,7 +120,21 @@ export class PSNProfilesSearch extends PSNProfilesProcess {
 
             await this.pause(5000);
 
-            return this.success(`Successfully preformed search on PSN profile`, profile.data);
+            let results: ResultData[] = [];
+
+            results.push({ name: "PSN ID", type: "Text", data: profile.data.psnID });
+            results.push({ name: "Profile Picture", type: "Image", data: profile.data.profilePicture });
+            results.push({ name: "Total Games Played", type: "Text", data: profile.data.totalGamesPlayed });
+
+            let arr = [];
+            for(let game of profile.data.games) {
+                if(game.gameTitle !== '') arr.push(game.gameTitle);
+            }
+
+            results.push({ name: "Games Played", type: "Text", data: arr });
+
+
+            return this.success(`Successfully preformed search on PSN profile`, results);
 
         } catch(err) {
             return this.error(`Error preforming search on PSN profile`, err);

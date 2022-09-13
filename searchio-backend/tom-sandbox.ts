@@ -12,13 +12,13 @@ import { PSNProfilesSearch } from "./modules/processes/PSNProfiles/PSNProfilesSe
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new PSNProfilesSearch(socket, "Baiicheyyy");
+    // let x = new PSNProfilesSearch(socket, "Baiicheyyy");
     
-    let y = await x.process();
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
 }
