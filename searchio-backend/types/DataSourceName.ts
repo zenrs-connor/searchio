@@ -15,6 +15,7 @@ export type DataSourceName =
 "HM Land Registry" |
 "StreetCheck" | 
 "ICIJ" |
+"BizNar" |
 "Liveuamap" |
 "Yahoo" |
 "Epieos Skype" |
