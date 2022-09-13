@@ -2,12 +2,13 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { XboxGamertagProcess } from "./XboxGamertagProcess";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class XboxGamertagSearch extends XboxGamertagProcess {
     
     protected id = "XboxGamertagSearch";
-    protected name: "Xbox Gamertag Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
     
     
@@ -22,7 +23,7 @@ export class XboxGamertagSearch extends XboxGamertagProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -142,7 +143,7 @@ export class XboxGamertagSearch extends XboxGamertagProcess {
                 await this.driver.get(newURL);
 
                 // Flip through the pages of clips collecting the links
-                let clips = await this.flipThrough('//a[@aria-label="Next"]', '//a[@class="btn-success"]', (null), 10);
+                let clips = await this.flipThrough('//a[@aria-label="Next"]', '//a[@class="btn-success"]', (null), 1);
                 await this.pause(5000);
 
                 let XboxProfile: {   
@@ -181,7 +182,33 @@ export class XboxGamertagSearch extends XboxGamertagProcess {
 
             await this.pause(5000);
 
-            return this.success(`Successfully preformed search on Xbox profile`, profile.data);
+            console.log(profile);
+
+            let results: ResultData[] = [];
+
+            results.push({ name: "Gamertag", type: "Text", data: profile.data.gamertag });
+            results.push({ name: "Profile Picture", type: "Image", data: profile.data.profilePicture });
+            results.push({ name: "Gamerscore", type: "Text", data: profile.data.gamerScore });
+            results.push({ name: "Total Games Played", type: "Text", data: profile.data.totalGamesPlayed });
+
+            let table = {
+                columns: [
+                    { title: "Name", key: "name", type: "Text" },
+                    { title: "Last Played", key: "played", type: "Text" }
+                ],
+                rows: []
+            }
+
+            for(let game of profile.data.games) {
+                table.rows.push({
+                    name: game.gameTitle,
+                    played: game.lastPlayed
+                })
+            }
+
+            results.push({ name: "Games", type: "Table", data: table });
+
+            return this.success(`Successfully preformed search on Xbox profile`, results);
 
         } catch(err) {
             return this.error(`Error preforming search on Xbox profile`, err);

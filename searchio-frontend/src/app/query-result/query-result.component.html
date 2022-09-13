@@ -12,6 +12,10 @@
             <ng-container *ngIf="result.type === 'Number'">{{ result.data }}</ng-container>
             <ng-container *ngIf="result.type === 'PhoneNumber'">{{ result.data }}</ng-container>
             <ng-container *ngIf="result.type === 'Date'">{{ result.data | date:'dd/MM/yyyy' }}</ng-container>
+
+            <img *ngIf="result.type === 'Image'" [src]="result.data">
+
+
         </div>
     </div>
 
