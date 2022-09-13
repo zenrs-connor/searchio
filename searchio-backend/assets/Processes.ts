@@ -19,6 +19,8 @@ import { OpenCorporatesCompanySearch } from "../modules/processes/OpenCorporates
 import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporates/OpenCorporatesCompaniesSearch";
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
+import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { EmploymentTribunalsSearch } from "../modules/processes/EmploymentTribunals/EmploymentTribunalsSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch"
 import { BizNarSearch } from "../modules/processes/BizNar/BizNarSearch";
 import { LiveuamapSearch } from "../modules/processes/Liveuamap/LiveuamapSearch";
@@ -82,6 +84,9 @@ export const PROCESSES: any = [
     //  StreetCheck
     StreetCheckSearch,
 
+    //  Employment Tribunals
+    EmploymentTribunalsSearch,
+    
     //  BizNar
     BizNarSearch,
     
