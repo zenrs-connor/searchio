@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { LiveuamapSearch } from "../modules/processes/Liveuamap/LiveuamapSearch";
 import { YahooSearch } from "../modules/processes/Yahoo/YahooSearch";
 import { EpieosSkypeSearch } from "../modules/processes/EpieosSkype/EpieosSkypeSearch";
 import { UKTradeInfoSearch } from "../modules/processes/UKTradeInfo/UKTradeInfoSearch";
@@ -79,7 +80,7 @@ export const PROCESSES: any = [
     
     //  StreetCheck
     StreetCheckSearch,
-
+    
     //  Yahoo
     YahooSearch,
     
@@ -143,5 +144,6 @@ export const PROCESSES: any = [
     //  TwitterAuditSearch              //  User protections in place
     //  UKTradeInfoSearch,              //  Website Error
     //  EpieosSkypeSearch,              //  CAPTCHA block
+    //  LiveuamapSearch,                //  Paywall
     
 ]
