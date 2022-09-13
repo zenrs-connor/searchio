@@ -2,19 +2,19 @@ import { SearchioResponse } from "../../../models/SearchioResponse";
 import { EmploymentTribunalsProcess } from "./EmploymentTribunalsProcess";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class EmploymentTribunalsSearch extends EmploymentTribunalsProcess {
     
     protected id = "EmploymentTribunalsSearch";           
-    protected name: "Employment Tribunals Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
 
     public table = {
 
         columns: [
-            { title: "Title", key: "title", type: "Text" },
-            { title: "Link", key: "link", type: "Text" },
+            { title: "Title", key: "title", type: "WebLink" },
             { title: "Date", key: "date", type: "Text" }
         ],
         rows: []
@@ -32,7 +32,7 @@ export class EmploymentTribunalsSearch extends EmploymentTribunalsProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
         this.destroyWebdriver();
         return result;
@@ -67,8 +67,7 @@ export class EmploymentTribunalsSearch extends EmploymentTribunalsProcess {
                 let date = await tribunal.findElement(t.webdriver.By.xpath('./ul/li/time')).getText();
                 
                 this.table.rows.push({
-                    title: title,
-                    link: link,
+                    title: { text: title, url: link },
                     date: date
                 });
                 
@@ -104,7 +103,16 @@ export class EmploymentTribunalsSearch extends EmploymentTribunalsProcess {
 
             await this.pause(15000);
 
-            return this.success(`Successfully performed Employment Tribunals search`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully performed Employment Tribunals search`, results);
 
         } catch(err) {
             return this.error(`Error searching Employment Tribunals`, err);

@@ -12,13 +12,13 @@ import { EmploymentTribunalsSearch } from "./modules/processes/EmploymentTribuna
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new EmploymentTribunalsSearch(socket, "James Smith");
+    // let x = new EmploymentTribunalsSearch(socket, "James Smith");
     
-    let y = await x.process();
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
 }
