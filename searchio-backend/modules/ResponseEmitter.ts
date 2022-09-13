@@ -12,6 +12,7 @@ export class ResponseEmitter {
     }
 
     protected success(message: string, data: any = undefined): SearchioResponse {
+
         return { 
             success: true,
             message: `(${this.id}) ${message}`,
