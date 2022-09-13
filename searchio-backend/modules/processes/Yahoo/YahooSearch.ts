@@ -3,20 +3,19 @@ import { YahooProcess } from "./YahooProcess";
 import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { WebLink } from "../../../models/WebLink";
+import { ResultData } from "../../../models/ResultData";
 
 export class YahooSearch extends YahooProcess {
     
     protected id = "YahooSearch";           
-    protected name: "Yahoo Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
 
     public table = {
 
         columns: [
-            { title: "Type", key: "type", type: "Text" },
-            { title: "Title", key: "title", type: "Text" },
+            { title: "Title", key: "title", type: "WebLink" },
             { title: "Snippet", key: "snippet", type: "Text" },
-            { title: "Link", key: "link", type: "WebPage" }
         ],
         rows: []
     }
@@ -33,9 +32,9 @@ export class YahooSearch extends YahooProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
@@ -52,16 +51,17 @@ export class YahooSearch extends YahooProcess {
             await this.driver.findElement(this.webdriver.By.xpath('//button[@class="btn primary"]')).click();
 
             // Wait for input bar to load
-            await this.waitForElement('//input[@class="_yb_3phk5"]', 20);
+            await this.waitForElement('//input[@class="_yb_ehpit"]', 20);
+
 
             // Input search term
-            await this.driver.findElement(this.webdriver.By.xpath('//input[@class="_yb_3phk5"]')).sendKeys(searchTerm);
+            await this.driver.findElement(this.webdriver.By.xpath('//input[@class="_yb_ehpit"]')).sendKeys(searchTerm);
 
             // Wait for search button
             await this.pause(1500);
 
             // Click search button
-            await this.driver.findElement(this.webdriver.By.xpath('//input[@class="rapid-noclick-resp _yb_blpy5"]')).click();
+            await this.driver.findElement(this.webdriver.By.xpath('//button[@class="rapid-noclick-resp _yb_fvmec"]')).click();
 
             return this.success(`Successfully loaded search`);
 
@@ -91,9 +91,7 @@ export class YahooSearch extends YahooProcess {
                     title = title.replace(remove, '');
                     snippet = await result.findElement(this.webdriver.By.xpath('.//div[@class="compText aAbs"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -107,9 +105,7 @@ export class YahooSearch extends YahooProcess {
                     title = title.replace(remove, '');
                     snippet = await result.findElement(this.webdriver.By.xpath('.//div[@class="compText aAbs"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -123,9 +119,7 @@ export class YahooSearch extends YahooProcess {
                     title = title.replace(remove, '');
                     snippet = await result.findElement(this.webdriver.By.xpath('.//div[@class="compText aAbs"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -136,9 +130,7 @@ export class YahooSearch extends YahooProcess {
                     title = await result.findElement(this.webdriver.By.xpath('.//ul[@class="compArticleList modern phoenix mb-16 nws_itm theme-trending v2"]/li/div[@class="textWrap d-tc va-top pl-16 pr-16 ov-h"]/h4')).getText();
                     snippet = await result.findElement(this.webdriver.By.xpath('.//ul[@class="compArticleList modern phoenix mb-16 nws_itm theme-trending v2"]/li/div[@class="textWrap d-tc va-top pl-16 pr-16 ov-h"]/div[@class="subline"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -149,9 +141,7 @@ export class YahooSearch extends YahooProcess {
                     title = await result.findElement(this.webdriver.By.xpath('.//ul[@class="compArticleList modern phoenix mb-16 nws_itm theme-trending v2"]/li/div[@class="textWrap d-tc va-top pl-16 pr-16 ov-h"]/h4')).getText();
                     snippet = await result.findElement(this.webdriver.By.xpath('.//ul[@class="compArticleList modern phoenix mb-16 nws_itm theme-trending v2"]/li/div[@class="textWrap d-tc va-top pl-16 pr-16 ov-h"]/div[@class="subline"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -165,9 +155,7 @@ export class YahooSearch extends YahooProcess {
                     title = title.replace(remove, '');
                     snippet = await result.findElement(this.webdriver.By.xpath('.//div[@class="compText aAbs"]/p')).getText();
                     this.table.rows.push({
-                        type: "Webpage",
-                        title: title,
-                        link:  { text: title, url: link } as WebLink,
+                        title:  { text: title, url: link } as WebLink,
                         snippet: snippet 
                     });
                     await this.pause(1000);
@@ -206,11 +194,19 @@ export class YahooSearch extends YahooProcess {
             await this.loadSearch(searchTerm);
 
             let x = await this.scrapePages();
-            console.log(x);
 
             await this.pause(5000);
 
-            return this.success(`Successfully scraped Yahoo for ${this.query}`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully scraped Yahoo for ${this.query}`, results);
 
         } catch(err) {
             return this.error(`Error scraping Yahoo`, err);

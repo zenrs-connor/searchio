@@ -13,12 +13,12 @@ import { YahooSearch } from "./modules/processes/Yahoo/YahooSearch";
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new YahooSearch(socket, "Tom Jones");
-    let y = await x.process();
+    // let x = new YahooSearch(socket, "Tom Jones");
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
 }
