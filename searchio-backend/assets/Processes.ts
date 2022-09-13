@@ -20,6 +20,7 @@ import { OpenCorporatesCompaniesSearch } from "../modules/processes/OpenCorporat
 import { OpenCorporatesOfficerSearch } from "../modules/processes/OpenCorporates/OpenCorporatesOfficerSearch";
 import { PhoneInfogaSearch } from "../modules/processes/PhoneInfoga/PhoneInfogaSearch";
 import { StreetCheckSearch } from "../modules/processes/StreetCheck/StreetCheckSearch";
+import { EpieosSkypeSearch } from "../modules/processes/EpieosSkype/EpieosSkypeSearch";
 import { UKTradeInfoSearch } from "../modules/processes/UKTradeInfo/UKTradeInfoSearch";
 import { TwitterAuditSearch } from "../modules/processes/TwitterAudit/TwitterAuditSearch";
 import { PSNProfilesSearch } from "../modules/processes/PSNProfiles/PSNProfilesSearch";
@@ -137,5 +138,6 @@ export const PROCESSES: any = [
     //  EmailRepSearch,                 //  Very small API rate limit
     //  TwitterAuditSearch              //  User protections in place
     //  UKTradeInfoSearch,              //  Website Error
+    //  EpieosSkypeSearch,              //  CAPTCHA block
     
 ]
