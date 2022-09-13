@@ -18,7 +18,7 @@ export const USERNAME = /^[A-Za-z0-9]+([ _-]*[A-Za-z0-9]+)*$/;
 
 export const REGISTRATION_PLATE = /^[A-Z0-9\s]{2,8}$/;
 
-export const DOMAIN = /^(https:\/\/)?[a-zA-Z0-9-.]{1,61}(\/)?$/;
+export const DOMAIN = /^(https?:\/\/)?[a-zA-Z0-9-.]{1,61}(\/)?$/;
 
 export const BUSINESS = /^(?!\s)(?!.*\s$)(?=.*[a-zA-Z0-9])[a-zA-Z0-9 '~?!.&]{2,}$/;
 
@@ -28,5 +28,11 @@ export const IPV6 = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4
 
 export const POSTCODE = /^[A-Z a-z]{1,2}[0-9]{1,2}[\s]*[0-9][A-Z a-z]{1,2}$/;
 
+export const COORDINATES = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
 export const ANY = /^[\w\W]*$/
+
+export const BITCOIN_ADDRESS = /^[13][a-zA-Z0-9]{27,34}$/
+
+export const ETHEREUM_ADDRESS = /^0x[a-fA-F0-9]{40}$/
 
