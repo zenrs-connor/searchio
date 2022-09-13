@@ -12,13 +12,13 @@ import { WaybackMachineSearch } from "./modules/processes/WaybackMachine/Wayback
 
 export async function run() {
     
-    let socket = new SocketService();
-    await socket.init();
+    // let socket = new SocketService();
+    // await socket.init();
 
-    let x = new WaybackMachineSearch(socket, "https://www.cardiff.ac.uk/");
+    // let x = new WaybackMachineSearch(socket, "https://www.cardiff.ac.uk/");
     
-    let y = await x.process();
+    // let y = await x.process();
 
-    console.log("\n\nBack to sandbox")
-    console.log(y.data);
+    // console.log("\n\nBack to sandbox")
+    // console.log(y.data);
 }

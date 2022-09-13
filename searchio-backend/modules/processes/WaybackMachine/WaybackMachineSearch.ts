@@ -3,19 +3,20 @@ import { SocketService } from "../../SocketService";
 import { ANY } from "../../../assets/RegexPatterns";
 import { WaybackMachineProcess } from "./WaybackMachineProcess";
 import { urlToHttpOptions } from "url";
+import { ResultData } from "../../../models/ResultData";
 
 
 export class WaybackMachineSearch extends WaybackMachineProcess {
     
     protected id = "WaybackMachineSearch";
-    protected name: "Wayback Machine Search";
+    protected name: string = "Search";
     protected pattern: RegExp = ANY;
 
     public table = {
 
         columns: [
             { title: "Archive Date", key: "date", type: "Text" },
-            { title: "URL Link", key: "link", type: "Text" }
+            { title: "URL Link", key: "link", type: "WebLink" }
         ],
         rows: []
     }
@@ -32,9 +33,9 @@ export class WaybackMachineSearch extends WaybackMachineProcess {
     //  This function is what is called when the Process executes
     //  It returns a SearchioResponse containing any success or error data
     public async process(): Promise<SearchioResponse> {
-        this.initWebdriver(false);
+        this.initWebdriver();
         let result = await this.search();
-        //this.destroyWebdriver();
+        this.destroyWebdriver();
         return result;
     }
 
@@ -90,7 +91,7 @@ export class WaybackMachineSearch extends WaybackMachineProcess {
                             // Add the archive link and date/time to table
                             this.table.rows.push({
                                 date: date + ' at ' + urlText,
-                                link: urlLink
+                                link: { text: "Link", url: urlLink }
                             });
                         }
                         complete = true;
@@ -145,7 +146,16 @@ export class WaybackMachineSearch extends WaybackMachineProcess {
 
             await this.pause(5000);
 
-            return this.success(`Successfully performed scrape on all years`, this.table);
+            let results: ResultData[] = [];
+            if(this.table.rows.length > 0) {
+                results = [{
+                    name: "Search Results",
+                    type: "Table",
+                    data: this.table
+                }]
+            }
+
+            return this.success(`Successfully performed scrape on all years`, results);
 
         } catch(err) {
             return this.error(`Error performing scrape on all years`, err);
